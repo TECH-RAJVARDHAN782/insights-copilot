@@ -58,16 +58,3 @@ The platform features a dual-experience architecture:
 - **Database Spec**: PostgreSQL + Redis Pub/Sub Queue
 
 ---
-
-## 📊 Evaluation Criteria Alignment
-
-| Criteria | Weight | Implementation Details |
-| :--- | :---: | :--- |
-| **Innovation & Originality** | **20%** | Unified Layer 2 DeepSearch, Knowledge Clustering, and AI Talent Score™ |
-| **AI Implementation** | **20%** | Multi-Agent LLM workforce, YOLOv8 vision pipeline, Prophet demand forecaster |
-| **Technical Complexity** | **15%** | Microservices architecture, AST fraud check, interactive voice interview agent |
-| **User Experience** | **15%** | Ultra-sleek glassmorphic web dashboard + native mobile app simulator |
-| **Scalability & Architecture**| **15%** | Distributed queue setup, Redis pub/sub, FastAPI endpoints |
-| **Business Impact** | **15%** | Cuts idea-to-execution time from weeks to minutes & automates talent hiring |
-
----
