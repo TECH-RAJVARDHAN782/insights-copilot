@@ -59,42 +59,6 @@ The platform features a dual-experience architecture:
 
 ---
 
-## 🚀 Quick Start Guide
-
-### Prerequisites
-- Node.js (v18.0.0 or higher)
-- npm or yarn
-
-### Installation & Local Setup
-
-1. **Clone or Navigate to Project**:
-   ```bash
-   cd "C:\Users\Rajvardhan Shinde\.gemini\antigravity\scratch\insights-copilot"
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Start Development Server**:
-   ```bash
-   npm run dev
-   ```
-   Open your browser at `http://localhost:5173`.
-
-4. **Build for Production**:
-   ```bash
-   npm run build
-   ```
-
-5. **Preview Production Build**:
-   ```bash
-   npm run preview
-   ```
-
----
-
 ## 📊 Evaluation Criteria Alignment
 
 | Criteria | Weight | Implementation Details |
@@ -107,8 +71,3 @@ The platform features a dual-experience architecture:
 | **Business Impact** | **15%** | Cuts idea-to-execution time from weeks to minutes & automates talent hiring |
 
 ---
-
-## 📄 License
-
-This project is open-source under the [MIT License](LICENSE).
-© 2026 iNSIGHTS Copilot & AI Talent Ecosystem. All Rights Reserved.
