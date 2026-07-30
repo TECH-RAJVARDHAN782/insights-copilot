@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Compass, Cpu, FileText, Globe, Zap, Smartphone, Monitor, Layout, UserCheck, Database, Rocket, Bot, Share2 } from 'lucide-react';
+import { Sparkles, Compass, Globe, Zap, Smartphone, Monitor, Layout, UserCheck, Rocket, Bot, Share2, FileCode, FileText } from 'lucide-react';
 import { LANGUAGES } from '../data/mockData';
 import { TRANSLATIONS } from '../data/translations';
 
@@ -17,7 +17,7 @@ export default function Header({
     { id: 'search', label: t.tabs.search, icon: Compass },
     { id: 'readymade', label: t.tabs.readymade, icon: Rocket },
     { id: 'graph', label: t.tabs.graph, icon: Share2 },
-    { id: 'hub', label: t.tabs.hub, icon: Database },
+    { id: 'hub', label: t.tabs.hub, icon: FileCode },
     { id: 'agents', label: t.tabs.agents, icon: Bot },
     { id: 'docs', label: t.tabs.docs, icon: FileText },
     { id: 'talent', label: t.tabs.talent, icon: UserCheck },
