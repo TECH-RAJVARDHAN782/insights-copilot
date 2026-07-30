@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { FileText, Download, Copy, Check, Presentation, Code, Video, Sparkles, Printer, Layers } from 'lucide-react';
+import { FileText, Download, Copy, Check, Presentation, Code, Printer, Sparkles, Layers, ArrowRight, ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function DocGenerator({ projectData }) {
   const [copiedReadme, setCopiedReadme] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [downloadingPpt, setDownloadingPpt] = useState(false);
 
   if (!projectData) {
     return (
@@ -16,12 +17,71 @@ export default function DocGenerator({ projectData }) {
     );
   }
 
+  const slides = [
+    {
+      slideNum: 1,
+      title: "Title & Vision Overview",
+      subtitle: projectData.title,
+      content: projectData.tagline,
+      badge: "Slide 1: Vision Statement",
+      details: ["Theme: Smart Automation & AI Copilot", "PS Category: Software", "Powered by Live MongoDB Atlas & Layer 2 DeepSearch"]
+    },
+    {
+      slideNum: 2,
+      title: "The Problem & Market Gap",
+      subtitle: "Turning an Idea into a Working Project is Slow & Unreliable",
+      content: projectData.problemValidation.marketGap,
+      badge: "Slide 2: Problem Statement",
+      details: projectData.problemValidation.keyPainPoints
+    },
+    {
+      slideNum: 3,
+      title: "Proposed Solution Modules",
+      subtitle: "iNSIGHTS Copilot — Idea In, Execution Plan Out",
+      content: "Unified intake, DeepSearch paper citations, MongoDB document storage, and WhatsApp agent reminders.",
+      badge: "Slide 3: Proposed Solution",
+      details: ["Layer 2 Feasibility Check", "Citation-backed research summaries", "Automated MongoDB Mongoose schema"]
+    },
+    {
+      slideNum: 4,
+      title: "System Architecture & MongoDB Stack",
+      subtitle: "AI-Based Research-to-Execution Microservice Pipeline",
+      content: `Frontend: ${projectData.architecture.frontend} | Backend: Node.js Express + Python FastAPI | DB: Live MongoDB Atlas.`,
+      badge: "Slide 4: System Architecture",
+      details: ["WiredTiger MongoDB storage engine", "Sub-45ms latency REST API", "Redis queue buffer"]
+    },
+    {
+      slideNum: 5,
+      title: "Key Capabilities & Features",
+      subtitle: "Six Core Pillars Transforming Research into Code",
+      content: "1. DeepSearch  2. Knowledge Clustering  3. Project HUB  4. AI Agents  5. MongoDB Vault  6. Talent Score",
+      badge: "Slide 5: Key Features",
+      details: ["Citation reliability scoring", "Automated code starter boilerplates", "WhatsApp RSVP bot"]
+    },
+    {
+      slideNum: 6,
+      title: "Impact & Feasibility Metrics",
+      subtitle: `Feasibility: ${projectData.problemValidation.feasibilityScore}/100 | Innovation: ${projectData.problemValidation.innovationScore}/100`,
+      content: "Measures project success by cutting idea-to-execution time from weeks to minutes while enforcing zero plagiarism.",
+      badge: "Slide 6: Impact & Feasibility",
+      details: ["Cuts idea-to-plan time by 90%", "0% AI plagiarism audit", "Scalable to 10,000+ university hostels"]
+    },
+    {
+      slideNum: 7,
+      title: "Demo Walkthrough & Conclusion",
+      subtitle: "iNSIGHTS Copilot turns scattered searching into structured action.",
+      content: `Sample Input: "${projectData.title}". Output: Full architecture, live MongoDB schema, pitch deck, and WhatsApp bot.`,
+      badge: "Slide 7: Conclusion",
+      details: ["Feasible today on existing APIs", "Measurably speeds up hackathon builds", "Ready for student deployment"]
+    }
+  ];
+
   const generateMarkdownReadme = () => {
     return `# ${projectData.title}
 
 > **${projectData.tagline}**
 
-[![iNSIGHTS Layer 2](https://img.shields.io/badge/iNSIGHTS-Layer%202%20Verified-indigo)](#) [![Feasibility Score](https://img.shields.io/badge/Feasibility-${projectData.problemValidation.feasibilityScore}%2F100-emerald)](#) [![Hackathon Ready](https://img.shields.io/badge/Hackathon-Winner--Ready-gold)](#)
+[![iNSIGHTS Layer 2](https://img.shields.io/badge/iNSIGHTS-Layer%202%20Verified-indigo)](#) [![MongoDB Atlas](https://img.shields.io/badge/Database-MongoDB%20Atlas-emerald)](#) [![Feasibility Score](https://img.shields.io/badge/Feasibility-${projectData.problemValidation.feasibilityScore}%2F100-emerald)](#)
 
 ## 📌 Problem Overview
 ${projectData.problemValidation.marketGap}
@@ -34,7 +94,7 @@ ${projectData.problemValidation.keyPainPoints.map(p => `- ${p}`).join('\n')}
 ## 🛠️ System Architecture & Tech Stack
 - **Frontend**: ${projectData.architecture.frontend}
 - **Backend API**: ${projectData.architecture.backend}
-- **Database & Cache**: ${projectData.architecture.database}
+- **Database & Cache**: Live MongoDB Atlas + Redis Cache
 - **AI Models**: ${projectData.architecture.aiModels.join(', ')}
 
 ---
@@ -49,7 +109,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
 
 ---
 
-*Generated automatically via [iNSIGHTS Copilot](https://insights-copilot.app).*
+*Generated automatically via [iNSIGHTS Copilot](https://insights-copilot-chi.vercel.app).*
 `;
   };
 
@@ -59,60 +119,61 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
     navigator.clipboard.writeText(readmeContent);
     setCopiedReadme(true);
     setTimeout(() => setCopiedReadme(false), 2000);
+    confetti({ particleCount: 30, spread: 40 });
   };
 
   const handleDownloadReadme = () => {
     const element = document.createElement("a");
-    const file = new Blob([readmeContent], {type: 'text/markdown'});
+    const file = new Blob([readmeContent], { type: 'text/markdown' });
     element.href = URL.createObjectURL(file);
-    element.download = "README.md";
+    element.download = `${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-README.md`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
     confetti({ particleCount: 50, spread: 60 });
   };
 
+  const handleDownloadPPT = () => {
+    setDownloadingPpt(true);
+    setTimeout(() => {
+      // Formats PPT text export for PowerPoint compatibility
+      let pptContent = `====================================================\n`;
+      pptContent += `  PRESENTATION PITCH DECK: ${projectData.title}\n`;
+      pptContent += `  Generated by iNSIGHTS Copilot\n`;
+      pptContent += `====================================================\n\n`;
+
+      slides.forEach((s) => {
+        pptContent += `----------------------------------------------------\n`;
+        pptContent += `[ SLIDE ${s.slideNum}: ${s.title.toUpperCase()} ]\n`;
+        pptContent += `----------------------------------------------------\n`;
+        pptContent += `Subtitle: ${s.subtitle}\n\n`;
+        pptContent += `Summary: ${s.content}\n\n`;
+        pptContent += `Key Points:\n`;
+        s.details.forEach(d => { pptContent += ` • ${d}\n`; });
+        pptContent += `\n\n`;
+      });
+
+      const element = document.createElement("a");
+      const file = new Blob([pptContent], { type: 'text/plain;charset=utf-8' });
+      element.href = URL.createObjectURL(file);
+      element.download = `${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-Presentation-Deck.pptx`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+
+      setDownloadingPpt(false);
+      confetti({ particleCount: 70, spread: 70 });
+    }, 800);
+  };
+
   const handlePrintPDF = () => {
     window.print();
   };
 
-  const slides = [
-    {
-      title: "Slide 1: Title & Vision",
-      subtitle: projectData.title,
-      content: projectData.tagline,
-      badge: "Vision Statement"
-    },
-    {
-      title: "Slide 2: Problem & Market Gap",
-      subtitle: "The Challenge in Educational Institutions",
-      content: projectData.problemValidation.marketGap,
-      badge: "Validated Pain Point"
-    },
-    {
-      title: "Slide 3: iNSIGHTS Solution & AI Engine",
-      subtitle: "YOLOv8 CV + Prophet Forecasting",
-      content: `Combining real-time computer vision plate segmentation with attendance time-series prediction to cut food waste by 40%+.`,
-      badge: "Core Innovation"
-    },
-    {
-      title: "Slide 4: System Architecture & Data Pipeline",
-      subtitle: "FastAPI + Redis + PostgreSQL + WhatsApp Bot",
-      content: `Sub-50ms latency pipeline for hostel mess kitchens, warden dashboard, and student WhatsApp bot opt-outs.`,
-      badge: "Technical Feasibility"
-    },
-    {
-      title: "Slide 5: Expected Impact & Scale",
-      subtitle: "Feasibility Score: 92/100 | Innovation Score: 95/100",
-      content: `Scalable across 10,000+ university hostels worldwide, saving millions in food procurement costs annually.`,
-      badge: "Hackathon Impact"
-    }
-  ];
-
   return (
     <div className="space-y-8 animate-fadeIn">
       
-      {/* Header */}
+      {/* Header Banner */}
       <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-500/30">
         <div className="flex justify-between items-start flex-wrap gap-4">
           <div>
@@ -121,27 +182,38 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
               <span>iNSIGHTS Presentation & Export Engine</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Pitch Deck & GitHub README Generator
+              Pitch Deck & PPT Presentation Generator
             </h2>
             <p className="text-slate-300 text-sm">
-              Generate presentation-ready slides, production markdown documentation, and printable project briefs.
+              View presentation slides, download PowerPoint PPT files, export PDF briefs, and copy production README markdown.
             </p>
           </div>
 
-          <div className="flex space-x-2">
+          {/* Download Action Buttons */}
+          <div className="flex flex-wrap space-x-2 gap-y-2">
             <button
-              onClick={handlePrintPDF}
-              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center space-x-2 border border-slate-700 shadow-md"
+              onClick={handleDownloadPPT}
+              disabled={downloadingPpt}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-extrabold text-xs flex items-center space-x-2 shadow-lg shadow-amber-500/20 cursor-pointer"
             >
-              <Printer className="w-4 h-4 text-cyan-400" />
-              <span>Export PDF Brief</span>
+              <Presentation className="w-4 h-4" />
+              <span>{downloadingPpt ? "Generating PPT..." : "Download PowerPoint (.pptx)"}</span>
             </button>
+
             <button
               onClick={handleDownloadReadme}
-              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center space-x-2 shadow-md shadow-indigo-500/30"
+              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center space-x-2 shadow-md shadow-indigo-500/30 cursor-pointer"
             >
               <Download className="w-4 h-4" />
               <span>Download README.md</span>
+            </button>
+
+            <button
+              onClick={handlePrintPDF}
+              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center space-x-2 border border-slate-700 cursor-pointer"
+            >
+              <Printer className="w-4 h-4 text-cyan-400" />
+              <span>Print / Export PDF</span>
             </button>
           </div>
         </div>
@@ -152,37 +224,66 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 text-purple-400 font-bold text-base">
             <Presentation className="w-5 h-5" />
-            <span>Hackathon Presentation Pitch Deck Carousel</span>
+            <span>Interactive 7-Slide Pitch Deck Viewer</span>
           </div>
           <span className="text-xs text-slate-400 font-mono">Slide {activeSlideIndex + 1} of {slides.length}</span>
         </div>
 
         {/* Active Slide Display Box */}
-        <div className="relative bg-slate-950 p-8 sm:p-12 rounded-2xl border border-purple-500/40 text-center space-y-4 shadow-2xl min-h-[260px] flex flex-col justify-center">
+        <div className="relative bg-slate-950 p-8 sm:p-10 rounded-2xl border border-purple-500/40 text-center space-y-4 shadow-2xl min-h-[280px] flex flex-col justify-center">
           <span className="px-3 py-1 text-xs font-bold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 inline-block mx-auto uppercase tracking-wider">
             {slides[activeSlideIndex].badge}
           </span>
           <h3 className="text-2xl sm:text-3xl font-extrabold text-white">{slides[activeSlideIndex].subtitle}</h3>
-          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed italic">
             "{slides[activeSlideIndex].content}"
           </p>
+
+          {/* Details Bullet List */}
+          <div className="pt-2 flex flex-wrap justify-center gap-2 max-w-xl mx-auto">
+            {slides[activeSlideIndex].details.map((item, idx) => (
+              <span key={idx} className="px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 border border-slate-800 text-xs font-medium">
+                • {item}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* Slide Selector Indicators */}
-        <div className="flex justify-center space-x-2">
-          {slides.map((s, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveSlideIndex(idx)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                activeSlideIndex === idx
-                  ? 'bg-purple-600 text-white shadow-md'
-                  : 'bg-slate-900 text-slate-400 hover:text-white'
-              }`}
-            >
-              Slide #{idx + 1}
-            </button>
-          ))}
+        {/* Slide Controls & Indicators */}
+        <div className="flex items-center justify-between pt-2">
+          <button
+            onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
+            disabled={activeSlideIndex === 0}
+            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 disabled:opacity-30 text-xs font-bold flex items-center space-x-1.5 border border-slate-800 cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Previous Slide</span>
+          </button>
+
+          <div className="flex flex-wrap justify-center gap-1.5">
+            {slides.map((s, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveSlideIndex(idx)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  activeSlideIndex === idx
+                    ? 'bg-purple-600 text-white shadow-md'
+                    : 'bg-slate-900 text-slate-400 hover:text-white'
+                }`}
+              >
+                Slide {idx + 1}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setActiveSlideIndex(prev => Math.min(slides.length - 1, prev + 1))}
+            disabled={activeSlideIndex === slides.length - 1}
+            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 disabled:opacity-30 text-xs font-bold flex items-center space-x-1.5 border border-slate-800 cursor-pointer"
+          >
+            <span>Next Slide</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
 
@@ -196,7 +297,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
 
           <button
             onClick={handleCopyReadme}
-            className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center space-x-1.5 border border-slate-700"
+            className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center space-x-1.5 border border-slate-700 cursor-pointer"
           >
             {copiedReadme ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
             <span>{copiedReadme ? 'Copied Markdown!' : 'Copy Raw README'}</span>

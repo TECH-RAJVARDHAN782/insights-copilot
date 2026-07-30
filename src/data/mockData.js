@@ -1,11 +1,13 @@
 export const SAMPLE_IDEAS = [
   {
     id: "food-waste",
-    title: "AI Food Waste Reduction in College Hostels",
+    title: "AI Food Waste Reduction in Hostels",
     prompt: "Build an AI solution to reduce food waste in college hostels using computer vision, demand forecasting, and inventory optimization.",
     category: "Sustainability & AI",
     difficulty: "Intermediate",
-    impact: "94/100"
+    impact: "94/100",
+    readymadeRepo: "https://github.com/insights-copilot/ecomeal-ai-starter",
+    readymadeDemo: "https://ecomeal-ai.vercel.app"
   },
   {
     id: "smart-health",
@@ -13,7 +15,9 @@ export const SAMPLE_IDEAS = [
     prompt: "Create an offline-first mobile AI assistant for low-bandwidth rural clinics to conduct early disease screening using voice & skin image analysis.",
     category: "Healthcare & AI",
     difficulty: "Advanced",
-    impact: "98/100"
+    impact: "98/100",
+    readymadeRepo: "https://github.com/insights-copilot/ruralcare-tele-triage",
+    readymadeDemo: "https://ruralcare-ai.vercel.app"
   },
   {
     id: "code-sec",
@@ -21,15 +25,70 @@ export const SAMPLE_IDEAS = [
     prompt: "Develop an LLM agentic pipeline to audit Web3 smart contracts, simulate attack vectors, and generate auto-healing pull requests.",
     category: "Cybersecurity & Web3",
     difficulty: "Hard",
-    impact: "91/100"
+    impact: "91/100",
+    readymadeRepo: "https://github.com/insights-copilot/web3-auto-healer",
+    readymadeDemo: "https://web3-healer.vercel.app"
   },
   {
     id: "edu-adaptive",
-    title: "Multilingual Gamified Micro-Learning for STEM Students",
+    title: "Multilingual Gamified Micro-Learning for STEM",
     prompt: "Build an adaptive learning engine that turns complex engineering lectures into personalized 3-minute interactive quizzes in native languages.",
     category: "EdTech & AI",
     difficulty: "Beginner-Friendly",
-    impact: "89/100"
+    impact: "89/100",
+    readymadeRepo: "https://github.com/insights-copilot/stem-micro-learn",
+    readymadeDemo: "https://stem-microlearn.vercel.app"
+  }
+];
+
+export const READYMADE_PROJECTS_CATALOG = [
+  {
+    id: "ecomeal-ai",
+    title: "EcoMeal AI — Smart Hostel Cafeteria Management",
+    category: "AI & Sustainability",
+    description: "Complete full-stack production repo featuring YOLOv8 plate waste segmentation, Prophet headcount forecasting, MongoDB Atlas data vault, and WhatsApp RSVP bot.",
+    techStack: ["React 18", "Node.js / Express", "MongoDB Atlas", "PyTorch YOLOv8", "WhatsApp Webhook"],
+    githubUrl: "https://github.com/insights-copilot/ecomeal-ai-starter",
+    demoUrl: "https://ecomeal-ai.vercel.app",
+    stars: "2.4k",
+    forks: 480,
+    downloadFiles: ["server.js", "model_yolo.py", "docker-compose.yml", "seed_mongo.js"]
+  },
+  {
+    id: "ruralcare-ai",
+    title: "RuralCare AI — Offline Tele-Triage & Diagnostic Scanner",
+    category: "Healthcare & Mobile AI",
+    description: "Readymade PWA & React Native project equipped with quantized 8-bit MobileNetV3 skin scanner, Whisper voice audio biomarkers, and local PWA offline storage.",
+    techStack: ["React Native", "MongoDB Atlas Sync", "TFLite 8-bit", "Whisper Audio", "PWA Worker"],
+    githubUrl: "https://github.com/insights-copilot/ruralcare-tele-triage",
+    demoUrl: "https://ruralcare-ai.vercel.app",
+    stars: "1.9k",
+    forks: 310,
+    downloadFiles: ["App.tsx", "tflite_model.tflite", "mongo_realm_sync.js"]
+  },
+  {
+    id: "smart-contract-healer",
+    title: "DeFi Vulnerability Auto-Healer & LLM Auditor",
+    category: "Cybersecurity & Web3",
+    description: "Agentic pipeline scanning Solidity smart contracts, generating attack simulation vector graphs, and auto-submitting patched GitHub Pull Requests.",
+    techStack: ["Node.js", "Solidity Slither", "MongoDB Atlas", "Llama-3 LLM", "GitHub API"],
+    githubUrl: "https://github.com/insights-copilot/web3-auto-healer",
+    demoUrl: "https://web3-healer.vercel.app",
+    stars: "3.1k",
+    forks: 620,
+    downloadFiles: ["auditor.py", "patcher_agent.js", "contract_schema.json"]
+  },
+  {
+    id: "adaptive-microlearn",
+    title: "Multilingual STEM Micro-Quiz Generator",
+    category: "EdTech & NLP",
+    description: "Engine converting long lecture MP4 videos and PDFs into 3-minute gamified native language quizzes with real-time student leaderboard.",
+    techStack: ["React 18", "Python FastAPI", "MongoDB Atlas", "Whisper AI", "Tailwind CSS"],
+    githubUrl: "https://github.com/insights-copilot/stem-micro-learn",
+    demoUrl: "https://stem-microlearn.vercel.app",
+    stars: "1.5k",
+    forks: 240,
+    downloadFiles: ["quiz_engine.py", "server.js", "mongo_quiz_collection.js"]
   }
 ];
 
@@ -46,12 +105,12 @@ export const DEFAULT_PROJECT_DATA = {
   "food-waste": {
     id: "food-waste",
     title: "EcoMeal AI: Hostel Food Waste Management Engine",
-    tagline: "Predictive meal consumption forecasting & real-time cafeteria tray audit using AI computer vision.",
+    tagline: "Predictive meal consumption forecasting & real-time cafeteria tray audit using AI computer vision and Live MongoDB Atlas.",
     problemValidation: {
       marketGap: "Hostels waste 35-45% of prepared food daily due to inaccurate headcounts and fixed menu batching.",
-      feasibilityScore: 92,
-      innovationScore: 95,
-      impactScore: 96,
+      feasibilityScore: 94,
+      innovationScore: 96,
+      impactScore: 98,
       targetUsers: ["Hostel Wardens", "Mess Vendors", "Student Committees", "Sustainability Officers"],
       keyPainPoints: [
         "Unpredictable student attendance during weekends and exams.",
@@ -93,34 +152,55 @@ export const DEFAULT_PROJECT_DATA = {
           venue: "GitHub",
           url: "https://github.com/example/smart-mess-iot",
           type: "GitHub",
-          snippet: "ESP32 load cell scale integration code with MQTT data bridge to Node.js backend."
+          snippet: "ESP32 load cell scale integration code with MQTT data bridge to MongoDB Atlas backend."
         }
       ]
     },
     existingSolutions: [
       { name: "Manual Mess Registers", pros: "Zero tech cost", cons: "High error rate, 40%+ food waste, no predictive insights", status: "Outdated" },
       { name: "Basic RFID Attendance", pros: "Tracks gate entry", cons: "Doesn't measure actual food consumption or plate waste", status: "Partial" },
-      { name: "iNSIGHTS EcoMeal AI", pros: "Predictive headcount + CV tray audit + dynamic kitchen batching alert", cons: "Requires camera overhead mount", status: "Optimal" }
+      { name: "iNSIGHTS EcoMeal AI", pros: "Predictive headcount + CV tray audit + Live MongoDB Atlas batching alert", cons: "Requires camera overhead mount", status: "Optimal" }
     ],
+    mongoDbSpec: {
+      connectionStatus: "Connected to MongoDB Atlas Cluster (aws-iad1-shard-0)",
+      clusterName: "insights-copilot-production",
+      databaseName: "ecomeal_db",
+      collections: [
+        { name: "daily_waste_logs", count: 14280, size: "12.4 MB", schema: "{ timestamp: Date, hostelBlock: String, plateWasteKg: Number, detectedItems: Array }" },
+        { name: "student_rsvp_records", count: 8520, size: "6.8 MB", schema: "{ studentId: ObjectId, date: Date, mealType: String, optOut: Boolean }" },
+        { name: "kitchen_batches", count: 1240, size: "3.2 MB", schema: "{ batchId: String, recommendedPortions: Number, actualPrepared: Number }" }
+      ],
+      mongooseCode: `// Live MongoDB Mongoose Schema
+const mongoose = require('mongoose');
+
+const WasteLogSchema = new mongoose.Schema({
+  hostelBlock: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+  plateWasteKg: { type: Number, required: true },
+  detectedItems: [{ name: String, confidence: Number }],
+  headcountForecast: { type: Number }
+});
+
+module.exports = mongoose.model('WasteLog', WasteLogSchema);`
+    },
     architecture: {
-      frontend: "React 18 + Tailwind CSS + Recharts + Lucide Icons",
-      backend: "FastAPI / Python (PyTorch + YOLOv8 inference)",
-      database: "PostgreSQL + Redis (Real-time caching & headcount pub/sub)",
+      frontend: "React 18 + Tailwind CSS + Lucide Icons",
+      backend: "Node.js / Express + FastAPI PyTorch Microservices",
+      database: "MongoDB Atlas (Live Cluster) + Redis Cache",
       aiModels: ["YOLOv8 (Plate Segmentation)", "Prophet / XGBoost (Demand Forecast)", "Llama-3-8B (Chef Insights)"],
-      apis: ["Weather API (Rainfall impact on attendance)", "WhatsApp Business API (Student RSVP bot)"],
+      apis: ["MongoDB Atlas Data API", "WhatsApp Business API", "Weather API"],
       nodes: [
         { id: "1", label: "RGB Camera / IoT Scale", type: "Input Layer", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500", detail: "Overhead 1080p camera capturing trays and weight load cell scales." },
         { id: "2", label: "YOLOv8 Plate Segmentation Engine", type: "AI Model", color: "bg-purple-500/20 text-purple-300 border-purple-500", detail: "Executes image segmentation to detect food surface area and volume percentage." },
         { id: "3", label: "Prophet Attendance Forecaster", type: "AI Model", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500", detail: "Timeseries engine projecting headcount based on timetable and weather." },
-        { id: "4", label: "FastAPI Central Dispatch Engine", type: "Backend", color: "bg-blue-500/20 text-blue-300 border-blue-500", detail: "REST & WebSocket endpoints handling real-time kitchen batching alerts." },
-        { id: "5", label: "PostgreSQL & TimescaleDB", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500", detail: "Stores daily consumption logs, batch history, and inventory metrics." },
-        { id: "6", label: "Chef Alert Dashboard & WhatsApp Bot", type: "Action Layer", color: "bg-amber-500/20 text-amber-300 border-amber-500", detail: "Sends automated WhatsApp nudges to kitchen staff before meal prep hours." }
+        { id: "4", label: "MongoDB Atlas Live Data Vault", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500", detail: "Real-time document storage for daily mess logs, RSVP records, and kitchen batches." },
+        { id: "5", label: "Chef Alert Dashboard & WhatsApp Bot", type: "Action Layer", color: "bg-amber-500/20 text-amber-300 border-amber-500", detail: "Sends automated WhatsApp nudges to kitchen staff before meal prep hours." }
       ]
     },
     roadmap: [
       { phase: "Phase 1 (Week 1-2)", title: "Dataset Collection & Model Training", task: "Train YOLOv8 on plate waste dataset and build Prophet forecast script." },
-      { phase: "Phase 2 (Week 3-4)", title: "IoT Integration & FastAPI Backend", task: "Connect ESP32 weight sensors to MQTT broker and expose endpoints." },
-      { phase: "Phase 3 (Week 5-6)", title: "Hostel Admin & Chef Dashboard UI", task: "Deploy React dashboard with live analytics, meal batch alerts, and WhatsApp agent." },
+      { phase: "Phase 2 (Week 3-4)", title: "MongoDB Atlas Setup & Express API", task: "Connect Mongoose models to MongoDB Atlas cluster and expose endpoints." },
+      { phase: "Phase 3 (Week 5-6)", title: "Hostel Admin Dashboard & WhatsApp Bot", task: "Deploy React dashboard with live analytics, meal batch alerts, and WhatsApp agent." },
       { phase: "Phase 4 (Week 7-8)", title: "On-Site Pilot & Impact Metrics", task: "Install pilot setup in Hostel Block B mess; track waste reduction over 14 days." }
     ],
     datasets: [
@@ -128,89 +208,13 @@ export const DEFAULT_PROJECT_DATA = {
       { name: "Hostel Attendance & Calendar Dataset", size: "120 MB", link: "https://github.com/dataset-hostel", license: "CC-BY-4.0" }
     ],
     githubRepos: [
-      { name: "ultralytics/yolov8", stars: "28.5k", description: "Real-time object detection and segmentation framework." },
-      { name: "facebook/prophet", stars: "17.2k", description: "Automatic forecasting procedure for time-series data." },
-      { name: "insights/ecomeal-starter-kit", stars: "1.4k", description: "Starter kit template for hostel waste management." }
+      { name: "insights-copilot/ecomeal-ai-starter", stars: "2.4k", description: "Complete readymade student project template for hostel waste management." }
     ],
     agentWorkflows: [
       { agent: "Research Agent", avatar: "🔍", text: "Found 4 new arXiv papers on waste estimation using RGB-D depth cameras. Updating knowledge cluster..." },
-      { agent: "Architecture Agent", avatar: "🏗️", text: "Designed PostgreSQL schema for daily mess logs and Redis pub/sub queue for peak meal hours." },
-      { agent: "Code Copilot Agent", avatar: "🤖", text: "Generated FastAPI inference script for YOLOv8 model serving with Docker support." },
-      { agent: "WhatsApp Bot Agent", avatar: "📱", text: "Configured student meal opt-out workflow via WhatsApp: 'Reply 1 to skip dinner tonight'." }
-    ]
-  },
-  "smart-health": {
-    id: "smart-health",
-    title: "RuralCare AI: Offline-First Tele-triage Scanner",
-    tagline: "Voice & skin lesion screening engine built for low-bandwidth rural health clinics.",
-    problemValidation: {
-      marketGap: "Over 60% of rural clinics lack specialized diagnostic doctors and stable internet connectivity.",
-      feasibilityScore: 94,
-      innovationScore: 97,
-      impactScore: 98,
-      targetUsers: ["Rural Healthcare Workers", "NGO Medical Volunteers", "District Health Officers"],
-      keyPainPoints: [
-        "Zero internet access in remote primary health centers.",
-        "Delayed early symptom diagnosis leading to preventable complications.",
-        "Language barriers in communicating medical symptoms."
-      ]
-    },
-    deepSearch: {
-      summary: "Synthesized 34 medical AI papers from PubMed & arXiv, 18 open-source diagnostic datasets, and Edge-AI mobile models.",
-      sourcesCount: 52,
-      citations: [
-        {
-          title: "Quantized MobileNetV3 for On-Device Dermatological Screening in Low-Resource Settings",
-          authors: "Gupta et al. (2025)",
-          venue: "Lancet Digital Health",
-          url: "https://arxiv.org/abs/2305.11029",
-          type: "Paper",
-          snippet: "Quantized 8-bit model achieves 96.1% diagnostic sensitivity running locally on $80 Android smartphones."
-        },
-        {
-          title: "Offline Voice Acoustic Biomarkers for Respiratory Illness",
-          authors: "Chen et al. (2024)",
-          venue: "IEEE Transactions on Biomedical Engineering",
-          url: "https://arxiv.org/abs/2311.04210",
-          type: "Paper",
-          snippet: "Extracts spectral features from cough audio clips to screen respiratory anomalies offline."
-        }
-      ]
-    },
-    existingSolutions: [
-      { name: "Paper-based Health Logs", pros: "Works anywhere", cons: "No diagnostic intelligence or triage urgency scoring", status: "Outdated" },
-      { name: "Cloud Telemedicine Apps", pros: "Doctor video calls", cons: "Requires high-speed 4G/5G, fails in remote clinics", status: "Partial" },
-      { name: "RuralCare AI Scanner", pros: "Offline MobileNetV3 + Voice Biomarkers + SQLite local store", cons: "Requires camera lens calibration", status: "Optimal" }
-    ],
-    architecture: {
-      frontend: "React Native / Expo + SQLite + Offline PWA",
-      backend: "FastAPI Sync Server (Triggers when internet connects)",
-      database: "SQLite (Local) + PostgreSQL (Cloud Vault)",
-      aiModels: ["MobileNetV3 (Skin Lesion Classifier)", "Whisper-Tiny (Offline Voice Transcriber)"],
-      apis: ["District Health Registry API", "SMS Gateway for Critical Alerts"],
-      nodes: [
-        { id: "1", label: "Mobile Camera & Microphone", type: "Input Layer", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500", detail: "Captures skin images and cough audio." },
-        { id: "2", label: "Quantized MobileNetV3 Engine", type: "AI Model", color: "bg-purple-500/20 text-purple-300 border-purple-500", detail: "On-device TFLite model running sub-200ms inference." },
-        { id: "3", label: "SQLite Local Cache", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500", detail: "Encrypted local patient log synced when back online." },
-        { id: "4", label: "SMS Urgency Alert Gateway", type: "Action Layer", color: "bg-amber-500/20 text-amber-300 border-amber-500", detail: "Dispatches emergency SMS to district hospital doctors." }
-      ]
-    },
-    roadmap: [
-      { phase: "Phase 1 (Week 1-2)", title: "TFLite Model Quantization", task: "Convert MobileNetV3 model to TFLite 8-bit format for Android performance." },
-      { phase: "Phase 2 (Week 3-4)", title: "Offline PWA & SQLite Sync", task: "Implement offline service worker cache and background sync manager." },
-      { phase: "Phase 3 (Week 5-6)", title: "Voice Biomarker Integration", task: "Integrate Whisper-Tiny for multi-lingual audio intake." },
-      { phase: "Phase 4 (Week 7-8)", title: "District Clinic Field Test", task: "Deploy test build to 3 rural health centers." }
-    ],
-    datasets: [
-      { name: "DermNet Skin Lesion 25K", size: "3.1 GB", link: "https://kaggle.com", license: "CC-BY-NC" }
-    ],
-    githubRepos: [
-      { name: "tensorflow/tflite-support", stars: "32.1k", description: "Mobile machine learning execution runtime." }
-    ],
-    agentWorkflows: [
-      { agent: "Research Agent", avatar: "🔍", text: "Verified 52 clinical trial citations for on-device diagnostic accuracy." },
-      { agent: "Architecture Agent", avatar: "🏗️", text: "Configured offline PWA service worker with background sync fallback." },
-      { agent: "Code Copilot Agent", avatar: "🤖", text: "Generated TFLite React Native wrapper code for Android." }
+      { agent: "Architecture Agent", avatar: "🏗️", text: "Configured MongoDB Atlas Mongoose schemas and Redis pub/sub queue for peak dining hours." },
+      { agent: "Code Copilot Agent", avatar: "🤖", text: "Generated Node.js server.js script connected to live MongoDB Atlas database." },
+      { agent: "WhatsApp Bot Agent", avatar: "📱", text: "Interactive WhatsApp Bot active: students can type custom meal opt-out responses!" }
     ]
   }
 };

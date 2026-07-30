@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
 import DeepSearch from './components/DeepSearch';
+import ReadymadeProjects from './components/ReadymadeProjects';
 import ProjectHub from './components/ProjectHub';
-import KnowledgeGraph from './components/KnowledgeGraph';
 import AgentHub from './components/AgentHub';
 import DocGenerator from './components/DocGenerator';
 import TalentPlatform from './components/TalentPlatform';
@@ -26,12 +26,11 @@ export default function App() {
       if (DEFAULT_PROJECT_DATA[id]) {
         setProjectData(DEFAULT_PROJECT_DATA[id]);
       } else {
-        // Fallback generator for sample ideas
         const sample = SAMPLE_IDEAS.find(s => s.id === id);
         setProjectData(createDynamicProjectData(sample ? sample.title : "Custom Student Project", sample ? sample.prompt : ""));
       }
       setIsSearching(false);
-    }, 1200);
+    }, 1000);
   };
 
   const handleGenerateCustom = (customPrompt) => {
@@ -45,11 +44,11 @@ export default function App() {
       );
       setProjectData(generatedData);
       setIsSearching(false);
-    }, 1800);
+    }, 1200);
   };
 
   const extractTitleFromPrompt = (prompt) => {
-    if (!prompt) return "Custom Innovation Project";
+    if (!prompt) return "Custom Student Innovation";
     const cleaned = prompt.replace(/^(build|create|design|develop)\s+(an?|the)?\s+/i, '');
     return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
   };
@@ -59,15 +58,15 @@ export default function App() {
       title: title,
       tagline: `AI-Powered innovation framework designed for: "${prompt.slice(0, 80)}..."`,
       problemValidation: {
-        marketGap: `Existing systems lack real-time automated verification and predictive ML capabilities for ${title}.`,
-        feasibilityScore: Math.floor(Math.random() * 10) + 88,
-        innovationScore: Math.floor(Math.random() * 10) + 90,
-        impactScore: Math.floor(Math.random() * 8) + 92,
+        marketGap: `Existing traditional systems lack automated real-time ML verification and MongoDB Atlas cloud synchronization for ${title}.`,
+        feasibilityScore: Math.floor(Math.random() * 8) + 90,
+        innovationScore: Math.floor(Math.random() * 8) + 91,
+        impactScore: Math.floor(Math.random() * 6) + 93,
         targetUsers: ["Students", "Domain Experts", "Academic Mentors", "Hackathon Judges"],
         keyPainPoints: [
           "Manual overhead and unverified execution timelines.",
           "Fragmented research data across non-interoperable portals.",
-          "Lack of automated code boilerplate generation and system diagrams."
+          "Lack of automated MongoDB schema generation and system diagrams."
         ]
       },
       deepSearch: {
@@ -80,7 +79,7 @@ export default function App() {
             venue: "IEEE Computer Society",
             url: "https://arxiv.org/abs/2304.00000",
             type: "Paper",
-            snippet: "Empirical benchmarking demonstrates 92%+ precision when combining agentic workflows with low-latency APIs."
+            snippet: "Empirical benchmarking demonstrates 94%+ precision when combining agentic workflows with MongoDB Atlas."
           },
           {
             title: `${title} Reference Open-Source Dataset`,
@@ -93,40 +92,49 @@ export default function App() {
         ]
       },
       existingSolutions: [
-        { name: "Manual Approaches", pros: "Zero tech setup", cons: "High error rates, zero scalability", status: "Outdated" },
+        { name: "Manual Approaches", pros: "Zero tech cost", cons: "High error rates, zero scalability", status: "Outdated" },
         { name: "Fragmented Web Search", pros: "Wide sources", cons: "No architecture synthesis or agent automation", status: "Partial" },
-        { name: `iNSIGHTS ${title}`, pros: "Automated architecture + DeepSearch + AI Agent workforce", cons: "Requires API configuration", status: "Optimal" }
+        { name: `iNSIGHTS ${title}`, pros: "Automated architecture + Live MongoDB + WhatsApp Bot workforce", cons: "Requires API configuration", status: "Optimal" }
       ],
+      mongoDbSpec: {
+        connectionStatus: "Connected to MongoDB Atlas Cluster (aws-iad1-shard-0)",
+        clusterName: "insights-copilot-production",
+        databaseName: "student_project_db",
+        collections: [
+          { name: "custom_metrics_logs", count: 9420, size: "8.2 MB", schema: "{ timestamp: Date, payload: Object }" },
+          { name: "user_submissions", count: 4120, size: "3.4 MB", schema: "{ studentId: String, prompt: String }" }
+        ],
+        mongooseCode: `// Live Mongoose Schema for ${title}\nconst mongoose = require('mongoose');\n\nconst Schema = new mongoose.Schema({ title: String, createdAt: { type: Date, default: Date.now } });\nmodule.exports = mongoose.model('${title.replace(/[^a-zA-Z]/g, '')}', Schema);`
+      },
       architecture: {
         frontend: "React 18 + Tailwind CSS + Lucide Icons",
-        backend: "FastAPI / Python Microservices",
-        database: "PostgreSQL + Redis Cache",
+        backend: "Node.js Express + Python FastAPI Microservices",
+        database: "MongoDB Atlas (Live Cluster) + Redis Cache",
         aiModels: ["Transformer Engine", "Prophet Time-Series", "YOLOv8 Vision"],
-        apis: ["OpenAI / Llama-3 API", "GitHub REST API", "WhatsApp Business Bot"],
+        apis: ["MongoDB Atlas Data API", "WhatsApp Business API", "GitHub REST API"],
         nodes: [
-          { id: "1", label: "Input Data & Sensor Layer", type: "Input", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500" },
-          { id: "2", label: "iNSIGHTS DeepSearch Synthesizer", type: "AI Engine", color: "bg-purple-500/20 text-purple-300 border-purple-500" },
-          { id: "3", label: "FastAPI Central Orchestrator", type: "Backend", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500" },
-          { id: "4", label: "PostgreSQL Data Vault", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500" },
-          { id: "5", label: "Student & Warden Dashboard", type: "UI Layer", color: "bg-amber-500/20 text-amber-300 border-amber-500" }
+          { id: "1", label: "Input Data & Sensor Layer", type: "Input", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500", detail: "Data ingestion pipeline." },
+          { id: "2", label: "iNSIGHTS DeepSearch Synthesizer", type: "AI Engine", color: "bg-purple-500/20 text-purple-300 border-purple-500", detail: "Generates paper citations and problem validation." },
+          { id: "3", label: "Express Central Orchestrator", type: "Backend", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500", detail: "REST & WebSockets server." },
+          { id: "4", label: "MongoDB Atlas Live Data Vault", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500", detail: "Live MongoDB Atlas document store." }
         ]
       },
       roadmap: [
         { phase: "Phase 1 (Week 1)", title: "Literature Search & DeepSearch Synthesis", task: "Extract arXiv papers and map system architecture requirements." },
-        { phase: "Phase 2 (Week 2)", title: "Backend Schema & API Prototype", task: "Setup FastAPI endpoints, database models, and AI inference pipeline." },
+        { phase: "Phase 2 (Week 2)", title: "MongoDB Atlas Schema & Express API", task: "Setup Mongoose models, database collections, and AI inference endpoints." },
         { phase: "Phase 3 (Week 3)", title: "Agent Integration & Dashboard UI", task: "Connect WhatsApp bot agent and build interactive React dashboard." },
-        { phase: "Phase 4 (Week 4)", title: "Deployment & Hackathon Presentation", task: "Deploy production build and export pitch deck markdown." }
+        { phase: "Phase 4 (Week 4)", title: "Deployment & Presentation Deck", task: "Deploy production build to Vercel and export PowerPoint presentation." }
       ],
       datasets: [
         { name: `${title} Annotated Corpus`, size: "1.8 GB", link: "https://kaggle.com", license: "MIT" }
       ],
       githubRepos: [
-        { name: "insights-starter-kit", stars: "4.8k", description: "Template repository for hackathon project setup." }
+        { name: "insights-copilot/student-starter-kit", stars: "3.2k", description: "Readymade template repository for hackathon setup." }
       ],
       agentWorkflows: [
-        { agent: "Research Agent", avatar: "🔍", text: `DeepSearch verified 38 citations for ${title}.` },
-        { agent: "Architecture Agent", avatar: "🏗️", text: "Generated microservice architecture with sub-50ms latency SLA." },
-        { agent: "Code Copilot Agent", avatar: "🤖", text: "Ready to export production README.md and pitch deck." }
+        { agent: "Research Agent", avatar: "🔍", text: `DeepSearch verified arXiv citations for ${title}.` },
+        { agent: "Architecture Agent", avatar: "🏗️", text: "Generated MongoDB Atlas schema with sub-20ms latency SLA." },
+        { agent: "Code Copilot Agent", avatar: "🤖", text: "Ready to export Node.js server.js and PowerPoint pitch deck." }
       ]
     };
   };
@@ -143,16 +151,20 @@ export default function App() {
             activeIdeaId={activeIdeaId}
           />
         );
+      case 'readymade':
+        return (
+          <ReadymadeProjects
+            onSelectProject={handleSelectSample}
+          />
+        );
       case 'hub':
         return <ProjectHub projectData={projectData} />;
-      case 'graph':
-        return <KnowledgeGraph projectData={projectData} />;
       case 'agents':
         return <AgentHub projectData={projectData} />;
-      case 'talent':
-        return <TalentPlatform projectData={projectData} />;
       case 'docs':
         return <DocGenerator projectData={projectData} />;
+      case 'talent':
+        return <TalentPlatform projectData={projectData} />;
       default:
         return null;
     }
@@ -167,7 +179,6 @@ export default function App() {
         setActiveTab={setActiveTab}
         currentLang={currentLang}
         setCurrentLang={setCurrentLang}
-        activeIdeaTitle={projectData?.title}
         viewMode={viewMode}
         setViewMode={setViewMode}
       />
@@ -175,19 +186,19 @@ export default function App() {
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-        {/* Hackathon Criteria Banner */}
+        {/* Hackathon Banner */}
         <HackathonBanner />
 
-        {/* VIEWPORT CONTROLS DISPLAY */}
+        {/* VIEWPORT DISPLAY CONTROLS */}
 
-        {/* 1. ONLY WEB PLATFORM VIEW */}
+        {/* 1. ONLY WEB PLATFORM */}
         {viewMode === 'web' && (
           <div className="animate-fadeIn">
             {renderWebTabContent()}
           </div>
         )}
 
-        {/* 2. ONLY MOBILE APP SIMULATOR VIEW */}
+        {/* 2. ONLY MOBILE APP SIMULATOR */}
         {viewMode === 'mobile' && (
           <div className="animate-fadeIn py-4">
             <MobileSimulator projectData={projectData} />
@@ -199,24 +210,24 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn">
             {/* Left 8 Cols: Web Dashboard */}
             <div className="lg:col-span-8 space-y-6">
-              <div className="flex items-center justify-between bg-indigo-950/40 p-3 rounded-xl border border-indigo-800/40">
-                <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+              <div className="flex items-center justify-between bg-indigo-950/40 p-3 rounded-xl border border-indigo-800/40 text-xs">
+                <span className="font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
                   🖥️ Desktop Web Application Active
                 </span>
-                <span className="text-[11px] text-slate-400">Live Sync with Companion Mobile App</span>
+                <span className="text-slate-400">Live Sync with Mobile Companion App</span>
               </div>
               {renderWebTabContent()}
             </div>
 
             {/* Right 4 Cols: Mobile App Simulator */}
             <div className="lg:col-span-4 space-y-6">
-              <div className="flex items-center justify-between bg-purple-950/40 p-3 rounded-xl border border-purple-800/40">
-                <span className="text-xs font-bold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
+              <div className="flex items-center justify-between bg-purple-950/40 p-3 rounded-xl border border-purple-800/40 text-xs">
+                <span className="font-bold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
-                  📱 Mobile App Simulator
+                  📱 Companion Mobile App Simulator
                 </span>
-                <span className="text-[11px] text-slate-400">iOS & Android Preview</span>
+                <span className="text-slate-400">iOS & Android Preview</span>
               </div>
               <div className="sticky top-24">
                 <MobileSimulator projectData={projectData} />
@@ -230,11 +241,14 @@ export default function App() {
       {/* Footer */}
       <footer className="glass-panel border-t border-slate-800/80 py-6 text-center text-xs text-slate-400">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-          <p>© 2026 iNSIGHTS Layer 2 Copilot & AI Talent Ecosystem • Web & Mobile Suite.</p>
+          <p>© 2026 iNSIGHTS Copilot & Live MongoDB Atlas Platform.</p>
           <div className="flex items-center space-x-4">
-            <span className="text-cyan-400 font-semibold">Dual Platform Active</span>
+            <span className="text-emerald-400 font-semibold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Live MongoDB Atlas
+            </span>
             <span>•</span>
-            <span className="text-purple-400">DeepSearch Engine v2.4</span>
+            <span className="text-cyan-400">PowerPoint PPT Generator v3.0</span>
           </div>
         </div>
       </footer>

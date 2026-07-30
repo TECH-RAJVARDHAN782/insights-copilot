@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Compass, Cpu, Share2, FileText, Award, Globe, Zap, Smartphone, Monitor, Layout, UserCheck } from 'lucide-react';
+import { Sparkles, Compass, Cpu, FileText, Award, Globe, Zap, Smartphone, Monitor, Layout, UserCheck, Database, Rocket, Bot } from 'lucide-react';
 import { LANGUAGES } from '../data/mockData';
 import confetti from 'canvas-confetti';
 
@@ -8,7 +8,6 @@ export default function Header({
   setActiveTab, 
   currentLang, 
   setCurrentLang, 
-  activeIdeaTitle,
   viewMode,
   setViewMode
 }) {
@@ -21,12 +20,12 @@ export default function Header({
   };
 
   const tabs = [
-    { id: 'search', label: 'DeepSearch & Validation', icon: Compass },
-    { id: 'hub', label: 'Project HUB & Architecture', icon: Cpu },
-    { id: 'graph', label: 'Knowledge Clusters', icon: Share2 },
-    { id: 'agents', label: 'AI Agent Workforce', icon: Sparkles },
-    { id: 'talent', label: 'AI Talent & Recruitment Ecosystem', icon: UserCheck },
-    { id: 'docs', label: 'Pitch & README Generator', icon: FileText },
+    { id: 'search', label: 'DeepSearch AI Response', icon: Compass },
+    { id: 'readymade', label: 'Readymade Projects HUB', icon: Rocket },
+    { id: 'hub', label: 'MongoDB & Architecture', icon: Database },
+    { id: 'agents', label: 'Live WhatsApp & AI Agents', icon: Bot },
+    { id: 'docs', label: 'Pitch Deck & PPT Download', icon: FileText },
+    { id: 'talent', label: 'AI Talent & Verification', icon: UserCheck },
   ];
 
   return (
@@ -34,8 +33,8 @@ export default function Header({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* Brand Logo */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('search')}>
+          {/* Brand Logo - Clickable to Home */}
+          <div className="flex items-center space-x-3 cursor-pointer select-none" onClick={() => setActiveTab('search')}>
             <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-400 p-0.5 shadow-lg shadow-indigo-500/30">
               <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
                 <Zap className="w-5 h-5 text-cyan-400 animate-pulse" />
@@ -46,11 +45,12 @@ export default function Header({
                 <span className="font-extrabold text-xl tracking-tight text-white">
                   iNSIGHTS<span className="text-cyan-400">.copilot</span>
                 </span>
-                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 uppercase tracking-wider">
-                  Web & Mobile Suite
+                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase tracking-wider flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                  Live MongoDB
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">Search Less. Solve More. From Idea to Execution.</p>
+              <p className="text-[11px] text-slate-400 hidden sm:block">Search Less. Solve More. From Idea to Production.</p>
             </div>
           </div>
 
@@ -89,7 +89,7 @@ export default function Header({
               }`}
             >
               <Layout className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Dual View (Web + App)</span>
+              <span className="hidden md:inline">Dual View</span>
             </button>
           </div>
 
@@ -115,16 +115,16 @@ export default function Header({
             {/* Hackathon Win Mode Button */}
             <button
               onClick={triggerConfetti}
-              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 hover:from-amber-400 hover:to-yellow-300 transition shadow-md shadow-amber-500/20 active:scale-95"
+              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 hover:from-amber-400 hover:to-yellow-300 transition shadow-md shadow-amber-500/20 active:scale-95 cursor-pointer"
             >
               <Award className="w-4 h-4" />
-              <span className="hidden sm:inline">Hackathon Victory</span>
+              <span className="hidden sm:inline">Hackathon Win</span>
             </button>
           </div>
 
         </div>
 
-        {/* Tab Navigation */}
+        {/* Tab Navigation Bar */}
         <div className="flex space-x-1 overflow-x-auto py-2 scrollbar-none border-t border-slate-800/60">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -133,7 +133,7 @@ export default function Header({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
+                className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   isActive
                     ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/40'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
@@ -150,4 +150,3 @@ export default function Header({
     </header>
   );
 }
-
