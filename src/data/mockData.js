@@ -44,6 +44,7 @@ export const LANGUAGES = [
 
 export const DEFAULT_PROJECT_DATA = {
   "food-waste": {
+    id: "food-waste",
     title: "EcoMeal AI: Hostel Food Waste Management Engine",
     tagline: "Predictive meal consumption forecasting & real-time cafeteria tray audit using AI computer vision.",
     problemValidation: {
@@ -108,12 +109,12 @@ export const DEFAULT_PROJECT_DATA = {
       aiModels: ["YOLOv8 (Plate Segmentation)", "Prophet / XGBoost (Demand Forecast)", "Llama-3-8B (Chef Insights)"],
       apis: ["Weather API (Rainfall impact on attendance)", "WhatsApp Business API (Student RSVP bot)"],
       nodes: [
-        { id: "1", label: "RGB Camera / IoT Scale", type: "Input Layer", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500" },
-        { id: "2", label: "YOLOv8 Plate Segmentation Engine", type: "AI Model", color: "bg-purple-500/20 text-purple-300 border-purple-500" },
-        { id: "3", label: "Prophet Attendance Forecaster", type: "AI Model", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500" },
-        { id: "4", label: "FastAPI Central Dispatch Engine", type: "Backend", color: "bg-blue-500/20 text-blue-300 border-blue-500" },
-        { id: "5", label: "PostgreSQL & TimescaleDB", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500" },
-        { id: "6", label: "Chef Alert Dashboard & WhatsApp Bot", type: "Action Layer", color: "bg-amber-500/20 text-amber-300 border-amber-500" }
+        { id: "1", label: "RGB Camera / IoT Scale", type: "Input Layer", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500", detail: "Overhead 1080p camera capturing trays and weight load cell scales." },
+        { id: "2", label: "YOLOv8 Plate Segmentation Engine", type: "AI Model", color: "bg-purple-500/20 text-purple-300 border-purple-500", detail: "Executes image segmentation to detect food surface area and volume percentage." },
+        { id: "3", label: "Prophet Attendance Forecaster", type: "AI Model", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500", detail: "Timeseries engine projecting headcount based on timetable and weather." },
+        { id: "4", label: "FastAPI Central Dispatch Engine", type: "Backend", color: "bg-blue-500/20 text-blue-300 border-blue-500", detail: "REST & WebSocket endpoints handling real-time kitchen batching alerts." },
+        { id: "5", label: "PostgreSQL & TimescaleDB", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500", detail: "Stores daily consumption logs, batch history, and inventory metrics." },
+        { id: "6", label: "Chef Alert Dashboard & WhatsApp Bot", type: "Action Layer", color: "bg-amber-500/20 text-amber-300 border-amber-500", detail: "Sends automated WhatsApp nudges to kitchen staff before meal prep hours." }
       ]
     },
     roadmap: [
@@ -136,6 +137,80 @@ export const DEFAULT_PROJECT_DATA = {
       { agent: "Architecture Agent", avatar: "🏗️", text: "Designed PostgreSQL schema for daily mess logs and Redis pub/sub queue for peak meal hours." },
       { agent: "Code Copilot Agent", avatar: "🤖", text: "Generated FastAPI inference script for YOLOv8 model serving with Docker support." },
       { agent: "WhatsApp Bot Agent", avatar: "📱", text: "Configured student meal opt-out workflow via WhatsApp: 'Reply 1 to skip dinner tonight'." }
+    ]
+  },
+  "smart-health": {
+    id: "smart-health",
+    title: "RuralCare AI: Offline-First Tele-triage Scanner",
+    tagline: "Voice & skin lesion screening engine built for low-bandwidth rural health clinics.",
+    problemValidation: {
+      marketGap: "Over 60% of rural clinics lack specialized diagnostic doctors and stable internet connectivity.",
+      feasibilityScore: 94,
+      innovationScore: 97,
+      impactScore: 98,
+      targetUsers: ["Rural Healthcare Workers", "NGO Medical Volunteers", "District Health Officers"],
+      keyPainPoints: [
+        "Zero internet access in remote primary health centers.",
+        "Delayed early symptom diagnosis leading to preventable complications.",
+        "Language barriers in communicating medical symptoms."
+      ]
+    },
+    deepSearch: {
+      summary: "Synthesized 34 medical AI papers from PubMed & arXiv, 18 open-source diagnostic datasets, and Edge-AI mobile models.",
+      sourcesCount: 52,
+      citations: [
+        {
+          title: "Quantized MobileNetV3 for On-Device Dermatological Screening in Low-Resource Settings",
+          authors: "Gupta et al. (2025)",
+          venue: "Lancet Digital Health",
+          url: "https://arxiv.org/abs/2305.11029",
+          type: "Paper",
+          snippet: "Quantized 8-bit model achieves 96.1% diagnostic sensitivity running locally on $80 Android smartphones."
+        },
+        {
+          title: "Offline Voice Acoustic Biomarkers for Respiratory Illness",
+          authors: "Chen et al. (2024)",
+          venue: "IEEE Transactions on Biomedical Engineering",
+          url: "https://arxiv.org/abs/2311.04210",
+          type: "Paper",
+          snippet: "Extracts spectral features from cough audio clips to screen respiratory anomalies offline."
+        }
+      ]
+    },
+    existingSolutions: [
+      { name: "Paper-based Health Logs", pros: "Works anywhere", cons: "No diagnostic intelligence or triage urgency scoring", status: "Outdated" },
+      { name: "Cloud Telemedicine Apps", pros: "Doctor video calls", cons: "Requires high-speed 4G/5G, fails in remote clinics", status: "Partial" },
+      { name: "RuralCare AI Scanner", pros: "Offline MobileNetV3 + Voice Biomarkers + SQLite local store", cons: "Requires camera lens calibration", status: "Optimal" }
+    ],
+    architecture: {
+      frontend: "React Native / Expo + SQLite + Offline PWA",
+      backend: "FastAPI Sync Server (Triggers when internet connects)",
+      database: "SQLite (Local) + PostgreSQL (Cloud Vault)",
+      aiModels: ["MobileNetV3 (Skin Lesion Classifier)", "Whisper-Tiny (Offline Voice Transcriber)"],
+      apis: ["District Health Registry API", "SMS Gateway for Critical Alerts"],
+      nodes: [
+        { id: "1", label: "Mobile Camera & Microphone", type: "Input Layer", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500", detail: "Captures skin images and cough audio." },
+        { id: "2", label: "Quantized MobileNetV3 Engine", type: "AI Model", color: "bg-purple-500/20 text-purple-300 border-purple-500", detail: "On-device TFLite model running sub-200ms inference." },
+        { id: "3", label: "SQLite Local Cache", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500", detail: "Encrypted local patient log synced when back online." },
+        { id: "4", label: "SMS Urgency Alert Gateway", type: "Action Layer", color: "bg-amber-500/20 text-amber-300 border-amber-500", detail: "Dispatches emergency SMS to district hospital doctors." }
+      ]
+    },
+    roadmap: [
+      { phase: "Phase 1 (Week 1-2)", title: "TFLite Model Quantization", task: "Convert MobileNetV3 model to TFLite 8-bit format for Android performance." },
+      { phase: "Phase 2 (Week 3-4)", title: "Offline PWA & SQLite Sync", task: "Implement offline service worker cache and background sync manager." },
+      { phase: "Phase 3 (Week 5-6)", title: "Voice Biomarker Integration", task: "Integrate Whisper-Tiny for multi-lingual audio intake." },
+      { phase: "Phase 4 (Week 7-8)", title: "District Clinic Field Test", task: "Deploy test build to 3 rural health centers." }
+    ],
+    datasets: [
+      { name: "DermNet Skin Lesion 25K", size: "3.1 GB", link: "https://kaggle.com", license: "CC-BY-NC" }
+    ],
+    githubRepos: [
+      { name: "tensorflow/tflite-support", stars: "32.1k", description: "Mobile machine learning execution runtime." }
+    ],
+    agentWorkflows: [
+      { agent: "Research Agent", avatar: "🔍", text: "Verified 52 clinical trial citations for on-device diagnostic accuracy." },
+      { agent: "Architecture Agent", avatar: "🏗️", text: "Configured offline PWA service worker with background sync fallback." },
+      { agent: "Code Copilot Agent", avatar: "🤖", text: "Generated TFLite React Native wrapper code for Android." }
     ]
   }
 };

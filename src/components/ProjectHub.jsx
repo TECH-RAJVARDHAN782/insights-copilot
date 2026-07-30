@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, ExternalLink, Layers, Sparkles, Terminal } from 'lucide-react';
+import { Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, ExternalLink, Layers, Sparkles, Terminal, Copy, Check } from 'lucide-react';
 
 export default function ProjectHub({ projectData }) {
   const [completedRoadmap, setCompletedRoadmap] = useState([0]); // Phase 1 checked by default
   const [selectedNode, setSelectedNode] = useState(null);
+  const [activeCodeTab, setActiveCodeTab] = useState('fastapi'); // 'fastapi' | 'docker' | 'schema'
+  const [copiedCode, setCopiedCode] = useState(false);
 
   if (!projectData) {
     return (
@@ -25,6 +27,66 @@ export default function ProjectHub({ projectData }) {
 
   const { architecture, roadmap, datasets, githubRepos } = projectData;
 
+  const codeBoilerplates = {
+    fastapi: `# FastAPI Central Orchestrator for ${projectData.title}
+from fastapi import FastAPI, BackgroundTasks, HTTPException
+from pydantic import BaseModel
+import uvicorn
+
+app = FastAPI(title="${projectData.title} API", version="1.0.0")
+
+class InferenceRequest(BaseModel):
+    sensor_id: str
+    payload: dict
+
+@app.get("/health")
+def health_check():
+    return {"status": "online", "model_version": "v2.4", "feasibility": ${projectData.problemValidation.feasibilityScore}}
+
+@app.post("/api/v1/inference")
+async def run_inference(request: InferenceRequest, bg_tasks: BackgroundTasks):
+    # Triggers YOLOv8 segmentation or forecasting pipeline
+    return {
+        "status": "success",
+        "processed_id": request.sensor_id,
+        "recommendation": "Batch meal prep reduced by 18%",
+        "latency_ms": 32
+    }
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)`,
+
+    docker: `# Multi-stage Dockerfile for ${projectData.title}
+FROM python:3.11-slim as builder
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`,
+
+    schema: `-- PostgreSQL Database Schema for ${projectData.title}
+CREATE TABLE IF NOT EXISTS daily_logs (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    sensor_id VARCHAR(50) NOT NULL,
+    waste_weight_kg NUMERIC(6,2),
+    attendance_headcount INT,
+    ai_confidence NUMERIC(4,2)
+);
+
+CREATE INDEX idx_logs_timestamp ON daily_logs(timestamp);`
+  };
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(codeBoilerplates[activeCodeTab]);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
   return (
     <div className="space-y-8 animate-fadeIn">
       
@@ -38,7 +100,7 @@ export default function ProjectHub({ projectData }) {
           System Architecture & Execution Roadmap
         </h2>
         <p className="text-slate-300 text-sm">
-          Auto-generated technology blueprint, data flow diagrams, API specifications, and phased sprint tasks.
+          Auto-generated technology blueprint, data flow diagrams, API specifications, and ready-to-run code starter boilerplates.
         </p>
       </div>
 
@@ -72,7 +134,7 @@ export default function ProjectHub({ projectData }) {
                 </div>
                 <h4 className="text-sm font-bold text-white mb-1">{node.label}</h4>
                 <p className="text-[11px] text-slate-300 flex items-center space-x-1">
-                  <span>Data Flow Link</span>
+                  <span>Inspect Pipeline Data</span>
                   <ArrowRight className="w-3 h-3 text-cyan-400" />
                 </p>
               </div>
@@ -90,9 +152,62 @@ export default function ProjectHub({ projectData }) {
             <p className="text-slate-300">
               Type: <strong className="text-white">{selectedNode.type}</strong> | Latency SLA: <strong className="text-emerald-400">&lt; 45ms</strong> | Protocols: REST / gRPC / PubSub.
             </p>
+            {selectedNode.detail && (
+              <p className="text-slate-400 italic bg-slate-950 p-2.5 rounded border border-slate-800">
+                "{selectedNode.detail}"
+              </p>
+            )}
           </div>
         )}
 
+      </div>
+
+      {/* Code Boilerplate Exporter */}
+      <div className="glass-panel p-6 rounded-2xl space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div>
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <Code className="w-5 h-5 text-indigo-400" />
+              Auto-Generated Code Starter Boilerplate
+            </h3>
+            <p className="text-xs text-slate-400">Copy or download production-ready code to kickstart your hackathon repository.</p>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <div className="flex bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
+              <button
+                onClick={() => setActiveCodeTab('fastapi')}
+                className={`px-3 py-1 rounded font-semibold transition ${activeCodeTab === 'fastapi' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}
+              >
+                main.py
+              </button>
+              <button
+                onClick={() => setActiveCodeTab('docker')}
+                className={`px-3 py-1 rounded font-semibold transition ${activeCodeTab === 'docker' ? 'bg-purple-600 text-white' : 'text-slate-400'}`}
+              >
+                Dockerfile
+              </button>
+              <button
+                onClick={() => setActiveCodeTab('schema')}
+                className={`px-3 py-1 rounded font-semibold transition ${activeCodeTab === 'schema' ? 'bg-emerald-600 text-white' : 'text-slate-400'}`}
+              >
+                schema.sql
+              </button>
+            </div>
+
+            <button
+              onClick={handleCopyCode}
+              className="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 transition"
+            >
+              {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copiedCode ? "Copied!" : "Copy Code"}</span>
+            </button>
+          </div>
+        </div>
+
+        <pre className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-cyan-300 font-mono overflow-x-auto leading-relaxed">
+          <code>{codeBoilerplates[activeCodeTab]}</code>
+        </pre>
       </div>
 
       {/* Tech Stack Matrix & API Dependencies */}
