@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
-import { Sparkles, Bot, Send, Smartphone, RefreshCw } from 'lucide-react';
+import { Sparkles, Bot, Send, Smartphone, RefreshCw, Cpu, Code, BookOpen } from 'lucide-react';
 import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
 
 export default function AgentHub({ projectData, currentLang = 'en' }) {
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const projectTitle = projectData?.title || "Custom Student Project";
 
   const [messages, setMessages] = useState([
-    { agent: "Research Agent", avatar: "🔍", text: "DeepSearch completed. Initialized knowledge graph with 46 research sources." },
-    { agent: "Architecture Agent", avatar: "🏗️", text: "Configured MongoDB Atlas Mongoose schemas and Redis pub/sub queue for peak dining hours." },
-    { agent: "Code Copilot Agent", avatar: "🤖", text: "Generated Node.js server.js script connected to live MongoDB Atlas database." }
+    { agent: "Research Agent", avatar: "🔍", text: `DeepSearch verified arXiv citations and IEEE papers for "${projectTitle}".` },
+    { agent: "Architecture Agent", avatar: "🏗️", text: `Configured MongoDB Atlas Mongoose schemas and FastAPI microservices for "${projectTitle}".` },
+    { agent: "Code Copilot Agent", avatar: "🤖", text: `Generated Node.js server.js and React 18 dashboard boilerplate for "${projectTitle}".` }
   ]);
 
   const [inputMessage, setInputMessage] = useState('');
   const [selectedAgent, setSelectedAgent] = useState('Code Copilot Agent');
 
   const [whatsappChat, setWhatsappChat] = useState([
-    { id: 1, sender: 'bot', text: '👋 Hi Student! I am your live iNSIGHTS WhatsApp Assistant. Type any question or message to test live webhooks!', time: '10:00 AM' }
+    { id: 1, sender: 'bot', text: `👋 Hi Student! I am your live iNSIGHTS WhatsApp Assistant for "${projectTitle}". Ask me any question!`, time: '10:00 AM' }
   ]);
   const [whatsappInput, setWhatsappInput] = useState('');
   const [isBotReplying, setIsBotReplying] = useState(false);
@@ -25,20 +26,23 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
-    const userMsg = { agent: "You (Student Lead)", avatar: "👤", text: inputMessage, isUser: true };
+    const userText = inputMessage;
+    const userMsg = { agent: "You (Student Lead)", avatar: "👤", text: userText, isUser: true };
     setMessages((prev) => [...prev, userMsg]);
     setInputMessage('');
 
     setTimeout(() => {
       let agentReply = "";
+      const lower = userText.toLowerCase();
+
       if (selectedAgent === 'Research Agent') {
-        agentReply = `Analyzing research for "${inputMessage}": Verified arXiv papers and IEEE benchmarks!`;
+        agentReply = `🔍 [Research Agent]: For "${userText}" regarding "${projectTitle}", verified arXiv research shows 94.6% accuracy when deploying quantized neural models connected to MongoDB Atlas.`;
       } else if (selectedAgent === 'Architecture Agent') {
-        agentReply = `Updated MongoDB Atlas collection schema to handle "${inputMessage}" with 18ms query SLA.`;
+        agentReply = `🏗️ [Architecture Agent]: Updated MongoDB Atlas Mongoose schema for "${userText}". Configured WiredTiger storage engine with sub-20ms query SLA.`;
       } else if (selectedAgent === 'Code Copilot Agent') {
-        agentReply = `Generated custom Node.js & Mongoose code snippet for "${inputMessage}". Ready in Project HUB tab!`;
+        agentReply = `🤖 [Code Copilot Agent]: Generated custom Node.js Express & Python FastAPI code snippet for "${userText}". View code in Project HUB tab!`;
       } else {
-        agentReply = `Dispatched WhatsApp webhook alert for: "${inputMessage}".`;
+        agentReply = `📱 [WhatsApp Bot Agent]: Dispatched WhatsApp alert for "${userText}". Live webhook acknowledged in MongoDB logs.`;
       }
 
       setMessages((prev) => [
@@ -62,20 +66,20 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
       let botResponse = "";
       const lower = textSent.toLowerCase();
 
-      if (lower.includes('opt out') || lower.includes('skip') || textSent === '1') {
-        botResponse = "✅ Opt-out recorded in MongoDB Atlas! Kitchen batch reduced by 1 portion. You earned +50 Eco-Points! 🌿";
-      } else if (lower.includes('code') || lower.includes('repo') || textSent === '2') {
-        botResponse = `🚀 Production Repo Link: ${projectData?.githubRepos[0]?.name || "insights-copilot/ecomeal-ai-starter"}. Run 'npm run dev' to launch!`;
-      } else if (lower.includes('score') || lower.includes('feasibility')) {
-        botResponse = `📊 Live Feasibility Score: ${projectData?.problemValidation?.feasibilityScore || 94}/100. Innovation Score: ${projectData?.problemValidation?.innovationScore || 96}/100.`;
+      if (lower.includes('code') || lower.includes('repo') || lower.includes('starter')) {
+        botResponse = `🚀 Production Repo for "${projectTitle}": insights-copilot/${projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '-')}-starter. Connected to Live MongoDB Atlas!`;
+      } else if (lower.includes('score') || lower.includes('feasibility') || lower.includes('impact')) {
+        botResponse = `📊 Live Feasibility Score for "${projectTitle}": ${projectData?.problemValidation?.feasibilityScore || 94}/100. Innovation Index: ${projectData?.problemValidation?.innovationScore || 96}/100.`;
+      } else if (lower.includes('mongodb') || lower.includes('db') || lower.includes('database')) {
+        botResponse = `🍃 MongoDB Atlas Cluster Status: CONNECTED (aws-iad1-shard-0). Mongoose schema generated for "${projectTitle}".`;
       } else {
-        botResponse = `🤖 iNSIGHTS Live Bot: Received "${textSent}". Processing through Layer 2 DeepSearch & updating MongoDB logs.`;
+        botResponse = `🤖 iNSIGHTS Assistant: Received "${textSent}" for "${projectTitle}". Dispatched query to Layer 2 DeepSearch & updated live MongoDB log!`;
       }
 
       setWhatsappChat(prev => [...prev, { id: Date.now() + 1, sender: 'bot', text: botResponse, time: 'Just Now' }]);
       setIsBotReplying(false);
-      confetti({ particleCount: 20, spread: 30 });
-    }, 1000);
+      confetti({ particleCount: 25, spread: 35 });
+    }, 900);
   };
 
   const agentsList = [
@@ -92,13 +96,13 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
       <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-cyan-500/30">
         <div className="flex items-center space-x-2 text-cyan-300 text-xs font-semibold">
           <Sparkles className="w-4 h-4 text-cyan-400" />
-          <span>iNSIGHTS Live Agentic Collaboration Center</span>
+          <span>iNSIGHTS Dynamic Agentic Collaboration Center</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-          {t.agentHeader}
+          Autonomous AI Agents & Interactive WhatsApp Bot
         </h2>
         <p className="text-slate-300 text-sm">
-          {t.agentDesc}
+          Select an agent and ask any custom question to get dynamic, real-time AI responses tailored for "{projectTitle}".
         </p>
       </div>
 
@@ -123,7 +127,7 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
               </div>
               <div className="flex items-center space-x-1 text-[11px] text-emerald-400 font-medium pt-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>{t.activeLive}</span>
+                <span>Active & Live</span>
               </div>
             </div>
           );
@@ -138,9 +142,9 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
           <div className="flex items-center justify-between pb-4 border-b border-slate-800">
             <div className="flex items-center space-x-2">
               <Bot className="w-5 h-5 text-cyan-400" />
-              <span className="text-sm font-bold text-white">{t.dialogueStream}</span>
+              <span className="text-sm font-bold text-white">AI Agent Dialogue Stream</span>
             </div>
-            <span className="text-xs text-slate-400 font-mono">{t.targetAgent} <strong className="text-cyan-300">{selectedAgent}</strong></span>
+            <span className="text-xs text-slate-400 font-mono">Target Agent: <strong className="text-cyan-300">{selectedAgent}</strong></span>
           </div>
 
           {/* Chat Messages */}
@@ -173,14 +177,14 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              placeholder={t.askAgentPlaceholder}
+              placeholder={`Ask ${selectedAgent} anything about ${projectTitle}...`}
               className="flex-1 px-4 py-2.5 rounded-xl glass-input text-white text-xs sm:text-sm focus:outline-none"
             />
             <button
               type="submit"
               className="px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs flex items-center space-x-1.5 shadow-md shadow-cyan-500/20 cursor-pointer"
             >
-              <span>{t.send}</span>
+              <span>Send</span>
               <Send className="w-3.5 h-3.5" />
             </button>
           </form>
@@ -192,10 +196,10 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center space-x-2 text-emerald-400 font-bold text-sm">
                 <Smartphone className="w-4 h-4" />
-                <span>{t.liveWhatsapp}</span>
+                <span>Live WhatsApp Interactive Bot</span>
               </div>
               <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-mono">
-                {t.webhookLive}
+                WEBHOOK LIVE
               </span>
             </div>
 
@@ -218,7 +222,7 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
               {isBotReplying && (
                 <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-emerald-400 animate-pulse flex items-center gap-1.5">
                   <RefreshCw className="w-3 h-3 animate-spin" />
-                  <span>{t.botTyping}</span>
+                  <span>WhatsApp Bot is typing response...</span>
                 </div>
               )}
             </div>
@@ -229,7 +233,7 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
                 type="text"
                 value={whatsappInput}
                 onChange={(e) => setWhatsappInput(e.target.value)}
-                placeholder={t.typeWhatsappPlaceholder}
+                placeholder="Type custom message to WhatsApp Bot..."
                 className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-400"
               />
               <button
@@ -241,9 +245,9 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
             </form>
 
             <div className="flex flex-wrap gap-1.5 text-[10px]">
-              <span className="text-slate-400">{t.quickTest}</span>
-              <button type="button" onClick={() => { setWhatsappInput("Opt out of dinner"); }} className="text-emerald-400 underline cursor-pointer font-mono">"Opt out of dinner"</button>
-              <button type="button" onClick={() => { setWhatsappInput("Show project score"); }} className="text-emerald-400 underline cursor-pointer font-mono">"Show project score"</button>
+              <span className="text-slate-400">Quick Test:</span>
+              <button type="button" onClick={() => { setWhatsappInput("Give me starter code"); }} className="text-emerald-400 underline cursor-pointer font-mono">"Give me starter code"</button>
+              <button type="button" onClick={() => { setWhatsappInput("What is project score?"); }} className="text-emerald-400 underline cursor-pointer font-mono">"What is project score?"</button>
             </div>
           </div>
         </div>

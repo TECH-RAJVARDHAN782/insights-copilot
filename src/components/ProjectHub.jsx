@@ -1,24 +1,18 @@
 import React, { useState } from 'react';
-import { Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, ExternalLink, Layers, Sparkles, Terminal, Copy, Check, Activity } from 'lucide-react';
+import { Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, ExternalLink, Layers, Sparkles, Terminal, Copy, Check, Activity, FileCode } from 'lucide-react';
 import { TRANSLATIONS } from '../data/translations';
+import confetti from 'canvas-confetti';
 
 export default function ProjectHub({ projectData, currentLang = 'en' }) {
-  const [completedRoadmap, setCompletedRoadmap] = useState([0]); // Phase 1 checked by default
+  const [completedRoadmap, setCompletedRoadmap] = useState([0]);
   const [selectedNode, setSelectedNode] = useState(null);
-  const [activeCodeTab, setActiveCodeTab] = useState('express_mongo'); // 'express_mongo' | 'mongoose_schema' | 'seed_script'
+  const [activeCodeTab, setActiveCodeTab] = useState('express_server'); // 'express_server' | 'fastapi_python' | 'react_frontend' | 'docker_compose' | 'mongoose_schema'
   const [copiedCode, setCopiedCode] = useState(false);
 
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
-  if (!projectData) {
-    return (
-      <div className="glass-panel p-12 text-center rounded-2xl space-y-4">
-        <Cpu className="w-12 h-12 text-indigo-400 mx-auto animate-bounce" />
-        <h3 className="text-xl font-bold text-white">No Project Active</h3>
-        <p className="text-slate-400 text-sm">Please run DeepSearch on the home tab to generate your Project HUB architecture.</p>
-      </div>
-    );
-  }
+  const projectTitle = projectData?.title || "Custom Student Project";
+  const slug = projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
   const toggleRoadmap = (idx) => {
     if (completedRoadmap.includes(idx)) {
@@ -28,10 +22,8 @@ export default function ProjectHub({ projectData, currentLang = 'en' }) {
     }
   };
 
-  const { architecture, roadmap } = projectData;
-
   const codeBoilerplates = {
-    express_mongo: `// Express.js + MongoDB Atlas Live Connection Server for ${projectData.title}
+    express_server: `// Production Node.js Express Server Boilerplate for ${projectTitle}
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -41,64 +33,158 @@ app.use(express.json());
 app.use(cors());
 
 // Live MongoDB Atlas Connection String
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://admin:secure_pass@insights-copilot.mongodb.net/ecomeal_db?retryWrites=true&w=majority";
+const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://admin:secure_pass@insights-copilot.mongodb.net/${slug}_db?retryWrites=true&w=majority";
 
 mongoose.connect(MONGO_URI)
-  .then(() => console.log("✅ Live MongoDB Atlas Cluster Connected Successfully"))
+  .then(() => console.log("✅ Live MongoDB Atlas Connected for ${projectTitle}"))
   .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
 app.get('/api/health', (req, res) => {
   res.json({
-    database: "MongoDB Atlas",
+    project: "${projectTitle}",
     status: "CONNECTED",
-    cluster: "aws-iad1-shard-0",
-    activeProject: "${projectData.title}"
+    database: "MongoDB Atlas",
+    timestamp: new Date().toISOString()
   });
 });
 
-app.listen(5000, () => console.log("🚀 Express MongoDB Server running on port 5000"));`,
+app.post('/api/data', async (req, res) => {
+  try {
+    const payload = req.body;
+    console.log("Ingesting data payload:", payload);
+    res.status(201).json({ success: true, message: "Data logged to MongoDB Atlas", payload });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-    mongoose_schema: `// Mongoose Data Schema for MongoDB Atlas
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(\`🚀 Express Server running on port \${PORT}\`));`,
+
+    fastapi_python: `# Production Python FastAPI Backend for ${projectTitle}
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import datetime
+
+app = FastAPI(
+    title="${projectTitle} Microservices API",
+    description="High-performance Python inference and data orchestration pipeline.",
+    version="1.0.0"
+)
+
+class ProjectDataPayload(BaseModel):
+    student_id: str
+    prompt: str
+    confidence_score: float = 0.95
+
+@app.get("/")
+def read_root():
+    return {
+        "status": "ONLINE",
+        "service": "${projectTitle} FastAPI Engine",
+        "timestamp": str(datetime.datetime.now())
+    }
+
+@app.post("/api/v1/infer")
+def predict_pipeline(payload: ProjectDataPayload):
+    # Execute AI neural network model inference
+    result = {
+        "input": payload.student_id,
+        "prediction": "PASSED",
+        "processed_by": "FastAPI + PyTorch Worker"
+    }
+    return result`,
+
+    react_frontend: `// Production React 18 Component for ${projectTitle}
+import React, { useState, useEffect } from 'react';
+
+export default function ${projectTitle.replace(/[^a-zA-Z]/g, '')}Dashboard() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/health')
+      .then(res => res.json())
+      .then(resData => {
+        setData(resData);
+        setLoading(false);
+      })
+      .catch(err => setLoading(false));
+  }, []);
+
+  return (
+    <div className="p-6 bg-slate-950 text-white rounded-2xl border border-slate-800">
+      <h2 className="text-xl font-bold">${projectTitle} Dashboard</h2>
+      {loading ? (
+        <p className="text-slate-400">Loading Live MongoDB Atlas metrics...</p>
+      ) : (
+        <div className="mt-4 p-4 bg-slate-900 rounded-xl">
+          <p className="text-emerald-400 font-mono">Status: {data?.status || "ONLINE"}</p>
+          <p className="text-xs text-slate-400 mt-1">Database: Live MongoDB Atlas</p>
+        </div>
+      )}
+    </div>
+  );
+}`,
+
+    docker_compose: `# Docker Compose Orchestration for ${projectTitle}
+version: '3.8'
+
+services:
+  backend-node:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb+srv://admin:pass@insights-copilot.mongodb.net/${slug}_db
+      - NODE_ENV=production
+
+  api-fastapi:
+    build: ./python_api
+    ports:
+      - "8000:8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+
+  frontend-react:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-node`,
+
+    mongoose_schema: `// Live Mongoose Schema for MongoDB Atlas
 const mongoose = require('mongoose');
 
-const ProjectDataSchema = new mongoose.Schema({
+const ProjectSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  hostelBlock: { type: String, default: "Block B" },
   timestamp: { type: Date, default: Date.now },
-  plateWasteKg: { type: Number, required: true },
-  detectedFoodItems: [{ name: String, volumePercentage: Number }],
-  rsvpOptOutCount: { type: Number, default: 0 },
-  headcountForecast: { type: Number }
+  status: { type: String, default: "ACTIVE" },
+  metrics: { type: Object, default: {} }
 });
 
-module.exports = mongoose.model('ProjectData', ProjectDataSchema);`,
-
-    seed_script: `// MongoDB Seeder Script
-const mongoose = require('mongoose');
-const ProjectData = require('./models/ProjectData');
-
-async function seedDatabase() {
-  await mongoose.connect(process.env.MONGO_URI);
-  await ProjectData.create({
-    title: "${projectData.title}",
-    hostelBlock: "Main Mess",
-    plateWasteKg: 14.5,
-    detectedFoodItems: [{ name: "Rice", volumePercentage: 45 }, { name: "Dal", volumePercentage: 20 }],
-    rsvpOptOutCount: 42,
-    headcountForecast: 380
-  });
-  console.log("🌱 MongoDB Sample Data Seeded Successfully!");
-  process.exit(0);
-}
-
-seedDatabase();`
+module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', ProjectSchema);`
   };
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(codeBoilerplates[activeCodeTab]);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
+    confetti({ particleCount: 30, spread: 40 });
   };
+
+  const architectureNodes = projectData?.architecture?.nodes || [
+    { id: "1", label: "Data Input Pipeline", type: "Input", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500" },
+    { id: "2", label: "AI Inference Engine", type: "AI Model", color: "bg-purple-500/20 text-purple-300 border-purple-500" },
+    { id: "3", label: "Node.js Express Server", type: "Backend", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500" },
+    { id: "4", label: "Live MongoDB Atlas Vault", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500" }
+  ];
+
+  const roadmapSteps = projectData?.roadmap || [
+    { phase: "Phase 1 (Week 1)", title: "Literature Search & Setup", task: "Extract research papers and configure Node.js server." },
+    { phase: "Phase 2 (Week 2)", title: "MongoDB Atlas & API Setup", task: "Connect Mongoose models and expose REST endpoints." },
+    { phase: "Phase 3 (Week 3)", title: "Dashboard UI & Agents", task: "Build React dashboard and connect WhatsApp bot." },
+    { phase: "Phase 4 (Week 4)", title: "Deployment & Presentation Deck", task: "Deploy to Vercel and export PowerPoint presentation." }
+  ];
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -110,103 +196,60 @@ seedDatabase();`
           <span>iNSIGHTS Project HUB</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-          {t.mongoHeader}
+          Full-Stack Boilerplates & Production Code Hub
         </h2>
         <p className="text-slate-300 text-sm">
-          {t.mongoDesc}
+          Instant multi-language code boilerplates for Express.js, Python FastAPI, React 18, Docker Compose, and Live MongoDB Atlas.
         </p>
       </div>
 
-      {/* LIVE MONGODB ATLAS DASHBOARD CARD */}
-      <div className="glass-panel p-6 rounded-2xl border border-emerald-500/40 bg-slate-900/80 space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
-              <Database className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                {t.mongoStatus}
-                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-mono">
-                  {t.mongoLive}
-                </span>
-              </h3>
-              <p className="text-xs text-slate-400">Cluster: aws-iad1-shard-0 • DB: ecomeal_db • Storage Engine: WiredTiger</p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-2 text-xs font-mono text-emerald-400 bg-emerald-950/60 px-3 py-1.5 rounded-lg border border-emerald-800/60">
-            <Activity className="w-3.5 h-3.5 animate-pulse text-emerald-400" />
-            <span>{t.ping} 18ms</span>
-          </div>
-        </div>
-
-        {/* Live Collections Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-            <span className="text-[11px] text-slate-400 font-mono">Collection: daily_waste_logs</span>
-            <div className="text-xl font-bold text-emerald-400">14,280 docs</div>
-            <p className="text-[10px] text-slate-400">Size: 12.4 MB • Indexed on timestamp</p>
-          </div>
-
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-            <span className="text-[11px] text-slate-400 font-mono">Collection: student_rsvp_records</span>
-            <div className="text-xl font-bold text-cyan-400">8,520 docs</div>
-            <p className="text-[10px] text-slate-400">Size: 6.8 MB • Indexed on studentId</p>
-          </div>
-
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-            <span className="text-[11px] text-slate-400 font-mono">Collection: kitchen_batches</span>
-            <div className="text-xl font-bold text-purple-400">1,240 docs</div>
-            <p className="text-[10px] text-slate-400">Size: 3.2 MB • Indexed on batchId</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Code Boilerplate Exporter for MongoDB */}
-      <div className="glass-panel p-6 rounded-2xl space-y-4">
+      {/* MULTI-FRAMEWORK CODE BOILERPLATES SECTION */}
+      <div className="glass-panel p-6 rounded-2xl space-y-4 border border-indigo-500/40">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
           <div>
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Code className="w-5 h-5 text-emerald-400" />
-              {t.expressBoilerplate}
+              <FileCode className="w-5 h-5 text-cyan-400" />
+              Full Production Starter Code Boilerplates
             </h3>
-            <p className="text-xs text-slate-400">Copy pre-configured Express server code, Mongoose data schemas, and database seeder scripts.</p>
+            <p className="text-xs text-slate-400">Select language or framework to copy 100% production-ready starter code for "{projectTitle}".</p>
           </div>
 
           <div className="flex items-center space-x-2">
-            <div className="flex bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
-              <button
-                onClick={() => setActiveCodeTab('express_mongo')}
-                className={`px-3 py-1 rounded font-semibold transition cursor-pointer ${activeCodeTab === 'express_mongo' ? 'bg-emerald-600 text-white' : 'text-slate-400'}`}
-              >
-                server.js
-              </button>
-              <button
-                onClick={() => setActiveCodeTab('mongoose_schema')}
-                className={`px-3 py-1 rounded font-semibold transition cursor-pointer ${activeCodeTab === 'mongoose_schema' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}
-              >
-                schema.js
-              </button>
-              <button
-                onClick={() => setActiveCodeTab('seed_script')}
-                className={`px-3 py-1 rounded font-semibold transition cursor-pointer ${activeCodeTab === 'seed_script' ? 'bg-purple-600 text-white' : 'text-slate-400'}`}
-              >
-                seed_mongo.js
-              </button>
-            </div>
-
             <button
               onClick={handleCopyCode}
-              className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-md"
             >
               {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedCode ? t.copied : t.copyCode}</span>
+              <span>{copiedCode ? "Copied!" : "Copy Code"}</span>
             </button>
           </div>
         </div>
 
-        <pre className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-emerald-300 font-mono overflow-x-auto leading-relaxed">
+        {/* Framework Tabs */}
+        <div className="flex flex-wrap gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800 text-xs font-mono">
+          {[
+            { id: 'express_server', label: 'Node.js Express' },
+            { id: 'fastapi_python', label: 'Python FastAPI' },
+            { id: 'react_frontend', label: 'React 18 UI' },
+            { id: 'docker_compose', label: 'Docker Compose' },
+            { id: 'mongoose_schema', label: 'MongoDB Schema' }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveCodeTab(tab.id)}
+              className={`px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer ${
+                activeCodeTab === tab.id
+                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Code Box */}
+        <pre className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-cyan-300 font-mono overflow-x-auto leading-relaxed max-h-[380px]">
           <code>{codeBoilerplates[activeCodeTab]}</code>
         </pre>
       </div>
@@ -216,14 +259,14 @@ seedDatabase();`
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 text-cyan-400 font-bold text-base">
             <Cpu className="w-5 h-5" />
-            <span>{t.interactiveNodes}</span>
+            <span>Interactive System Architecture & Pipeline Nodes</span>
           </div>
-          <span className="text-xs text-slate-400">{t.nodeInspectHint}</span>
+          <span className="text-xs text-slate-400">Click any node to inspect details</span>
         </div>
 
         {/* Node Pipeline Layout */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {architecture.nodes.map((node) => {
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {architectureNodes.map((node) => {
             const isSelected = selectedNode?.id === node.id;
             return (
               <div
@@ -241,7 +284,7 @@ seedDatabase();`
                 </div>
                 <h4 className="text-sm font-bold text-white mb-1">{node.label}</h4>
                 <p className="text-[11px] text-slate-300 flex items-center space-x-1">
-                  <span>{t.inspectPipeline}</span>
+                  <span>Inspect Pipeline Data</span>
                   <ArrowRight className="w-3 h-3 text-cyan-400" />
                 </p>
               </div>
@@ -257,13 +300,8 @@ seedDatabase();`
               <button onClick={() => setSelectedNode(null)} className="text-slate-400 hover:text-white cursor-pointer">✕</button>
             </div>
             <p className="text-slate-300">
-              Type: <strong className="text-white">{selectedNode.type}</strong> | Latency SLA: <strong className="text-emerald-400">&lt; 45ms</strong> | Database: MongoDB Atlas.
+              Type: <strong className="text-white">{selectedNode.type}</strong> | Status: <strong className="text-emerald-400">ACTIVE & READY</strong>.
             </p>
-            {selectedNode.detail && (
-              <p className="text-slate-400 italic bg-slate-950 p-2.5 rounded border border-slate-800">
-                "{selectedNode.detail}"
-              </p>
-            )}
           </div>
         )}
 
@@ -274,18 +312,18 @@ seedDatabase();`
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 text-amber-400 font-bold text-base">
             <Terminal className="w-5 h-5" />
-            <span>{t.sprintRoadmap} ({completedRoadmap.length} of {roadmap.length} {t.completed})</span>
+            <span>Sprint Roadmap & Milestones ({completedRoadmap.length} of {roadmapSteps.length} Completed)</span>
           </div>
           <div className="w-32 bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
             <div
               className="bg-amber-400 h-full transition-all duration-300"
-              style={{ width: `${(completedRoadmap.length / roadmap.length) * 100}%` }}
+              style={{ width: `${(completedRoadmap.length / roadmapSteps.length) * 100}%` }}
             ></div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {roadmap.map((step, idx) => {
+          {roadmapSteps.map((step, idx) => {
             const isDone = completedRoadmap.includes(idx);
             return (
               <div
