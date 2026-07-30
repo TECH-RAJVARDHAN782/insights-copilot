@@ -69,13 +69,13 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
   return (
     <div className="space-y-8 animate-fadeIn">
       
-      {/* Hero Section & Multilingual Search Bar */}
+      {/* Hero Section & Search Bar Intake */}
       <div className="relative rounded-2xl glass-panel-glow p-6 sm:p-8 overflow-hidden">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="relative z-10 max-w-3xl mx-auto text-center space-y-4">
-          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-medium">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-200 text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
             <span>iNSIGHTS DeepSearch Layer 2 Engine</span>
           </div>
@@ -83,7 +83,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             {t.heroHeader}
           </h1>
-          <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-200 text-sm sm:text-base leading-relaxed font-medium">
             {t.heroDesc}
           </p>
 
@@ -97,7 +97,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                 placeholder={t.searchPlaceholder}
                 className="w-full pl-12 pr-36 py-4 rounded-xl glass-input text-white placeholder-slate-400 text-sm sm:text-base focus:outline-none transition-all shadow-xl"
               />
-              <Search className="absolute left-4 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-4 w-5 h-5 text-slate-300" />
               <button
                 type="submit"
                 disabled={isSearching}
@@ -120,7 +120,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
 
           {/* Quick Presets */}
           <div className="pt-2">
-            <p className="text-xs text-slate-400 mb-2.5 font-medium">{t.presetTitle}</p>
+            <p className="text-xs text-slate-300 mb-2.5 font-semibold">{t.presetTitle}</p>
             <div className="flex flex-wrap justify-center gap-2">
               {SAMPLE_IDEAS.map((sample) => {
                 const isActive = activeIdeaId === sample.id;
@@ -128,10 +128,10 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                   <button
                     key={sample.id}
                     onClick={() => handlePresetClick(sample)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       isActive
                         ? 'bg-indigo-600 text-white border border-indigo-400 shadow-md shadow-indigo-500/30'
-                        : 'bg-slate-900/80 text-slate-300 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-800'
+                        : 'bg-slate-900/90 text-slate-100 border border-slate-700 hover:border-cyan-400 hover:bg-slate-800'
                     }`}
                   >
                     💡 {sample.title}
@@ -152,7 +152,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
               <Cpu className="w-6 h-6 text-cyan-400 animate-spin" />
             </div>
             <div className="flex-1 space-y-1">
-              <div className="flex justify-between items-center text-xs font-semibold text-cyan-300">
+              <div className="flex justify-between items-center text-xs font-bold text-cyan-300">
                 <span>{t.searching}</span>
                 <span>arXiv • IEEE • GitHub • Kaggle • Live MongoDB Atlas</span>
               </div>
@@ -164,54 +164,39 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
         </div>
       )}
 
-      {/* STRUCTURED AI RESPONSE DOCUMENT FORMAT DISPLAY */}
+      {/* SINGLE UNIFIED SEAMLESS OUTPUT CONTAINER (MERGED CARD) */}
       {projectData && (
         <div className="space-y-6 animate-fadeIn">
 
-          {/* Main Header Banner */}
-          <div className="glass-panel p-6 rounded-2xl border border-indigo-900/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-slate-900/90">
-            <div>
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  Structured AI Response Generated
-                </span>
-                <span className="text-xs text-slate-400">Live MongoDB Atlas Ready</span>
-              </div>
-              <h2 className="text-2xl font-bold text-white">{projectData.title}</h2>
-              <p className="text-slate-300 text-sm mt-1">{projectData.tagline}</p>
-            </div>
-            
-            <div className="flex items-center space-x-2 w-full md:w-auto">
-              <button
-                onClick={handleCopyAiResponse}
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
-              >
-                {copiedCode ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
-                <span>{copiedCode ? "Copied Response!" : "Copy Full AI Response"}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* FULL STRUCTURED AI RESPONSE CARD FORMAT */}
           <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-cyan-500/40 bg-slate-900/95 space-y-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 text-slate-950 font-black">
-                  <Sparkles className="w-6 h-6" />
+            
+            {/* UNIFIED CONTAINER HEADER: Title + Copy Button + Status Badge */}
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+              <div>
+                <div className="flex items-center space-x-2 mb-1">
+                  <span className="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    Structured AI Response Generated
+                  </span>
+                  <span className="text-xs text-slate-300 font-mono">Live MongoDB Atlas Sync</span>
                 </div>
-                <div>
-                  <h3 className="text-xl font-black text-white tracking-tight">Structured AI Response Format</h3>
-                  <p className="text-xs text-cyan-300">Complete 8-Step Automated Solution for "{projectData.title}"</p>
-                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white">{projectData.title}</h2>
+                <p className="text-slate-200 text-sm mt-1 font-medium">{projectData.tagline}</p>
               </div>
-              <span className="px-3 py-1 text-xs font-mono font-bold rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                ✅ 100% Complete
-              </span>
+
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  onClick={handleCopyAiResponse}
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+                >
+                  {copiedCode ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
+                  <span>{copiedCode ? "Copied Response!" : "Copy Full AI Response"}</span>
+                </button>
+              </div>
             </div>
 
-            {/* 8-STEP STRUCTURED RESPONSE CONTENT GRID */}
-            <div className="space-y-6 text-sm text-slate-200">
+            {/* 8-STEP STRUCTURED RESPONSE CONTENT GRID WITH HIGH TEXT CONTRAST */}
+            <div className="space-y-6 text-sm text-slate-100">
               
               {/* Step 1: Problem Validation */}
               <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
@@ -219,12 +204,12 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                   <span className="font-extrabold text-emerald-400 text-base flex items-center gap-2">
                     <CheckCircle2 className="w-5 h-5" /> 1. ✅ Problem Validation
                   </span>
-                  <span className="text-xs font-mono text-slate-400">Feasibility: {projectData.problemValidation.feasibilityScore}/100</span>
+                  <span className="text-xs font-mono text-slate-300">Feasibility: {projectData.problemValidation.feasibilityScore}/100</span>
                 </div>
-                <div className="pt-1 space-y-1.5 text-xs text-slate-300 leading-relaxed">
+                <div className="pt-1 space-y-1.5 text-xs text-slate-200 leading-relaxed font-medium">
                   <p>• <strong>Is this a real problem?</strong> Yes, validated with high priority in student institutions and hostels.</p>
                   <p>• <strong>How many people are affected?</strong> {projectData.problemValidation.marketGap}</p>
-                  <p className="text-cyan-300 font-semibold">• <strong>Target Users:</strong> {projectData.problemValidation.targetUsers.join(', ')}</p>
+                  <p className="text-cyan-300 font-bold">• <strong>Target Users:</strong> {projectData.problemValidation.targetUsers.join(', ')}</p>
                 </div>
               </div>
 
@@ -234,9 +219,9 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                   <span className="font-extrabold text-purple-400 text-base flex items-center gap-2">
                     <CheckCircle2 className="w-5 h-5" /> 2. ✅ Deep Research & Sources
                   </span>
-                  <span className="text-xs font-mono text-slate-400">{projectData.deepSearch.citations.length} Verified Sources</span>
+                  <span className="text-xs font-mono text-slate-300">{projectData.deepSearch.citations.length} Verified Sources</span>
                 </div>
-                <div className="pt-1 space-y-1.5 text-xs text-slate-300 leading-relaxed">
+                <div className="pt-1 space-y-1.5 text-xs text-slate-200 leading-relaxed font-medium">
                   <p>• <strong>Internet & Verified Sources:</strong> Scoured arXiv, IEEE Xplore, Kaggle Datasets, and GitHub Repositories.</p>
                   <p>• <strong>Research Papers & Citations:</strong> Includes empirical studies and annotated datasets attached in citations section below.</p>
                 </div>
@@ -248,14 +233,14 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                   <span className="font-extrabold text-indigo-400 text-base flex items-center gap-2">
                     <CheckCircle2 className="w-5 h-5" /> 3. ✅ Existing Solutions Comparison
                   </span>
-                  <span className="text-xs font-mono text-slate-400">Market Evaluation</span>
+                  <span className="text-xs font-mono text-slate-300">Market Evaluation</span>
                 </div>
-                <div className="pt-1 space-y-2 text-xs text-slate-300">
+                <div className="pt-1 space-y-2 text-xs text-slate-200">
                   {projectData.existingSolutions.map((sol, idx) => (
                     <div key={idx} className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
                       <div>
                         <span className="font-bold text-white">{sol.name}:</span>
-                        <span className="text-slate-300 ml-2">Pros: ({sol.pros}) | Cons: ({sol.cons})</span>
+                        <span className="text-slate-200 ml-2">Pros: ({sol.pros}) | Cons: ({sol.cons})</span>
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-cyan-300">{sol.status}</span>
                     </div>
@@ -271,7 +256,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                   </span>
                   <span className="text-xs font-mono text-amber-300">Innovation Index: {projectData.problemValidation.innovationScore}/100</span>
                 </div>
-                <div className="pt-1 space-y-1.5 text-xs text-slate-300 leading-relaxed">
+                <div className="pt-1 space-y-1.5 text-xs text-slate-200 leading-relaxed font-medium">
                   <p>• <strong>What is missing in existing solutions?</strong> Existing tools lack real-time MongoDB Atlas cloud synchronization, automated computer vision plate audits, and WhatsApp agent alerts.</p>
                   <p>• <strong>Where can new innovation be created?</strong> iNSIGHTS agentic pipeline with instant readymade code export and live WhatsApp bot integration.</p>
                 </div>
@@ -285,7 +270,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                   </span>
                   <span className="text-xs font-mono text-cyan-300">Optimal Architecture</span>
                 </div>
-                <p className="pt-1 text-xs text-slate-300 leading-relaxed">
+                <p className="pt-1 text-xs text-slate-200 leading-relaxed font-medium">
                   <strong>{projectData.title}:</strong> {projectData.tagline}
                 </p>
               </div>
@@ -299,10 +284,10 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                   <span className="text-xs font-mono text-emerald-300">Production Stack</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs font-mono">
-                  <div className="p-2 rounded bg-slate-900 text-slate-200"><strong>Frontend:</strong> {projectData.architecture.frontend}</div>
-                  <div className="p-2 rounded bg-slate-900 text-slate-200"><strong>Backend:</strong> {projectData.architecture.backend}</div>
-                  <div className="p-2 rounded bg-slate-900 text-slate-200"><strong>AI Models:</strong> {projectData.architecture.aiModels.join(', ')}</div>
-                  <div className="p-2 rounded bg-slate-900 text-slate-200"><strong>Database:</strong> MongoDB Atlas (Live Cluster)</div>
+                  <div className="p-2.5 rounded bg-slate-900 text-slate-100"><strong>Frontend:</strong> {projectData.architecture.frontend}</div>
+                  <div className="p-2.5 rounded bg-slate-900 text-slate-100"><strong>Backend:</strong> {projectData.architecture.backend}</div>
+                  <div className="p-2.5 rounded bg-slate-900 text-slate-100"><strong>AI Models:</strong> {projectData.architecture.aiModels.join(', ')}</div>
+                  <div className="p-2.5 rounded bg-slate-900 text-slate-100"><strong>Database:</strong> MongoDB Atlas (Live Cluster)</div>
                 </div>
               </div>
 
@@ -318,7 +303,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                   {projectData.roadmap.map((r, idx) => (
                     <div key={idx} className="p-2.5 rounded bg-slate-900 border border-slate-800">
                       <span className="font-bold text-cyan-300">{r.phase}:</span> {r.title}
-                      <p className="text-[11px] text-slate-400 mt-0.5">{r.task}</p>
+                      <p className="text-[11px] text-slate-300 mt-0.5 font-medium">{r.task}</p>
                     </div>
                   ))}
                 </div>
@@ -358,7 +343,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                 <div
                   key={idx}
                   onClick={() => setSelectedCitation(cite)}
-                  className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 hover:border-cyan-500/40 transition cursor-pointer group hover:bg-slate-800/80 space-y-2"
+                  className="bg-slate-900/90 p-4 rounded-xl border border-slate-800 hover:border-cyan-500/40 transition cursor-pointer group hover:bg-slate-900 space-y-2"
                 >
                   <div className="flex items-center justify-between">
                     <span className={`px-2 py-0.5 text-[10px] font-bold rounded ${
@@ -368,15 +353,15 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                     }`}>
                       {cite.type}
                     </span>
-                    <span className="text-[11px] text-slate-400 font-mono">{cite.venue}</span>
+                    <span className="text-[11px] text-slate-300 font-mono font-semibold">{cite.venue}</span>
                   </div>
 
                   <h4 className="text-sm font-bold text-white group-hover:text-cyan-300 transition flex items-center justify-between">
                     <span>{cite.title}</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-500 group-hover:text-cyan-400" />
+                    <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-cyan-400" />
                   </h4>
                   
-                  <p className="text-xs text-slate-400 line-clamp-2">{cite.snippet}</p>
+                  <p className="text-xs text-slate-300 line-clamp-2 font-medium">{cite.snippet}</p>
                 </div>
               ))}
             </div>
@@ -397,10 +382,10 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
             </div>
             
             <h3 className="text-lg font-bold text-white">{selectedCitation.title}</h3>
-            <p className="text-xs text-indigo-300">Authors: {selectedCitation.authors} ({selectedCitation.venue})</p>
+            <p className="text-xs text-indigo-300 font-semibold">Authors: {selectedCitation.authors} ({selectedCitation.venue})</p>
 
-            <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 text-slate-300 text-xs leading-relaxed space-y-2">
-              <p className="font-semibold text-slate-200">Abstract Snippet:</p>
+            <div className="bg-slate-900 p-4 rounded-xl border border-slate-800 text-slate-200 text-xs leading-relaxed space-y-2 font-medium">
+              <p className="font-bold text-slate-100">Abstract Snippet:</p>
               <p>"{selectedCitation.snippet}"</p>
             </div>
 
@@ -416,7 +401,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
               </a>
               <button
                 onClick={() => setSelectedCitation(null)}
-                className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium hover:bg-slate-700 cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-slate-800 text-slate-200 text-xs font-medium hover:bg-slate-700 cursor-pointer"
               >
                 Close
               </button>

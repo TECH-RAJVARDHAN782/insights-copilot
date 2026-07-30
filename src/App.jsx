@@ -8,6 +8,8 @@ import AgentHub from './components/AgentHub';
 import DocGenerator from './components/DocGenerator';
 import TalentPlatform from './components/TalentPlatform';
 import MobileSimulator from './components/MobileSimulator';
+import AuthModal from './components/AuthModal';
+import HistoryDrawer from './components/HistoryDrawer';
 import { DEFAULT_PROJECT_DATA, SAMPLE_IDEAS } from './data/mockData';
 
 export default function App() {
@@ -15,22 +17,48 @@ export default function App() {
   const [currentLang, setCurrentLang] = useState('en');
   const [viewMode, setViewMode] = useState('dual'); // 'web' | 'mobile' | 'dual'
   
-  // Set initial project state to NULL so ONLY search bar is shown on initial visit
+  // Search State
   const [activeIdeaId, setActiveIdeaId] = useState(null);
   const [projectData, setProjectData] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
+
+  // Auth & Student Profile State
+  const [userAuth, setUserAuth] = useState({
+    name: 'Alex Rivera',
+    email: 'alex.rivera@iit.ac.in',
+    university: 'IIT Bombay'
+  });
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // Conversation History State
+  const [conversationHistory, setConversationHistory] = useState([]);
+  const [showHistoryDrawer, setShowHistoryDrawer] = useState(false);
+
+  const saveToHistory = (newProjectData) => {
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const historyItem = {
+      title: newProjectData.title,
+      tagline: newProjectData.tagline,
+      time: timeStr,
+      data: newProjectData
+    };
+    setConversationHistory(prev => [historyItem, ...prev]);
+  };
 
   const handleSelectSample = (id) => {
     setIsSearching(true);
     setActiveIdeaId(id);
     
     setTimeout(() => {
+      let dataToSet = null;
       if (DEFAULT_PROJECT_DATA[id]) {
-        setProjectData(DEFAULT_PROJECT_DATA[id]);
+        dataToSet = DEFAULT_PROJECT_DATA[id];
       } else {
         const sample = SAMPLE_IDEAS.find(s => s.id === id);
-        setProjectData(createDynamicProjectData(sample ? sample.title : "Custom Student Project", sample ? sample.prompt : ""));
+        dataToSet = createDynamicProjectData(sample ? sample.title : "Custom Student Project", sample ? sample.prompt : "");
       }
+      setProjectData(dataToSet);
+      saveToHistory(dataToSet);
       setIsSearching(false);
     }, 900);
   };
@@ -45,8 +73,25 @@ export default function App() {
         customPrompt
       );
       setProjectData(generatedData);
+      saveToHistory(generatedData);
       setIsSearching(false);
     }, 1100);
+  };
+
+  const handleNewConversation = () => {
+    setProjectData(null);
+    setActiveIdeaId(null);
+    setActiveTab('search');
+  };
+
+  const handleLoadHistoryItem = (item) => {
+    setProjectData(item.data);
+    setActiveIdeaId('custom');
+    setActiveTab('search');
+  };
+
+  const handleClearHistory = () => {
+    setConversationHistory([]);
   };
 
   const extractTitleFromPrompt = (prompt) => {
@@ -204,6 +249,10 @@ export default function App() {
         setCurrentLang={setCurrentLang}
         viewMode={viewMode}
         setViewMode={setViewMode}
+        userAuth={userAuth}
+        onOpenAuth={() => setShowAuthModal(true)}
+        onOpenHistory={() => setShowHistoryDrawer(true)}
+        onNewConversation={handleNewConversation}
       />
 
       {/* Main Container */}
@@ -221,7 +270,12 @@ export default function App() {
         {/* 2. ONLY MOBILE APP SIMULATOR */}
         {viewMode === 'mobile' && (
           <div className="animate-fadeIn py-4">
-            <MobileSimulator projectData={projectData} onSearch={handleGenerateCustom} />
+            <MobileSimulator
+              projectData={projectData}
+              onSearch={handleGenerateCustom}
+              onOpenAuth={() => setShowAuthModal(true)}
+              onOpenHistory={() => setShowHistoryDrawer(true)}
+            />
           </div>
         )}
 
@@ -235,7 +289,7 @@ export default function App() {
                   <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
                   🖥️ Desktop Web Application Active
                 </span>
-                <span className="text-slate-400">Live Sync with Mobile Companion App</span>
+                <span className="text-slate-300 font-semibold">Live Sync with Mobile Companion App</span>
               </div>
               {renderWebTabContent()}
             </div>
@@ -247,10 +301,15 @@ export default function App() {
                   <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
                   📱 Companion Mobile App Simulator
                 </span>
-                <span className="text-slate-400 font-mono">Student Friendly</span>
+                <span className="text-slate-300 font-mono">Student Friendly</span>
               </div>
               <div className="sticky top-24">
-                <MobileSimulator projectData={projectData} onSearch={handleGenerateCustom} />
+                <MobileSimulator
+                  projectData={projectData}
+                  onSearch={handleGenerateCustom}
+                  onOpenAuth={() => setShowAuthModal(true)}
+                  onOpenHistory={() => setShowHistoryDrawer(true)}
+                />
               </div>
             </div>
           </div>
@@ -258,17 +317,34 @@ export default function App() {
 
       </main>
 
+      {/* Student Auth Modal */}
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onLoginSuccess={(userData) => setUserAuth(userData)}
+      />
+
+      {/* Search & Conversation History Drawer */}
+      <HistoryDrawer
+        isOpen={showHistoryDrawer}
+        onClose={() => setShowHistoryDrawer(false)}
+        conversationHistory={conversationHistory}
+        onSelectHistoryItem={handleLoadHistoryItem}
+        onNewConversation={handleNewConversation}
+        onClearHistory={handleClearHistory}
+      />
+
       {/* Footer */}
-      <footer className="glass-panel border-t border-slate-800/80 py-6 text-center text-xs text-slate-400">
+      <footer className="glass-panel border-t border-slate-800/80 py-6 text-center text-xs text-slate-300 font-medium">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-          <p>© 2026 iNSIGHTS Copilot & Live MongoDB Atlas Platform.</p>
+          <p>© 2026 iNSIGHTS Copilot Platform.</p>
           <div className="flex items-center space-x-4">
             <span className="text-emerald-400 font-semibold flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
               Live MongoDB Atlas
             </span>
             <span>•</span>
-            <span className="text-cyan-400">PowerPoint PPT Generator v3.0</span>
+            <span className="text-cyan-400 font-semibold">Presentation Generator v3.0</span>
           </div>
         </div>
       </footer>

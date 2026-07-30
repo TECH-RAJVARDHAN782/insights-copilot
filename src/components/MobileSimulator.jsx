@@ -14,16 +14,18 @@ import {
   ExternalLink,
   ChevronRight, 
   Zap, 
-  Database,
+  FileCode,
   Rocket,
   Presentation,
   Cpu,
-  RefreshCw
+  RefreshCw,
+  User,
+  History
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export default function MobileSimulator({ projectData, onSearch }) {
-  const [mobileTab, setMobileTab] = useState('search'); // 'search' | 'code' | 'bot' | 'arch' | 'pitch'
+export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onOpenHistory }) {
+  const [mobileTab, setMobileTab] = useState('search'); // 'search' | 'code' | 'bot' | 'boilerplates' | 'pitch'
   const [deviceType, setDeviceType] = useState('ios'); // 'ios' | 'android'
   
   // Mobile Search state
@@ -33,7 +35,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
 
   // Dynamic Mobile WhatsApp Chat
   const [botMessages, setBotMessages] = useState([
-    { id: 1, sender: 'bot', text: `👋 Hi Student! I am your mobile iNSIGHTS WhatsApp Assistant. Type any question to get dynamic AI answers!`, time: '09:15 AM' }
+    { id: 1, sender: 'bot', text: `👋 Hi Student! I am your mobile iNSIGHTS WhatsApp Assistant. Type any question!`, time: '09:15 AM' }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -65,8 +67,8 @@ export default function MobileSimulator({ projectData, onSearch }) {
         botReplyText = `🚀 Code Repo for "${projectTitle}": insights-copilot/${projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '-')}-starter. Connected to Live MongoDB Atlas!`;
       } else if (lower.includes('score') || lower.includes('feasibility') || lower.includes('impact')) {
         botReplyText = `📊 Feasibility Score: ${projectData?.problemValidation?.feasibilityScore || 94}/100. Innovation Score: ${projectData?.problemValidation?.innovationScore || 96}/100.`;
-      } else if (lower.includes('mongodb') || lower.includes('db') || lower.includes('database')) {
-        botReplyText = `🍃 MongoDB Atlas Status: CONNECTED (aws-iad1-shard-0). Collections: daily_logs, rsvp_records, kitchen_batches.`;
+      } else if (lower.includes('boilerplate') || lower.includes('fastapi') || lower.includes('express')) {
+        botReplyText = `💻 Boilerplates Ready: Node.js Express, Python FastAPI, React 18, and Docker Compose scripts available in Boilerplates tab.`;
       } else {
         botReplyText = `🤖 Received "${textSent}" for "${projectTitle}". DeepSearch processed request with 94.6% accuracy SLA!`;
       }
@@ -109,16 +111,16 @@ export default function MobileSimulator({ projectData, onSearch }) {
       
       {/* Device Switcher Header */}
       <div className="flex items-center justify-between w-full max-w-sm px-2">
-        <div className="flex items-center space-x-1.5 text-xs text-slate-300 font-bold">
+        <div className="flex items-center space-x-1.5 text-xs text-white font-bold">
           <Smartphone className="w-4 h-4 text-cyan-400" />
-          <span>Student Companion Mobile App</span>
+          <span>Student Mobile Companion</span>
         </div>
 
         <div className="flex items-center space-x-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-[11px]">
           <button
             onClick={() => setDeviceType('ios')}
             className={`px-2.5 py-1 rounded-lg font-semibold transition cursor-pointer ${
-              deviceType === 'ios' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-200'
+              deviceType === 'ios' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:text-white'
             }`}
           >
             iPhone
@@ -126,7 +128,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
           <button
             onClick={() => setDeviceType('android')}
             className={`px-2.5 py-1 rounded-lg font-semibold transition cursor-pointer ${
-              deviceType === 'android' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-slate-200'
+              deviceType === 'android' ? 'bg-purple-600 text-white' : 'text-slate-300 hover:text-white'
             }`}
           >
             Android
@@ -148,9 +150,9 @@ export default function MobileSimulator({ projectData, onSearch }) {
         )}
 
         {/* Top Status Bar */}
-        <div className="pt-3 px-5 pb-2 flex items-center justify-between text-[11px] font-semibold text-slate-300 z-40 bg-slate-950/90">
+        <div className="pt-3 px-5 pb-2 flex items-center justify-between text-[11px] font-semibold text-slate-200 z-40 bg-slate-950/90">
           <span>09:41</span>
-          <div className="flex items-center space-x-1.5 text-slate-400">
+          <div className="flex items-center space-x-1.5 text-slate-300">
             <Signal className="w-3 h-3 text-slate-200" />
             <Wifi className="w-3 h-3 text-slate-200" />
             <Battery className="w-4 h-4 text-emerald-400" />
@@ -164,7 +166,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
           {mobileTab === 'search' && (
             <div className="space-y-4 pt-1 animate-fadeIn">
               
-              {/* App Brand Header */}
+              {/* App Brand & Profile Bar */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-xs">
@@ -172,9 +174,15 @@ export default function MobileSimulator({ projectData, onSearch }) {
                   </div>
                   <span className="font-extrabold text-sm text-white">iNSIGHTS<span className="text-cyan-400">.mobile</span></span>
                 </div>
-                <span className="px-2 py-0.5 rounded-full text-[9px] bg-emerald-500/20 text-emerald-300 font-mono">
-                  LIVE MONGODB
-                </span>
+                
+                <div className="flex items-center space-x-1">
+                  <button onClick={onOpenHistory} className="p-1.5 rounded-lg bg-slate-900 text-cyan-400 border border-slate-800">
+                    <History className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={onOpenAuth} className="p-1.5 rounded-lg bg-slate-900 text-emerald-400 border border-slate-800">
+                    <User className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
               {/* Mobile Search Bar */}
@@ -187,7 +195,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
                     placeholder="Search any project topic..."
                     className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400"
                   />
-                  <Search className="absolute left-3 w-4 h-4 text-slate-400" />
+                  <Search className="absolute left-3 w-4 h-4 text-slate-300" />
                 </div>
 
                 <button
@@ -199,16 +207,21 @@ export default function MobileSimulator({ projectData, onSearch }) {
                 </button>
               </form>
 
-              {/* Display Result if Project Data Active */}
+              {/* UNIFIED SINGLE OUTPUT CARD FOR MOBILE */}
               {projectData ? (
                 <div className="p-3.5 rounded-2xl bg-slate-900 border border-cyan-500/40 space-y-2.5 animate-fadeIn">
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-bold text-cyan-300">Active Search Result</span>
+                    <span className="font-bold text-cyan-300">Structured AI Output</span>
                     <span className="text-emerald-400 font-bold">{projectData.problemValidation.feasibilityScore}% Feasibility</span>
                   </div>
                   
                   <h5 className="font-bold text-white text-xs leading-snug">{projectData.title}</h5>
-                  <p className="text-[11px] text-slate-300 leading-relaxed">{projectData.tagline}</p>
+                  <p className="text-[11px] text-slate-200 leading-relaxed font-medium">{projectData.tagline}</p>
+
+                  <div className="p-2 rounded-xl bg-slate-950 text-[10px] text-slate-200 space-y-1 font-medium border border-slate-800">
+                    <p>• <strong>Problem:</strong> {projectData.problemValidation.marketGap}</p>
+                    <p>• <strong>Tech Stack:</strong> {projectData.architecture.frontend} + Node.js + MongoDB</p>
+                  </div>
 
                   <div className="pt-1 border-t border-slate-800 flex items-center justify-between text-[10px] text-cyan-300 font-mono">
                     <span>DB: Live MongoDB Atlas</span>
@@ -219,7 +232,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
                 <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center space-y-2">
                   <Search className="w-8 h-8 text-cyan-400 mx-auto" />
                   <h5 className="text-xs font-bold text-white">No Search Performed Yet</h5>
-                  <p className="text-[11px] text-slate-400">Type any project topic above or select a preset on the main dashboard to generate your AI solution.</p>
+                  <p className="text-[11px] text-slate-300 font-medium">Type any project topic above to generate your AI solution.</p>
                 </div>
               )}
 
@@ -240,7 +253,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
               {projectData ? (
                 <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
                   <h5 className="font-bold text-white text-xs">{projectData.title} Code Package</h5>
-                  <p className="text-[11px] text-slate-300">{projectData.tagline}</p>
+                  <p className="text-[11px] text-slate-200 font-medium">{projectData.tagline}</p>
                   
                   <div className="p-2.5 rounded-xl bg-slate-950 font-mono text-[10px] text-emerald-300 border border-slate-800">
                     <code>git clone {projectData.githubRepos[0]?.name || "insights-copilot/starter"}.git</code>
@@ -257,7 +270,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
               ) : (
                 <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center space-y-2">
                   <Code className="w-8 h-8 text-indigo-400 mx-auto" />
-                  <p className="text-[11px] text-slate-400">Search for a project to view and download readymade code repositories.</p>
+                  <p className="text-[11px] text-slate-300 font-medium">Search for a project to view and download readymade code repositories.</p>
                 </div>
               )}
             </div>
@@ -288,7 +301,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
                     }`}
                   >
                     <p className="leading-snug">{msg.text}</p>
-                    <span className="text-[9px] text-slate-400 block text-right mt-0.5">{msg.time}</span>
+                    <span className="text-[9px] text-slate-300 block text-right mt-0.5">{msg.time}</span>
                   </div>
                 ))}
                 {isTyping && (
@@ -318,37 +331,32 @@ export default function MobileSimulator({ projectData, onSearch }) {
             </div>
           )}
 
-          {/* TAB 4: ARCHITECTURE & MONGO */}
-          {mobileTab === 'arch' && (
+          {/* TAB 4: REPLACED MONGODB WITH BOILERPLATES */}
+          {mobileTab === 'boilerplates' && (
             <div className="space-y-4 pt-1 animate-fadeIn">
               <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                <Database className="w-4 h-4 text-emerald-400" />
-                Mobile Architecture & Live MongoDB
+                <FileCode className="w-4 h-4 text-cyan-400" />
+                Multi-Framework Boilerplates
               </h4>
 
-              <div className="p-3.5 rounded-2xl bg-slate-900 border border-emerald-500/40 space-y-2">
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-indigo-500/40 space-y-2">
                 <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-emerald-400 font-bold">MongoDB Atlas Live Vault</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">CONNECTED</span>
+                  <span className="text-cyan-300 font-bold">Node.js / Express Server</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300">READY</span>
                 </div>
-                <p className="text-[11px] text-slate-300">Cluster: aws-iad1-shard-0 | Query Latency: 18ms</p>
-                <div className="p-2 rounded-lg bg-slate-950 text-[10px] text-cyan-300 font-mono">
-                  Collections: daily_logs, rsvp_records, kitchen_batches
-                </div>
+                <pre className="p-2 rounded-lg bg-slate-950 text-[9px] text-emerald-300 font-mono overflow-x-auto">
+                  <code>{`// Express.js Server for ${projectTitle}\nconst express = require('express');\nconst app = express();\napp.listen(5000);`}</code>
+                </pre>
               </div>
 
-              <div className="space-y-2">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold">System Pipeline Nodes:</span>
-                {(projectData?.architecture?.nodes || [
-                  { label: "Data Sensor Intake", type: "Input" },
-                  { label: "DeepSearch AI Synthesizer", type: "AI Engine" },
-                  { label: "Live MongoDB Atlas Vault", type: "Database" }
-                ]).map((node, i) => (
-                  <div key={i} className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs flex justify-between items-center">
-                    <span className="font-bold text-white">{node.label}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-cyan-300 font-mono">{node.type}</span>
-                  </div>
-                ))}
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-purple-500/40 space-y-2">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-purple-300 font-bold">Python FastAPI Service</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">READY</span>
+                </div>
+                <pre className="p-2 rounded-lg bg-slate-950 text-[9px] text-cyan-300 font-mono overflow-x-auto">
+                  <code>{`from fastapi import FastAPI\napp = FastAPI()\n@app.get('/')\ndef root(): return {"status": "ONLINE"}`}</code>
+                </pre>
               </div>
             </div>
           )}
@@ -366,13 +374,13 @@ export default function MobileSimulator({ projectData, onSearch }) {
                   Slide {mobileSlideIndex + 1} of {mobileSlides.length}
                 </span>
                 <h5 className="font-bold text-white text-xs">{mobileSlides[mobileSlideIndex].title}</h5>
-                <p className="text-[11px] text-slate-300 leading-relaxed italic">"{mobileSlides[mobileSlideIndex].text}"</p>
+                <p className="text-[11px] text-slate-200 leading-relaxed italic font-medium">"{mobileSlides[mobileSlideIndex].text}"</p>
 
                 <div className="flex justify-between pt-2">
                   <button
                     onClick={() => setMobileSlideIndex(prev => Math.max(0, prev - 1))}
                     disabled={mobileSlideIndex === 0}
-                    className="px-3 py-1 rounded bg-slate-800 text-xs text-slate-300 disabled:opacity-40"
+                    className="px-3 py-1 rounded bg-slate-800 text-xs text-slate-200 disabled:opacity-40"
                   >
                     Prev Slide
                   </button>
@@ -395,7 +403,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
           <button
             onClick={() => setMobileTab('search')}
             className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'search' ? 'text-cyan-400' : 'text-slate-400 hover:text-slate-200'
+              mobileTab === 'search' ? 'text-cyan-400' : 'text-slate-300 hover:text-white'
             }`}
           >
             <Search className="w-3.5 h-3.5" />
@@ -405,7 +413,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
           <button
             onClick={() => setMobileTab('code')}
             className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'code' ? 'text-indigo-400' : 'text-slate-400 hover:text-slate-200'
+              mobileTab === 'code' ? 'text-indigo-400' : 'text-slate-300 hover:text-white'
             }`}
           >
             <Code className="w-3.5 h-3.5" />
@@ -415,7 +423,7 @@ export default function MobileSimulator({ projectData, onSearch }) {
           <button
             onClick={() => setMobileTab('bot')}
             className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'bot' ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-200'
+              mobileTab === 'bot' ? 'text-emerald-400' : 'text-slate-300 hover:text-white'
             }`}
           >
             <Bot className="w-3.5 h-3.5" />
@@ -423,19 +431,19 @@ export default function MobileSimulator({ projectData, onSearch }) {
           </button>
 
           <button
-            onClick={() => setMobileTab('arch')}
+            onClick={() => setMobileTab('boilerplates')}
             className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'arch' ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-200'
+              mobileTab === 'boilerplates' ? 'text-cyan-400' : 'text-slate-300 hover:text-white'
             }`}
           >
-            <Database className="w-3.5 h-3.5" />
-            <span>MongoDB</span>
+            <FileCode className="w-3.5 h-3.5" />
+            <span>Boilerplates</span>
           </button>
 
           <button
             onClick={() => setMobileTab('pitch')}
             className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'pitch' ? 'text-purple-400' : 'text-slate-400 hover:text-slate-200'
+              mobileTab === 'pitch' ? 'text-purple-400' : 'text-slate-300 hover:text-white'
             }`}
           >
             <Presentation className="w-3.5 h-3.5" />
