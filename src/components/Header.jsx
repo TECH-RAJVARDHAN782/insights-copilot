@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Compass, Globe, Zap, Smartphone, Monitor, Layout, UserCheck, Rocket, Bot, Share2, FileCode, FileText } from 'lucide-react';
+import { Sparkles, Compass, Globe, Zap, Smartphone, Monitor, Layout, UserCheck, Rocket, Bot, Share2, FileCode, FileText, Trophy, Activity, Database, CheckCircle2 } from 'lucide-react';
 import { LANGUAGES } from '../data/mockData';
 import { TRANSLATIONS } from '../data/translations';
 
@@ -40,9 +40,9 @@ export default function Header({
                 <span className="font-extrabold text-xl tracking-tight text-white">
                   iNSIGHTS<span className="text-cyan-400">.copilot</span>
                 </span>
-                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase tracking-wider flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                  Live MongoDB
+                <span className="px-2.5 py-0.5 text-[10px] font-extrabold rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 flex items-center gap-1 shadow-md shadow-amber-500/20 uppercase tracking-wider">
+                  <Trophy className="w-3 h-3 text-slate-950" />
+                  Hackathon Winning Edition
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 hidden sm:block">{t.tagline}</p>
@@ -119,7 +119,7 @@ export default function Header({
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/40'
+                    ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/40'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
                 }`}
               >
