@@ -129,7 +129,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
         </div>
       )}
 
-      {/* CHATGPT / WHATSAPP FORMATTED AI RESPONSE (MATCHING USER IMAGES 2 & 3) */}
+      {/* COMPREHENSIVE AUTOMATED AI RESPONSE IN PURE ENGLISH */}
       {projectData && (
         <div className="space-y-6 animate-fadeIn">
 
@@ -158,14 +158,14 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
             </div>
           </div>
 
-          {/* EXACT STRUCTURED RESPONSE AS SHOWN IN USER IMAGE 3 */}
+          {/* PURE ENGLISH STRUCTURED BREAKDOWN */}
           <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-cyan-500/30 space-y-6">
             <div className="flex items-center space-x-3 border-b border-slate-800 pb-4">
               <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
                 <Sparkles className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-extrabold text-white">Tumhara software automatically kya generate karega?</h3>
+                <h3 className="text-xl font-extrabold text-white">What will your software automatically generate?</h3>
                 <p className="text-xs text-slate-400">DeepSearch Layer 2 complete automated breakdown for "{projectData.title}"</p>
               </div>
             </div>
@@ -179,8 +179,8 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
                   <span>1. Problem Validation</span>
                 </div>
                 <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
-                  <li className="list-disc"><strong>Ye problem real hai ya nahi?</strong> Yes, confirmed with {projectData.problemValidation.feasibilityScore}/100 feasibility score.</li>
-                  <li className="list-disc"><strong>Kitne log affect hain?</strong> {projectData.problemValidation.marketGap}</li>
+                  <li className="list-disc"><strong>Is this a real problem?</strong> Yes, verified with {projectData.problemValidation.feasibilityScore}/100 feasibility score.</li>
+                  <li className="list-disc"><strong>How many people are affected?</strong> {projectData.problemValidation.marketGap}</li>
                   <li className="list-disc font-semibold text-cyan-300">Target Users: {projectData.problemValidation.targetUsers.join(', ')}</li>
                 </ul>
               </div>
@@ -192,7 +192,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
                   <span>2. Deep Research</span>
                 </div>
                 <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
-                  <li className="list-disc"><strong>Internet & Trusted Sources:</strong> Scoured arXiv, IEEE Xplore, Kaggle, and GitHub.</li>
+                  <li className="list-disc"><strong>Internet & Verified Sources:</strong> Scoured arXiv, IEEE Xplore, Kaggle Datasets, and GitHub Repositories.</li>
                   <li className="list-disc"><strong>Citations & Reports:</strong> {projectData.deepSearch.citations.length} verified research papers & dataset benchmarks attached below.</li>
                 </ul>
               </div>
@@ -219,8 +219,8 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
                   <span>4. Research Gap & Innovation</span>
                 </div>
                 <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
-                  <li className="list-disc"><strong>Existing solutions me kya kami hai?</strong> Lack real-time automated MongoDB cloud synchronization and predictive ML alerts.</li>
-                  <li className="list-disc"><strong>Naya innovation कहाँ kar sakte ho?</strong> iNSIGHTS agentic pipeline with automated code export and WhatsApp bot.</li>
+                  <li className="list-disc"><strong>What is missing in existing solutions?</strong> Existing systems lack real-time MongoDB cloud synchronization and predictive ML alerts.</li>
+                  <li className="list-disc"><strong>Where can new innovation be created?</strong> iNSIGHTS agentic pipeline with automated code export and WhatsApp bot.</li>
                 </ul>
               </div>
 
@@ -228,7 +228,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
               <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
                 <div className="flex items-center space-x-2 font-bold text-cyan-400 text-base">
                   <CheckCircle2 className="w-5 h-5 shrink-0" />
-                  <span>5. Best Recommended Project Solution</span>
+                  <span>5. Recommended Project Solution</span>
                 </div>
                 <p className="pl-7 text-xs text-slate-300">
                   {projectData.tagline}
@@ -253,7 +253,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
             </div>
           </div>
 
-          {/* MANDATORY iNSIGHTS LAYER 2 FEATURES (MATCHING USER IMAGE 2) */}
+          {/* MANDATORY iNSIGHTS LAYER 2 FEATURES */}
           <div className="glass-panel p-6 rounded-2xl border border-purple-500/30 space-y-4">
             <div className="flex items-center space-x-2 text-purple-300 font-extrabold text-lg">
               <CheckSquare className="w-5 h-5 text-purple-400" />
