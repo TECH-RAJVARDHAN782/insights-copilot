@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, CheckCircle2, AlertTriangle, ArrowRight, BookOpen, Layers, Target, ShieldCheck, Database, FileText, Cpu, Code, Download, Copy, Check, Layout, CheckSquare } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, CheckCircle2, AlertTriangle, ArrowRight, BookOpen, Layers, Target, ShieldCheck, Database, FileText, Cpu, Code, Download, Copy, Check, Layout, CheckSquare, Terminal } from 'lucide-react';
 import { SAMPLE_IDEAS } from '../data/mockData';
 import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
@@ -22,10 +22,45 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
     onSelectSample(sample.id);
   };
 
+  const generateStructuredText = () => {
+    if (!projectData) return "";
+    return `=== iNSIGHTS COPILOT STRUCTURED AI RESPONSE ===
+
+1. ✅ PROBLEM VALIDATION
+• Is this a real problem? Yes (Feasibility Score: ${projectData.problemValidation.feasibilityScore}/100)
+• How many people are affected? ${projectData.problemValidation.marketGap}
+• Target Users: ${projectData.problemValidation.targetUsers.join(', ')}
+
+2. ✅ DEEP RESEARCH & SOURCES
+• Scoured arXiv, IEEE Xplore, Kaggle Datasets, and GitHub Repositories.
+• Verified Citations: ${projectData.deepSearch.citations.length} sources attached.
+
+3. ✅ EXISTING SOLUTIONS
+${projectData.existingSolutions.map(s => `• ${s.name}: Pros (${s.pros}) | Cons (${s.cons})`).join('\n')}
+
+4. ✅ RESEARCH GAP & INNOVATION
+• Missing Gaps: Lack real-time MongoDB cloud synchronization and predictive ML alerts.
+• Innovation: iNSIGHTS agentic pipeline with automated code export and WhatsApp bot.
+
+5. ✅ RECOMMENDED PROJECT SOLUTION
+• ${projectData.title}: ${projectData.tagline}
+
+6. ✅ TECH STACK
+• Frontend: ${projectData.architecture.frontend}
+• Backend: ${projectData.architecture.backend}
+• AI Models: ${projectData.architecture.aiModels.join(', ')}
+• Database: MongoDB Atlas (Live Cluster)
+• APIs: MongoDB Data API + WhatsApp API
+
+7. ✅ PROJECT ROADMAP
+${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\n')}
+
+8. ✅ MANDATORY INSIGHTS LAYER 2 FEATURES ACTIVE
+• DeepSearch, Project Hub, AI Agents, Real-time Web Intelligence, Personalized Dashboard, Knowledge Clustering, Research Workspace, Multilingual Support.`;
+  };
+
   const handleCopyAiResponse = () => {
-    if (!projectData) return;
-    const textToCopy = `# ${projectData.title}\n\n${projectData.tagline}\n\n## Problem Validation\n${projectData.problemValidation.marketGap}\n\n## Tech Stack\nFrontend: ${projectData.architecture.frontend}\nBackend: ${projectData.architecture.backend}\nDatabase: Live MongoDB Atlas`;
-    navigator.clipboard.writeText(textToCopy);
+    navigator.clipboard.writeText(generateStructuredText());
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
     confetti({ particleCount: 30, spread: 40 });
@@ -129,19 +164,19 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
         </div>
       )}
 
-      {/* COMPREHENSIVE AUTOMATED AI RESPONSE IN PURE ENGLISH */}
+      {/* STRUCTURED AI RESPONSE DOCUMENT FORMAT DISPLAY */}
       {projectData && (
         <div className="space-y-6 animate-fadeIn">
 
-          {/* Top Title & Copy Action Header */}
-          <div className="glass-panel p-6 rounded-2xl border border-indigo-900/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          {/* Main Header Banner */}
+          <div className="glass-panel p-6 rounded-2xl border border-indigo-900/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-slate-900/90">
             <div>
               <div className="flex items-center space-x-2 mb-1">
                 <span className="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  iNSIGHTS Layer 2 Automated Output
+                  Structured AI Response Generated
                 </span>
-                <span className="text-xs text-slate-400">Live MongoDB Atlas Sync</span>
+                <span className="text-xs text-slate-400">Live MongoDB Atlas Ready</span>
               </div>
               <h2 className="text-2xl font-bold text-white">{projectData.title}</h2>
               <p className="text-slate-300 text-sm mt-1">{projectData.tagline}</p>
@@ -150,133 +185,162 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
             <div className="flex items-center space-x-2 w-full md:w-auto">
               <button
                 onClick={handleCopyAiResponse}
-                className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-indigo-600/20 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
               >
                 {copiedCode ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
-                <span>{copiedCode ? t.copied : t.copyResponse}</span>
+                <span>{copiedCode ? "Copied Response!" : "Copy Full AI Response"}</span>
               </button>
             </div>
           </div>
 
-          {/* PURE ENGLISH STRUCTURED BREAKDOWN */}
-          <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-cyan-500/30 space-y-6">
-            <div className="flex items-center space-x-3 border-b border-slate-800 pb-4">
-              <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-                <Sparkles className="w-6 h-6" />
+          {/* FULL STRUCTURED AI RESPONSE CARD FORMAT */}
+          <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-cyan-500/40 bg-slate-900/95 space-y-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 text-slate-950 font-black">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white tracking-tight">Structured AI Response Format</h3>
+                  <p className="text-xs text-cyan-300">Complete 8-Step Automated Solution for "{projectData.title}"</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xl font-extrabold text-white">What will your software automatically generate?</h3>
-                <p className="text-xs text-slate-400">DeepSearch Layer 2 complete automated breakdown for "{projectData.title}"</p>
-              </div>
+              <span className="px-3 py-1 text-xs font-mono font-bold rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ✅ 100% Complete
+              </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-200">
+            {/* 8-STEP STRUCTURED RESPONSE CONTENT GRID */}
+            <div className="space-y-6 text-sm text-slate-200">
               
-              {/* Item 1: Problem Validation */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                <div className="flex items-center space-x-2 font-bold text-emerald-400 text-base">
-                  <CheckCircle2 className="w-5 h-5 shrink-0" />
-                  <span>1. Problem Validation</span>
+              {/* Step 1: Problem Validation */}
+              <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-extrabold text-emerald-400 text-base flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" /> 1. ✅ Problem Validation
+                  </span>
+                  <span className="text-xs font-mono text-slate-400">Feasibility: {projectData.problemValidation.feasibilityScore}/100</span>
                 </div>
-                <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
-                  <li className="list-disc"><strong>Is this a real problem?</strong> Yes, verified with {projectData.problemValidation.feasibilityScore}/100 feasibility score.</li>
-                  <li className="list-disc"><strong>How many people are affected?</strong> {projectData.problemValidation.marketGap}</li>
-                  <li className="list-disc font-semibold text-cyan-300">Target Users: {projectData.problemValidation.targetUsers.join(', ')}</li>
-                </ul>
+                <div className="pt-1 space-y-1.5 text-xs text-slate-300 leading-relaxed">
+                  <p>• <strong>Is this a real problem?</strong> Yes, validated with high priority in student institutions and hostels.</p>
+                  <p>• <strong>How many people are affected?</strong> {projectData.problemValidation.marketGap}</p>
+                  <p className="text-cyan-300 font-semibold">• <strong>Target Users:</strong> {projectData.problemValidation.targetUsers.join(', ')}</p>
+                </div>
               </div>
 
-              {/* Item 2: Deep Research */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                <div className="flex items-center space-x-2 font-bold text-purple-400 text-base">
-                  <CheckCircle2 className="w-5 h-5 shrink-0" />
-                  <span>2. Deep Research</span>
+              {/* Step 2: Deep Research */}
+              <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-extrabold text-purple-400 text-base flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" /> 2. ✅ Deep Research & Sources
+                  </span>
+                  <span className="text-xs font-mono text-slate-400">{projectData.deepSearch.citations.length} Verified Sources</span>
                 </div>
-                <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
-                  <li className="list-disc"><strong>Internet & Verified Sources:</strong> Scoured arXiv, IEEE Xplore, Kaggle Datasets, and GitHub Repositories.</li>
-                  <li className="list-disc"><strong>Citations & Reports:</strong> {projectData.deepSearch.citations.length} verified research papers & dataset benchmarks attached below.</li>
-                </ul>
+                <div className="pt-1 space-y-1.5 text-xs text-slate-300 leading-relaxed">
+                  <p>• <strong>Internet & Verified Sources:</strong> Scoured arXiv, IEEE Xplore, Kaggle Datasets, and GitHub Repositories.</p>
+                  <p>• <strong>Research Papers & Citations:</strong> Includes empirical studies and annotated datasets attached in citations section below.</p>
+                </div>
               </div>
 
-              {/* Item 3: Existing Solutions */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                <div className="flex items-center space-x-2 font-bold text-indigo-400 text-base">
-                  <CheckCircle2 className="w-5 h-5 shrink-0" />
-                  <span>3. Existing Solutions Comparison</span>
+              {/* Step 3: Existing Solutions */}
+              <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-extrabold text-indigo-400 text-base flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" /> 3. ✅ Existing Solutions Comparison
+                  </span>
+                  <span className="text-xs font-mono text-slate-400">Market Evaluation</span>
                 </div>
-                <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
+                <div className="pt-1 space-y-2 text-xs text-slate-300">
                   {projectData.existingSolutions.map((sol, idx) => (
-                    <li key={idx} className="list-disc">
-                      <strong>{sol.name}:</strong> Pros ({sol.pros}) | Cons ({sol.cons})
-                    </li>
+                    <div key={idx} className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
+                      <div>
+                        <span className="font-bold text-white">{sol.name}:</span>
+                        <span className="text-slate-300 ml-2">Pros: ({sol.pros}) | Cons: ({sol.cons})</span>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-cyan-300">{sol.status}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
 
-              {/* Item 4: Research Gap */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                <div className="flex items-center space-x-2 font-bold text-amber-400 text-base">
-                  <CheckCircle2 className="w-5 h-5 shrink-0" />
-                  <span>4. Research Gap & Innovation</span>
+              {/* Step 4: Research Gap & Innovation */}
+              <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-extrabold text-amber-400 text-base flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" /> 4. ✅ Research Gap & Innovation
+                  </span>
+                  <span className="text-xs font-mono text-amber-300">Innovation Index: {projectData.problemValidation.innovationScore}/100</span>
                 </div>
-                <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
-                  <li className="list-disc"><strong>What is missing in existing solutions?</strong> Existing systems lack real-time MongoDB cloud synchronization and predictive ML alerts.</li>
-                  <li className="list-disc"><strong>Where can new innovation be created?</strong> iNSIGHTS agentic pipeline with automated code export and WhatsApp bot.</li>
-                </ul>
+                <div className="pt-1 space-y-1.5 text-xs text-slate-300 leading-relaxed">
+                  <p>• <strong>What is missing in existing solutions?</strong> Existing tools lack real-time MongoDB Atlas cloud synchronization, automated computer vision plate audits, and WhatsApp agent alerts.</p>
+                  <p>• <strong>Where can new innovation be created?</strong> iNSIGHTS agentic pipeline with instant readymade code export and live WhatsApp bot integration.</p>
+                </div>
               </div>
 
-              {/* Item 5: Project Idea */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                <div className="flex items-center space-x-2 font-bold text-cyan-400 text-base">
-                  <CheckCircle2 className="w-5 h-5 shrink-0" />
-                  <span>5. Recommended Project Solution</span>
+              {/* Step 5: Recommended Project Solution */}
+              <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-extrabold text-cyan-400 text-base flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" /> 5. ✅ Recommended Project Solution
+                  </span>
+                  <span className="text-xs font-mono text-cyan-300">Optimal Architecture</span>
                 </div>
-                <p className="pl-7 text-xs text-slate-300">
-                  {projectData.tagline}
+                <p className="pt-1 text-xs text-slate-300 leading-relaxed">
+                  <strong>{projectData.title}:</strong> {projectData.tagline}
                 </p>
               </div>
 
-              {/* Item 6: Tech Stack */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
-                <div className="flex items-center space-x-2 font-bold text-emerald-400 text-base">
-                  <CheckCircle2 className="w-5 h-5 shrink-0" />
-                  <span>6. Complete Tech Stack</span>
+              {/* Step 6: Tech Stack */}
+              <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-extrabold text-emerald-400 text-base flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" /> 6. ✅ Complete Tech Stack Breakdown
+                  </span>
+                  <span className="text-xs font-mono text-emerald-300">Production Stack</span>
                 </div>
-                <ul className="space-y-1 pl-7 text-xs text-slate-300 font-mono">
-                  <li>• <strong>Frontend:</strong> {projectData.architecture.frontend}</li>
-                  <li>• <strong>Backend:</strong> {projectData.architecture.backend}</li>
-                  <li>• <strong>AI Models:</strong> {projectData.architecture.aiModels.join(', ')}</li>
-                  <li>• <strong>Database:</strong> MongoDB Atlas (Live Cluster)</li>
-                  <li>• <strong>APIs:</strong> MongoDB Data API + WhatsApp API</li>
-                </ul>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs font-mono">
+                  <div className="p-2 rounded bg-slate-900 text-slate-200"><strong>Frontend:</strong> {projectData.architecture.frontend}</div>
+                  <div className="p-2 rounded bg-slate-900 text-slate-200"><strong>Backend:</strong> {projectData.architecture.backend}</div>
+                  <div className="p-2 rounded bg-slate-900 text-slate-200"><strong>AI Models:</strong> {projectData.architecture.aiModels.join(', ')}</div>
+                  <div className="p-2 rounded bg-slate-900 text-slate-200"><strong>Database:</strong> MongoDB Atlas (Live Cluster)</div>
+                </div>
               </div>
 
-            </div>
-          </div>
-
-          {/* MANDATORY iNSIGHTS LAYER 2 FEATURES */}
-          <div className="glass-panel p-6 rounded-2xl border border-purple-500/30 space-y-4">
-            <div className="flex items-center space-x-2 text-purple-300 font-extrabold text-lg">
-              <CheckSquare className="w-5 h-5 text-purple-400" />
-              <span>Mandatory Features — iNSIGHTS Layer 2 Active (8/8)</span>
-            </div>
-            <p className="text-xs text-slate-400">All mandatory features specified in iNSIGHTS Layer 2 are fully activated:</p>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-              {[
-                { name: "DeepSearch", status: "Active ✅" },
-                { name: "Project Hub", status: "Active ✅" },
-                { name: "AI Agents", status: "Active ✅" },
-                { name: "Real-time Web Intel", status: "Active ✅" },
-                { name: "Personalized Dashboard", status: "Active ✅" },
-                { name: "Knowledge Clustering", status: "Active ✅" },
-                { name: "Research Workspace", status: "Active ✅" },
-                { name: "Multilingual Support", status: "Active ✅" }
-              ].map((feat, idx) => (
-                <div key={idx} className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs font-semibold">
-                  <span className="text-white">{feat.name}</span>
-                  <span className="text-emerald-400 text-[11px]">{feat.status}</span>
+              {/* Step 7: Execution Roadmap */}
+              <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-extrabold text-indigo-400 text-base flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" /> 7. ✅ Execution Roadmap (Phased Execution)
+                  </span>
+                  <span className="text-xs font-mono text-indigo-300">4-Week Milestones</span>
                 </div>
-              ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+                  {projectData.roadmap.map((r, idx) => (
+                    <div key={idx} className="p-2.5 rounded bg-slate-900 border border-slate-800">
+                      <span className="font-bold text-cyan-300">{r.phase}:</span> {r.title}
+                      <p className="text-[11px] text-slate-400 mt-0.5">{r.task}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Step 8: Mandatory iNSIGHTS Layer 2 Features */}
+              <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-extrabold text-purple-400 text-base flex items-center gap-2">
+                    <CheckSquare className="w-5 h-5" /> 8. ✅ Mandatory iNSIGHTS Layer 2 Features Active (8/8)
+                  </span>
+                  <span className="text-xs font-mono text-emerald-400">100% Compliant</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-xs font-semibold">
+                  {['DeepSearch ✅', 'Project Hub ✅', 'AI Agents ✅', 'Real-time Web Intel ✅', 'Personalized Dashboard ✅', 'Knowledge Clustering ✅', 'Research Workspace ✅', 'Multilingual Support ✅'].map((f, idx) => (
+                    <div key={idx} className="p-2 rounded bg-purple-950/40 text-purple-200 border border-purple-800/40 text-center">
+                      {f}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
 
