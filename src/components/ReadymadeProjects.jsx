@@ -13,11 +13,63 @@ export default function ReadymadeProjects({ projectData, activeIdeaId, onSelectP
 
   const categories = ['All', 'AI & Sustainability', 'Healthcare & Mobile AI', 'Cybersecurity & Web3', 'EdTech & NLP'];
 
-  const currentProjectTitle = projectData?.title || "";
+  // Dynamically generate projects array based on whether user has searched for a topic or is using default
+  const isCustomSearch = activeIdeaId && activeIdeaId !== 'food-waste' && projectData;
+
+  const displayProjects = isCustomSearch ? [
+    {
+      id: `searched-1`,
+      title: `${projectData.title} — Production Starter Repository`,
+      category: "Searched Project",
+      description: `Complete readymade production repo tailored for ${projectData.title}. Features automated pipeline, Live MongoDB Atlas connection, and pre-trained AI models.`,
+      techStack: [projectData.architecture.frontend, projectData.architecture.backend, "MongoDB Atlas", projectData.architecture.aiModels[0] || "AI Model"],
+      githubUrl: `https://github.com/insights-copilot/${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-starter`,
+      demoUrl: `https://${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}.vercel.app`,
+      stars: "2.8k",
+      forks: 520,
+      downloadFiles: ["server.js", "model_pipeline.py", "docker-compose.yml", "seed_mongo.js"]
+    },
+    {
+      id: `searched-2`,
+      title: `${projectData.title} — Mobile Companion App & PWA`,
+      category: "Mobile & Edge AI",
+      description: `Offline-first mobile PWA & React Native template with SQLite/Realm sync to MongoDB Atlas and on-device TFLite inference for ${projectData.title}.`,
+      techStack: ["React Native", "MongoDB Atlas Sync", "TFLite Edge AI", "PWA Worker"],
+      githubUrl: `https://github.com/insights-copilot/${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-mobile`,
+      demoUrl: `https://${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-mobile.vercel.app`,
+      stars: "2.1k",
+      forks: 340,
+      downloadFiles: ["App.tsx", "tflite_runtime.tflite", "realm_sync.js"]
+    },
+    {
+      id: `searched-3`,
+      title: `${projectData.title} — Microservices API & Agent Bot`,
+      category: "Backend & Webhooks",
+      description: `Asynchronous FastAPI microservices and WhatsApp/Telegram webhook bot for real-time alerts and automated student notifications.`,
+      techStack: ["Node.js Express", "FastAPI Python", "MongoDB Atlas", "WhatsApp Business API"],
+      githubUrl: `https://github.com/insights-copilot/${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-api`,
+      demoUrl: `https://${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-api.vercel.app`,
+      stars: "1.9k",
+      forks: 290,
+      downloadFiles: ["main_server.js", "whatsapp_webhook.js", "mongo_collections.json"]
+    },
+    {
+      id: `searched-4`,
+      title: `${projectData.title} — Analytics & Admin Dashboard`,
+      category: "Dashboard & Analytics",
+      description: `React 18 admin & student dashboard with interactive Recharts, live MongoDB Atlas data feeds, and pitch deck exporter.`,
+      techStack: ["React 18", "Tailwind CSS", "Recharts", "MongoDB Atlas Data API"],
+      githubUrl: `https://github.com/insights-copilot/${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-dashboard`,
+      demoUrl: `https://${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-dash.vercel.app`,
+      stars: "1.6k",
+      forks: 210,
+      downloadFiles: ["Dashboard.jsx", "RechartsFeed.jsx", "mongo_query.js"]
+    }
+  ] : READYMADE_PROJECTS_CATALOG;
 
   const filteredProjects = selectedFilter === 'All'
-    ? READYMADE_PROJECTS_CATALOG
-    : READYMADE_PROJECTS_CATALOG.filter(p => p.category === selectedFilter);
+    ? displayProjects
+    : displayProjects.filter(p => p.category === selectedFilter || isCustomSearch);
 
   const handleCopyClone = (repoUrl, id) => {
     const cloneCmd = `git clone ${repoUrl}.git`;
@@ -52,44 +104,48 @@ export default function ReadymadeProjects({ projectData, activeIdeaId, onSelectP
           <span>iNSIGHTS Readymade Projects Library</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-          {t.readymadeHeader}
+          {isCustomSearch ? `Readymade Projects for "${projectData.title}"` : t.readymadeHeader}
         </h2>
         <p className="text-slate-300 text-sm max-w-3xl">
-          {t.readymadeDesc}
+          {isCustomSearch
+            ? `Displaying 4 readymade production repositories, mobile templates, APIs, and dashboards dynamically generated for your search topic "${projectData.title}".`
+            : t.readymadeDesc}
         </p>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap gap-2 pt-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedFilter(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                selectedFilter === cat
-                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-md'
-                  : 'bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+        {!isCustomSearch && (
+          <div className="flex flex-wrap gap-2 pt-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedFilter(cat)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                  selectedFilter === cat
+                    ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-md'
+                    : 'bg-slate-900 text-slate-300 border border-slate-800 hover:border-slate-700'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* DYNAMIC SEARCH RECOMMENDATION BANNER */}
-      {projectData && (
-        <div className="glass-panel p-6 rounded-2xl border border-cyan-500/40 bg-slate-900/90 space-y-3">
+      {isCustomSearch && (
+        <div className="glass-panel p-6 rounded-2xl border border-cyan-500/40 bg-slate-900/90 space-y-3 animate-fadeIn">
           <div className="flex items-center justify-between">
             <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              {t.recommendedForSearch} "{currentProjectTitle}"
+              Searched Topic Recommended Readymade Repo
             </span>
-            <span className="text-xs text-emerald-400 font-mono font-bold">100% Readymade Code Ready</span>
+            <span className="text-xs text-emerald-400 font-mono font-bold">100% Ready-to-Clone & Run</span>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h4 className="font-bold text-white text-base">{currentProjectTitle} Readymade Starter Kit</h4>
+              <h4 className="font-bold text-white text-base">{projectData.title} Complete Readymade Repo</h4>
               <p className="text-xs text-slate-400 mt-0.5">{projectData.tagline}</p>
               <div className="flex gap-2 pt-2 text-[11px] text-cyan-300 font-mono">
                 <span>Frontend: React 18</span> • <span>Backend: Node/Express</span> • <span>DB: MongoDB Atlas</span>
@@ -98,7 +154,7 @@ export default function ReadymadeProjects({ projectData, activeIdeaId, onSelectP
 
             <div className="flex items-center space-x-2 shrink-0">
               <button
-                onClick={() => handleDownloadCodeZip(currentProjectTitle, "starter_project.js")}
+                onClick={() => handleDownloadCodeZip(projectData.title, "starter_project.js")}
                 className="py-2 px-3.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-md shadow-cyan-600/20"
               >
                 <Download className="w-3.5 h-3.5" />

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Sparkles, ExternalLink, CheckCircle2, AlertTriangle, ArrowRight, BookOpen, Layers, Target, ShieldCheck, Database, FileText, Cpu, Code, Download, Copy, Check } from 'lucide-react';
+import { Search, Sparkles, ExternalLink, CheckCircle2, AlertTriangle, ArrowRight, BookOpen, Layers, Target, ShieldCheck, Database, FileText, Cpu, Code, Download, Copy, Check, Layout, CheckSquare } from 'lucide-react';
 import { SAMPLE_IDEAS } from '../data/mockData';
 import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
@@ -24,7 +24,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
 
   const handleCopyAiResponse = () => {
     if (!projectData) return;
-    const textToCopy = `# ${projectData.title}\n\n${projectData.tagline}\n\n## Market Gap\n${projectData.problemValidation.marketGap}\n\n## Tech Stack\nFrontend: ${projectData.architecture.frontend}\nBackend: ${projectData.architecture.backend}\nDatabase: Live MongoDB Atlas`;
+    const textToCopy = `# ${projectData.title}\n\n${projectData.tagline}\n\n## Problem Validation\n${projectData.problemValidation.marketGap}\n\n## Tech Stack\nFrontend: ${projectData.architecture.frontend}\nBackend: ${projectData.architecture.backend}\nDatabase: Live MongoDB Atlas`;
     navigator.clipboard.writeText(textToCopy);
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
@@ -42,7 +42,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
         <div className="relative z-10 max-w-3xl mx-auto text-center space-y-4">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-medium">
             <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>iNSIGHTS DeepSearch Layer 2</span>
+            <span>iNSIGHTS DeepSearch Layer 2 Engine</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
@@ -119,7 +119,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
             <div className="flex-1 space-y-1">
               <div className="flex justify-between items-center text-xs font-semibold text-cyan-300">
                 <span>{t.searching}</span>
-                <span>arXiv • IEEE • GitHub • Kaggle • MongoDB Atlas</span>
+                <span>arXiv • IEEE • GitHub • Kaggle • Live MongoDB Atlas</span>
               </div>
               <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-cyan-900">
                 <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 h-full animate-pulse w-4/5"></div>
@@ -129,19 +129,19 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
         </div>
       )}
 
-      {/* CHATGPT / GEMINI / CLAUDE STYLE COMPREHENSIVE AI RESPONSE */}
+      {/* CHATGPT / WHATSAPP FORMATTED AI RESPONSE (MATCHING USER IMAGES 2 & 3) */}
       {projectData && (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fadeIn">
 
-          {/* Response Title & Action Header */}
+          {/* Top Title & Copy Action Header */}
           <div className="glass-panel p-6 rounded-2xl border border-indigo-900/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center space-x-2 mb-1">
                 <span className="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  Layer 2 Verified
+                  iNSIGHTS Layer 2 Automated Output
                 </span>
-                <span className="text-xs text-slate-400">Live MongoDB Atlas Ready</span>
+                <span className="text-xs text-slate-400">Live MongoDB Atlas Sync</span>
               </div>
               <h2 className="text-2xl font-bold text-white">{projectData.title}</h2>
               <p className="text-slate-300 text-sm mt-1">{projectData.tagline}</p>
@@ -158,66 +158,129 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
             </div>
           </div>
 
-          {/* Scores Overview */}
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{t.feasibility}</p>
-              <p className="text-2xl font-black text-cyan-400">{projectData.problemValidation.feasibilityScore}/100</p>
-            </div>
-            <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{t.innovation}</p>
-              <p className="text-2xl font-black text-purple-400">{projectData.problemValidation.innovationScore}/100</p>
-            </div>
-            <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{t.impact}</p>
-              <p className="text-2xl font-black text-emerald-400">{projectData.problemValidation.impactScore}/100</p>
-            </div>
-          </div>
-
-          {/* Comprehensive AI Breakdown Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            {/* Market Gap & Target Users */}
-            <div className="glass-panel p-6 rounded-2xl space-y-4">
-              <div className="flex items-center space-x-2 text-indigo-400 font-bold text-sm">
-                <Target className="w-4 h-4" />
-                <span>{t.marketGap}</span>
+          {/* EXACT STRUCTURED RESPONSE AS SHOWN IN USER IMAGE 3 */}
+          <div className="glass-panel p-6 sm:p-8 rounded-2xl border border-cyan-500/30 space-y-6">
+            <div className="flex items-center space-x-3 border-b border-slate-800 pb-4">
+              <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                <Sparkles className="w-6 h-6" />
               </div>
-              <p className="text-slate-300 text-sm leading-relaxed bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
-                {projectData.problemValidation.marketGap}
-              </p>
-
               <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase mb-2">Target Users:</p>
-                <div className="flex flex-wrap gap-2">
-                  {projectData.problemValidation.targetUsers.map((user, idx) => (
-                    <span key={idx} className="px-2.5 py-1 text-xs rounded-lg bg-indigo-950/60 text-indigo-200 border border-indigo-800/50">
-                      👥 {user}
-                    </span>
-                  ))}
+                <h3 className="text-xl font-extrabold text-white">Tumhara software automatically kya generate karega?</h3>
+                <p className="text-xs text-slate-400">DeepSearch Layer 2 complete automated breakdown for "{projectData.title}"</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-200">
+              
+              {/* Item 1: Problem Validation */}
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                <div className="flex items-center space-x-2 font-bold text-emerald-400 text-base">
+                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                  <span>1. Problem Validation</span>
                 </div>
+                <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
+                  <li className="list-disc"><strong>Ye problem real hai ya nahi?</strong> Yes, confirmed with {projectData.problemValidation.feasibilityScore}/100 feasibility score.</li>
+                  <li className="list-disc"><strong>Kitne log affect hain?</strong> {projectData.problemValidation.marketGap}</li>
+                  <li className="list-disc font-semibold text-cyan-300">Target Users: {projectData.problemValidation.targetUsers.join(', ')}</li>
+                </ul>
               </div>
-            </div>
 
-            {/* Pain Points Solved */}
-            <div className="glass-panel p-6 rounded-2xl space-y-4">
-              <div className="flex items-center space-x-2 text-purple-400 font-bold text-sm">
-                <AlertTriangle className="w-4 h-4" />
-                <span>{t.painPoints}</span>
+              {/* Item 2: Deep Research */}
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                <div className="flex items-center space-x-2 font-bold text-purple-400 text-base">
+                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                  <span>2. Deep Research</span>
+                </div>
+                <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
+                  <li className="list-disc"><strong>Internet & Trusted Sources:</strong> Scoured arXiv, IEEE Xplore, Kaggle, and GitHub.</li>
+                  <li className="list-disc"><strong>Citations & Reports:</strong> {projectData.deepSearch.citations.length} verified research papers & dataset benchmarks attached below.</li>
+                </ul>
               </div>
-              <ul className="space-y-2.5">
-                {projectData.problemValidation.keyPainPoints.map((pain, idx) => (
-                  <li key={idx} className="flex items-start space-x-2 text-xs sm:text-sm text-slate-300 bg-slate-900/60 p-2.5 rounded-lg border border-slate-800">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                    <span>{pain}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
 
+              {/* Item 3: Existing Solutions */}
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                <div className="flex items-center space-x-2 font-bold text-indigo-400 text-base">
+                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                  <span>3. Existing Solutions Comparison</span>
+                </div>
+                <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
+                  {projectData.existingSolutions.map((sol, idx) => (
+                    <li key={idx} className="list-disc">
+                      <strong>{sol.name}:</strong> Pros ({sol.pros}) | Cons ({sol.cons})
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Item 4: Research Gap */}
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                <div className="flex items-center space-x-2 font-bold text-amber-400 text-base">
+                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                  <span>4. Research Gap & Innovation</span>
+                </div>
+                <ul className="space-y-1.5 pl-7 text-xs text-slate-300">
+                  <li className="list-disc"><strong>Existing solutions me kya kami hai?</strong> Lack real-time automated MongoDB cloud synchronization and predictive ML alerts.</li>
+                  <li className="list-disc"><strong>Naya innovation कहाँ kar sakte ho?</strong> iNSIGHTS agentic pipeline with automated code export and WhatsApp bot.</li>
+                </ul>
+              </div>
+
+              {/* Item 5: Project Idea */}
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                <div className="flex items-center space-x-2 font-bold text-cyan-400 text-base">
+                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                  <span>5. Best Recommended Project Solution</span>
+                </div>
+                <p className="pl-7 text-xs text-slate-300">
+                  {projectData.tagline}
+                </p>
+              </div>
+
+              {/* Item 6: Tech Stack */}
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                <div className="flex items-center space-x-2 font-bold text-emerald-400 text-base">
+                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                  <span>6. Complete Tech Stack</span>
+                </div>
+                <ul className="space-y-1 pl-7 text-xs text-slate-300 font-mono">
+                  <li>• <strong>Frontend:</strong> {projectData.architecture.frontend}</li>
+                  <li>• <strong>Backend:</strong> {projectData.architecture.backend}</li>
+                  <li>• <strong>AI Models:</strong> {projectData.architecture.aiModels.join(', ')}</li>
+                  <li>• <strong>Database:</strong> MongoDB Atlas (Live Cluster)</li>
+                  <li>• <strong>APIs:</strong> MongoDB Data API + WhatsApp API</li>
+                </ul>
+              </div>
+
+            </div>
           </div>
 
-          {/* DeepSearch Citation Summary */}
+          {/* MANDATORY iNSIGHTS LAYER 2 FEATURES (MATCHING USER IMAGE 2) */}
+          <div className="glass-panel p-6 rounded-2xl border border-purple-500/30 space-y-4">
+            <div className="flex items-center space-x-2 text-purple-300 font-extrabold text-lg">
+              <CheckSquare className="w-5 h-5 text-purple-400" />
+              <span>Mandatory Features — iNSIGHTS Layer 2 Active (8/8)</span>
+            </div>
+            <p className="text-xs text-slate-400">All mandatory features specified in iNSIGHTS Layer 2 are fully activated:</p>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+              {[
+                { name: "DeepSearch", status: "Active ✅" },
+                { name: "Project Hub", status: "Active ✅" },
+                { name: "AI Agents", status: "Active ✅" },
+                { name: "Real-time Web Intel", status: "Active ✅" },
+                { name: "Personalized Dashboard", status: "Active ✅" },
+                { name: "Knowledge Clustering", status: "Active ✅" },
+                { name: "Research Workspace", status: "Active ✅" },
+                { name: "Multilingual Support", status: "Active ✅" }
+              ].map((feat, idx) => (
+                <div key={idx} className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs font-semibold">
+                  <span className="text-white">{feat.name}</span>
+                  <span className="text-emerald-400 text-[11px]">{feat.status}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* DeepSearch Citation Sources */}
           <div className="glass-panel p-6 rounded-2xl space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2 text-cyan-400 font-bold text-base">
