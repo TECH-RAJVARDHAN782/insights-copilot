@@ -3,12 +3,15 @@ import { Rocket, Github, ExternalLink, Download, Code, Check, Star, GitFork, Spa
 import { READYMADE_PROJECTS_CATALOG } from '../data/mockData';
 import confetti from 'canvas-confetti';
 
-export default function ReadymadeProjects({ onSelectProject }) {
+export default function ReadymadeProjects({ projectData, activeIdeaId }) {
   const [copiedId, setCopiedId] = useState(null);
   const [downloadingFile, setDownloadingFile] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState('All');
 
   const categories = ['All', 'AI & Sustainability', 'Healthcare & Mobile AI', 'Cybersecurity & Web3', 'EdTech & NLP'];
+
+  // Dynamically highlight or filter project based on search active idea
+  const currentProjectTitle = projectData?.title || "";
 
   const filteredProjects = selectedFilter === 'All'
     ? READYMADE_PROJECTS_CATALOG
@@ -70,6 +73,39 @@ export default function ReadymadeProjects({ onSelectProject }) {
           ))}
         </div>
       </div>
+
+      {/* DYNAMIC SEARCH RECOMMENDATION BANNER */}
+      {projectData && (
+        <div className="glass-panel p-6 rounded-2xl border border-cyan-500/40 bg-slate-900/90 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              Recommended Project For Your Search: "{currentProjectTitle}"
+            </span>
+            <span className="text-xs text-emerald-400 font-mono font-bold">100% Readymade Code Ready</span>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h4 className="font-bold text-white text-base">{currentProjectTitle} Readymade Starter Kit</h4>
+              <p className="text-xs text-slate-400 mt-0.5">{projectData.tagline}</p>
+              <div className="flex gap-2 pt-2 text-[11px] text-cyan-300 font-mono">
+                <span>Frontend: React 18</span> • <span>Backend: Node/Express</span> • <span>DB: MongoDB Atlas</span>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2 shrink-0">
+              <button
+                onClick={() => handleDownloadCodeZip(currentProjectTitle, "starter_project.js")}
+                className="py-2 px-3.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-md shadow-cyan-600/20"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download Code Zip</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Projects Catalog Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

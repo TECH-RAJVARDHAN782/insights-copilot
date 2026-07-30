@@ -1,7 +1,7 @@
 import React from 'react';
-import { Sparkles, Compass, Cpu, FileText, Award, Globe, Zap, Smartphone, Monitor, Layout, UserCheck, Database, Rocket, Bot } from 'lucide-react';
+import { Sparkles, Compass, Cpu, FileText, Globe, Zap, Smartphone, Monitor, Layout, UserCheck, Database, Rocket, Bot, Share2 } from 'lucide-react';
 import { LANGUAGES } from '../data/mockData';
-import confetti from 'canvas-confetti';
+import { TRANSLATIONS } from '../data/translations';
 
 export default function Header({ 
   activeTab, 
@@ -11,21 +11,16 @@ export default function Header({
   viewMode,
   setViewMode
 }) {
-  const triggerConfetti = () => {
-    confetti({
-      particleCount: 120,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
-  };
+  const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
   const tabs = [
-    { id: 'search', label: 'DeepSearch AI Response', icon: Compass },
-    { id: 'readymade', label: 'Readymade Projects HUB', icon: Rocket },
-    { id: 'hub', label: 'MongoDB & Architecture', icon: Database },
-    { id: 'agents', label: 'Live WhatsApp & AI Agents', icon: Bot },
-    { id: 'docs', label: 'Pitch Deck & PPT Download', icon: FileText },
-    { id: 'talent', label: 'AI Talent & Verification', icon: UserCheck },
+    { id: 'search', label: t.tabs.search, icon: Compass },
+    { id: 'readymade', label: t.tabs.readymade, icon: Rocket },
+    { id: 'graph', label: t.tabs.graph, icon: Share2 },
+    { id: 'hub', label: t.tabs.hub, icon: Database },
+    { id: 'agents', label: t.tabs.agents, icon: Bot },
+    { id: 'docs', label: t.tabs.docs, icon: FileText },
+    { id: 'talent', label: t.tabs.talent, icon: UserCheck },
   ];
 
   return (
@@ -50,7 +45,7 @@ export default function Header({
                   Live MongoDB
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">Search Less. Solve More. From Idea to Production.</p>
+              <p className="text-[11px] text-slate-400 hidden sm:block">{t.tagline}</p>
             </div>
           </div>
 
@@ -58,7 +53,7 @@ export default function Header({
           <div className="flex items-center bg-slate-900/90 p-1 rounded-xl border border-indigo-900/50 shadow-inner">
             <button
               onClick={() => setViewMode('web')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                 viewMode === 'web'
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-400 hover:text-slate-200'
@@ -70,7 +65,7 @@ export default function Header({
 
             <button
               onClick={() => setViewMode('mobile')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                 viewMode === 'mobile'
                   ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
                   : 'text-slate-400 hover:text-slate-200'
@@ -82,7 +77,7 @@ export default function Header({
 
             <button
               onClick={() => setViewMode('dual')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                 viewMode === 'dual'
                   ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
                   : 'text-slate-400 hover:text-slate-200'
@@ -93,33 +88,22 @@ export default function Header({
             </button>
           </div>
 
-          {/* Right Action Tools */}
+          {/* Right Action Tools - Language Selector */}
           <div className="flex items-center space-x-3">
-            
-            {/* Language Selector */}
-            <div className="relative flex items-center bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-xs">
-              <Globe className="w-3.5 h-3.5 text-slate-400 mr-1.5" />
+            <div className="relative flex items-center bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs">
+              <Globe className="w-4 h-4 text-cyan-400 mr-2" />
               <select
                 value={currentLang}
                 onChange={(e) => setCurrentLang(e.target.value)}
-                className="bg-transparent text-slate-200 focus:outline-none cursor-pointer pr-1"
+                className="bg-transparent text-slate-100 font-semibold focus:outline-none cursor-pointer pr-1"
               >
                 {LANGUAGES.map((lang) => (
-                  <option key={lang.code} value={lang.code} className="bg-slate-900 text-slate-200">
+                  <option key={lang.code} value={lang.code} className="bg-slate-900 text-slate-100">
                     {lang.flag} {lang.name}
                   </option>
                 ))}
               </select>
             </div>
-
-            {/* Hackathon Win Mode Button */}
-            <button
-              onClick={triggerConfetti}
-              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 hover:from-amber-400 hover:to-yellow-300 transition shadow-md shadow-amber-500/20 active:scale-95 cursor-pointer"
-            >
-              <Award className="w-4 h-4" />
-              <span className="hidden sm:inline">Hackathon Win</span>
-            </button>
           </div>
 
         </div>

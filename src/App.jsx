@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import DeepSearch from './components/DeepSearch';
 import ReadymadeProjects from './components/ReadymadeProjects';
+import KnowledgeGraph from './components/KnowledgeGraph';
 import ProjectHub from './components/ProjectHub';
 import AgentHub from './components/AgentHub';
 import DocGenerator from './components/DocGenerator';
@@ -30,7 +31,7 @@ export default function App() {
         setProjectData(createDynamicProjectData(sample ? sample.title : "Custom Student Project", sample ? sample.prompt : ""));
       }
       setIsSearching(false);
-    }, 1000);
+    }, 900);
   };
 
   const handleGenerateCustom = (customPrompt) => {
@@ -44,7 +45,7 @@ export default function App() {
       );
       setProjectData(generatedData);
       setIsSearching(false);
-    }, 1200);
+    }, 1100);
   };
 
   const extractTitleFromPrompt = (prompt) => {
@@ -149,22 +150,33 @@ export default function App() {
             onGenerateCustom={handleGenerateCustom}
             isSearching={isSearching}
             activeIdeaId={activeIdeaId}
+            currentLang={currentLang}
           />
         );
       case 'readymade':
         return (
           <ReadymadeProjects
+            projectData={projectData}
+            activeIdeaId={activeIdeaId}
             onSelectProject={handleSelectSample}
+            currentLang={currentLang}
+          />
+        );
+      case 'graph':
+        return (
+          <KnowledgeGraph
+            projectData={projectData}
+            currentLang={currentLang}
           />
         );
       case 'hub':
-        return <ProjectHub projectData={projectData} />;
+        return <ProjectHub projectData={projectData} currentLang={currentLang} />;
       case 'agents':
-        return <AgentHub projectData={projectData} />;
+        return <AgentHub projectData={projectData} currentLang={currentLang} />;
       case 'docs':
-        return <DocGenerator projectData={projectData} />;
+        return <DocGenerator projectData={projectData} currentLang={currentLang} />;
       case 'talent':
-        return <TalentPlatform projectData={projectData} />;
+        return <TalentPlatform projectData={projectData} currentLang={currentLang} />;
       default:
         return null;
     }

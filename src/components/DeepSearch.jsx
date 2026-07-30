@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Search, Sparkles, ExternalLink, CheckCircle2, AlertTriangle, ArrowRight, BookOpen, Layers, Target, ShieldCheck, Database, FileText, Cpu, Code, Download, Copy, Check } from 'lucide-react';
 import { SAMPLE_IDEAS } from '../data/mockData';
+import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
 
-export default function DeepSearch({ projectData, onSelectSample, onGenerateCustom, isSearching, activeIdeaId }) {
+export default function DeepSearch({ projectData, onSelectSample, onGenerateCustom, isSearching, activeIdeaId, currentLang = 'en' }) {
   const [inputPrompt, setInputPrompt] = useState('');
   const [selectedCitation, setSelectedCitation] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
+
+  const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,7 +34,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
   return (
     <div className="space-y-8 animate-fadeIn">
       
-      {/* Hero Section & ChatGPT/Gemini Style Search Engine Bar */}
+      {/* Hero Section & Multilingual Search Bar */}
       <div className="relative rounded-2xl glass-panel-glow p-6 sm:p-8 overflow-hidden">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -39,14 +42,14 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
         <div className="relative z-10 max-w-3xl mx-auto text-center space-y-4">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-medium">
             <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>ChatGPT & Gemini Style Student AI Copilot Engine</span>
+            <span>iNSIGHTS DeepSearch Layer 2</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Ask Anything. Get <span className="gradient-text-cyber">Complete Project Solutions</span>
+            {t.heroHeader}
           </h1>
           <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-            Search any project idea or engineering problem statement to get comprehensive AI research analysis, architecture diagrams, MongoDB schemas, and code.
+            {t.heroDesc}
           </p>
 
           {/* Search Bar Input */}
@@ -56,7 +59,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
                 type="text"
                 value={inputPrompt}
                 onChange={(e) => setInputPrompt(e.target.value)}
-                placeholder="Search any project topic e.g. AI food waste, smart health scanner, autonomous drone..."
+                placeholder={t.searchPlaceholder}
                 className="w-full pl-12 pr-36 py-4 rounded-xl glass-input text-white placeholder-slate-400 text-sm sm:text-base focus:outline-none transition-all shadow-xl"
               />
               <Search className="absolute left-4 w-5 h-5 text-slate-400" />
@@ -68,12 +71,12 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
                 {isSearching ? (
                   <>
                     <Cpu className="w-4 h-4 animate-spin text-cyan-200" />
-                    <span>Analyzing AI...</span>
+                    <span>{t.searching}</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    <span>Search AI</span>
+                    <span>{t.searchBtn}</span>
                   </>
                 )}
               </button>
@@ -82,7 +85,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
 
           {/* Quick Presets */}
           <div className="pt-2">
-            <p className="text-xs text-slate-400 mb-2.5 font-medium">Or select a trending student innovation topic:</p>
+            <p className="text-xs text-slate-400 mb-2.5 font-medium">{t.presetTitle}</p>
             <div className="flex flex-wrap justify-center gap-2">
               {SAMPLE_IDEAS.map((sample) => {
                 const isActive = activeIdeaId === sample.id;
@@ -115,7 +118,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
             </div>
             <div className="flex-1 space-y-1">
               <div className="flex justify-between items-center text-xs font-semibold text-cyan-300">
-                <span>iNSIGHTS Copilot generating comprehensive AI response...</span>
+                <span>{t.searching}</span>
                 <span>arXiv • IEEE • GitHub • Kaggle • MongoDB Atlas</span>
               </div>
               <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-cyan-900">
@@ -136,7 +139,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
               <div className="flex items-center space-x-2 mb-1">
                 <span className="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  AI Comprehensive Analysis Complete
+                  Layer 2 Verified
                 </span>
                 <span className="text-xs text-slate-400">Live MongoDB Atlas Ready</span>
               </div>
@@ -150,7 +153,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
                 className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-indigo-600/20 cursor-pointer"
               >
                 {copiedCode ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
-                <span>{copiedCode ? "Copied AI Response!" : "Copy Response"}</span>
+                <span>{copiedCode ? t.copied : t.copyResponse}</span>
               </button>
             </div>
           </div>
@@ -158,15 +161,15 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
           {/* Scores Overview */}
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Feasibility</p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{t.feasibility}</p>
               <p className="text-2xl font-black text-cyan-400">{projectData.problemValidation.feasibilityScore}/100</p>
             </div>
             <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Innovation</p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{t.innovation}</p>
               <p className="text-2xl font-black text-purple-400">{projectData.problemValidation.innovationScore}/100</p>
             </div>
             <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Impact</p>
+              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">{t.impact}</p>
               <p className="text-2xl font-black text-emerald-400">{projectData.problemValidation.impactScore}/100</p>
             </div>
           </div>
@@ -178,14 +181,14 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
             <div className="glass-panel p-6 rounded-2xl space-y-4">
               <div className="flex items-center space-x-2 text-indigo-400 font-bold text-sm">
                 <Target className="w-4 h-4" />
-                <span>Problem Breakdown & Market Gap</span>
+                <span>{t.marketGap}</span>
               </div>
               <p className="text-slate-300 text-sm leading-relaxed bg-slate-900/60 p-3.5 rounded-xl border border-slate-800">
                 {projectData.problemValidation.marketGap}
               </p>
 
               <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase mb-2">Primary Target Users:</p>
+                <p className="text-xs font-semibold text-slate-400 uppercase mb-2">Target Users:</p>
                 <div className="flex flex-wrap gap-2">
                   {projectData.problemValidation.targetUsers.map((user, idx) => (
                     <span key={idx} className="px-2.5 py-1 text-xs rounded-lg bg-indigo-950/60 text-indigo-200 border border-indigo-800/50">
@@ -200,7 +203,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
             <div className="glass-panel p-6 rounded-2xl space-y-4">
               <div className="flex items-center space-x-2 text-purple-400 font-bold text-sm">
                 <AlertTriangle className="w-4 h-4" />
-                <span>Key User Pain Points Addressed</span>
+                <span>{t.painPoints}</span>
               </div>
               <ul className="space-y-2.5">
                 {projectData.problemValidation.keyPainPoints.map((pain, idx) => (
@@ -219,7 +222,7 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2 text-cyan-400 font-bold text-base">
                 <BookOpen className="w-5 h-5" />
-                <span>Citation-Backed Research & Datasets ({projectData.deepSearch.citations.length} Verified Sources)</span>
+                <span>{t.citations} ({projectData.deepSearch.citations.length} Verified Sources)</span>
               </div>
             </div>
 
