@@ -8,7 +8,6 @@ import AgentHub from './components/AgentHub';
 import DocGenerator from './components/DocGenerator';
 import TalentPlatform from './components/TalentPlatform';
 import MobileSimulator from './components/MobileSimulator';
-import HackathonBanner from './components/HackathonBanner';
 import { DEFAULT_PROJECT_DATA, SAMPLE_IDEAS } from './data/mockData';
 
 export default function App() {
@@ -197,9 +196,6 @@ export default function App() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        
-        {/* Hackathon Banner */}
-        <HackathonBanner />
 
         {/* VIEWPORT DISPLAY CONTROLS */}
 

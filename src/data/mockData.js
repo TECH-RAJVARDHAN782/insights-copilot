@@ -95,6 +95,7 @@ export const READYMADE_PROJECTS_CATALOG = [
 export const LANGUAGES = [
   { code: 'en', name: 'English', flag: '🇺🇸' },
   { code: 'hi', name: 'हिंदी (Hindi)', flag: '🇮🇳' },
+  { code: 'mr', name: 'मराठी (Marathi)', flag: '🇮🇳' },
   { code: 'es', name: 'Español', flag: '🇪🇸' },
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
   { code: 'de', name: 'Deutsch', flag: '🇩🇪' },

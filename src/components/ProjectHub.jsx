@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, ExternalLink, Layers, Sparkles, Terminal, Copy, Check, Activity, Layers3 } from 'lucide-react';
+import { Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, ExternalLink, Layers, Sparkles, Terminal, Copy, Check, Activity } from 'lucide-react';
+import { TRANSLATIONS } from '../data/translations';
 
-export default function ProjectHub({ projectData }) {
+export default function ProjectHub({ projectData, currentLang = 'en' }) {
   const [completedRoadmap, setCompletedRoadmap] = useState([0]); // Phase 1 checked by default
   const [selectedNode, setSelectedNode] = useState(null);
   const [activeCodeTab, setActiveCodeTab] = useState('express_mongo'); // 'express_mongo' | 'mongoose_schema' | 'seed_script'
   const [copiedCode, setCopiedCode] = useState(false);
+
+  const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
   if (!projectData) {
     return (
@@ -25,7 +28,7 @@ export default function ProjectHub({ projectData }) {
     }
   };
 
-  const { architecture, roadmap, githubRepos } = projectData;
+  const { architecture, roadmap } = projectData;
 
   const codeBoilerplates = {
     express_mongo: `// Express.js + MongoDB Atlas Live Connection Server for ${projectData.title}
@@ -44,7 +47,6 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log("✅ Live MongoDB Atlas Cluster Connected Successfully"))
   .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
-// Live API Endpoint
 app.get('/api/health', (req, res) => {
   res.json({
     database: "MongoDB Atlas",
@@ -105,13 +107,13 @@ seedDatabase();`
       <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-500/30">
         <div className="flex items-center space-x-2 text-indigo-300 text-xs font-semibold">
           <Sparkles className="w-4 h-4 text-cyan-400" />
-          <span>iNSIGHTS Project HUB & Live MongoDB Engine</span>
+          <span>iNSIGHTS Project HUB</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-          System Architecture & Live MongoDB Vault
+          {t.mongoHeader}
         </h2>
         <p className="text-slate-300 text-sm">
-          Powered by MongoDB Atlas live cluster connection, Express REST microservices, and interactive pipeline node diagrams.
+          {t.mongoDesc}
         </p>
       </div>
 
@@ -124,9 +126,9 @@ seedDatabase();`
             </div>
             <div>
               <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                MongoDB Atlas Live Database Status
+                {t.mongoStatus}
                 <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-mono">
-                  LIVE CONNECTED
+                  {t.mongoLive}
                 </span>
               </h3>
               <p className="text-xs text-slate-400">Cluster: aws-iad1-shard-0 • DB: ecomeal_db • Storage Engine: WiredTiger</p>
@@ -135,7 +137,7 @@ seedDatabase();`
 
           <div className="flex items-center space-x-2 text-xs font-mono text-emerald-400 bg-emerald-950/60 px-3 py-1.5 rounded-lg border border-emerald-800/60">
             <Activity className="w-3.5 h-3.5 animate-pulse text-emerald-400" />
-            <span>Connection Ping: 18ms</span>
+            <span>{t.ping} 18ms</span>
           </div>
         </div>
 
@@ -167,7 +169,7 @@ seedDatabase();`
           <div>
             <h3 className="text-base font-bold text-white flex items-center gap-2">
               <Code className="w-5 h-5 text-emerald-400" />
-              Live MongoDB Atlas Starter Code Boilerplate
+              {t.expressBoilerplate}
             </h3>
             <p className="text-xs text-slate-400">Copy pre-configured Express server code, Mongoose data schemas, and database seeder scripts.</p>
           </div>
@@ -199,7 +201,7 @@ seedDatabase();`
               className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
             >
               {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedCode ? "Copied!" : "Copy Code"}</span>
+              <span>{copiedCode ? t.copied : t.copyCode}</span>
             </button>
           </div>
         </div>
@@ -214,9 +216,9 @@ seedDatabase();`
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 text-cyan-400 font-bold text-base">
             <Cpu className="w-5 h-5" />
-            <span>Interactive System Architecture & Pipeline Nodes</span>
+            <span>{t.interactiveNodes}</span>
           </div>
-          <span className="text-xs text-slate-400">Click any node to inspect data specs</span>
+          <span className="text-xs text-slate-400">{t.nodeInspectHint}</span>
         </div>
 
         {/* Node Pipeline Layout */}
@@ -239,7 +241,7 @@ seedDatabase();`
                 </div>
                 <h4 className="text-sm font-bold text-white mb-1">{node.label}</h4>
                 <p className="text-[11px] text-slate-300 flex items-center space-x-1">
-                  <span>Inspect Pipeline Data</span>
+                  <span>{t.inspectPipeline}</span>
                   <ArrowRight className="w-3 h-3 text-cyan-400" />
                 </p>
               </div>
@@ -272,7 +274,7 @@ seedDatabase();`
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 text-amber-400 font-bold text-base">
             <Terminal className="w-5 h-5" />
-            <span>Sprint Roadmap & Milestones ({completedRoadmap.length} of {roadmap.length} Completed)</span>
+            <span>{t.sprintRoadmap} ({completedRoadmap.length} of {roadmap.length} {t.completed})</span>
           </div>
           <div className="w-32 bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
             <div

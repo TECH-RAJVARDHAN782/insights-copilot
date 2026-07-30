@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Sparkles, Bot, Send, MessageSquare, Smartphone, Terminal, CheckCircle2, Cpu, UserCheck, RefreshCw } from 'lucide-react';
+import { Sparkles, Bot, Send, Smartphone, RefreshCw } from 'lucide-react';
+import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
 
-export default function AgentHub({ projectData }) {
+export default function AgentHub({ projectData, currentLang = 'en' }) {
+  const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+
   const [messages, setMessages] = useState([
     { agent: "Research Agent", avatar: "🔍", text: "DeepSearch completed. Initialized knowledge graph with 46 research sources." },
     { agent: "Architecture Agent", avatar: "🏗️", text: "Configured MongoDB Atlas Mongoose schemas and Redis pub/sub queue for peak dining hours." },
@@ -12,7 +15,6 @@ export default function AgentHub({ projectData }) {
   const [inputMessage, setInputMessage] = useState('');
   const [selectedAgent, setSelectedAgent] = useState('Code Copilot Agent');
 
-  // LIVE WHATSAPP BOT CHAT STATE (No fixed messages!)
   const [whatsappChat, setWhatsappChat] = useState([
     { id: 1, sender: 'bot', text: '👋 Hi Student! I am your live iNSIGHTS WhatsApp Assistant. Type any question or message to test live webhooks!', time: '10:00 AM' }
   ]);
@@ -93,10 +95,10 @@ export default function AgentHub({ projectData }) {
           <span>iNSIGHTS Live Agentic Collaboration Center</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-          Autonomous AI Agents & Live WhatsApp Assistant
+          {t.agentHeader}
         </h2>
         <p className="text-slate-300 text-sm">
-          Type custom prompts to test live AI agent responses and send real-time WhatsApp messages to the interactive bot.
+          {t.agentDesc}
         </p>
       </div>
 
@@ -121,7 +123,7 @@ export default function AgentHub({ projectData }) {
               </div>
               <div className="flex items-center space-x-1 text-[11px] text-emerald-400 font-medium pt-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Active & Live</span>
+                <span>{t.activeLive}</span>
               </div>
             </div>
           );
@@ -136,9 +138,9 @@ export default function AgentHub({ projectData }) {
           <div className="flex items-center justify-between pb-4 border-b border-slate-800">
             <div className="flex items-center space-x-2">
               <Bot className="w-5 h-5 text-cyan-400" />
-              <span className="text-sm font-bold text-white">AI Agent Dialogue Stream</span>
+              <span className="text-sm font-bold text-white">{t.dialogueStream}</span>
             </div>
-            <span className="text-xs text-slate-400 font-mono">Target Agent: <strong className="text-cyan-300">{selectedAgent}</strong></span>
+            <span className="text-xs text-slate-400 font-mono">{t.targetAgent} <strong className="text-cyan-300">{selectedAgent}</strong></span>
           </div>
 
           {/* Chat Messages */}
@@ -171,29 +173,29 @@ export default function AgentHub({ projectData }) {
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              placeholder={`Ask ${selectedAgent} to update architecture, MongoDB schema, or research...`}
+              placeholder={t.askAgentPlaceholder}
               className="flex-1 px-4 py-2.5 rounded-xl glass-input text-white text-xs sm:text-sm focus:outline-none"
             />
             <button
               type="submit"
               className="px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs flex items-center space-x-1.5 shadow-md shadow-cyan-500/20 cursor-pointer"
             >
-              <span>Send</span>
+              <span>{t.send}</span>
               <Send className="w-3.5 h-3.5" />
             </button>
           </form>
         </div>
 
-        {/* LIVE INTERACTIVE WHATSAPP BOT (No fixed messages!) */}
+        {/* LIVE INTERACTIVE WHATSAPP BOT */}
         <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between space-y-4 h-[520px]">
           <div className="flex flex-col h-full space-y-3">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center space-x-2 text-emerald-400 font-bold text-sm">
                 <Smartphone className="w-4 h-4" />
-                <span>Live WhatsApp Interactive Bot</span>
+                <span>{t.liveWhatsapp}</span>
               </div>
               <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-mono">
-                WEBHOOK LIVE
+                {t.webhookLive}
               </span>
             </div>
 
@@ -216,7 +218,7 @@ export default function AgentHub({ projectData }) {
               {isBotReplying && (
                 <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-emerald-400 animate-pulse flex items-center gap-1.5">
                   <RefreshCw className="w-3 h-3 animate-spin" />
-                  <span>WhatsApp Bot is typing response...</span>
+                  <span>{t.botTyping}</span>
                 </div>
               )}
             </div>
@@ -227,7 +229,7 @@ export default function AgentHub({ projectData }) {
                 type="text"
                 value={whatsappInput}
                 onChange={(e) => setWhatsappInput(e.target.value)}
-                placeholder="Type custom message e.g. 'Opt out of dinner' or 'Show code'..."
+                placeholder={t.typeWhatsappPlaceholder}
                 className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-400"
               />
               <button
@@ -239,7 +241,7 @@ export default function AgentHub({ projectData }) {
             </form>
 
             <div className="flex flex-wrap gap-1.5 text-[10px]">
-              <span className="text-slate-400">Quick Test:</span>
+              <span className="text-slate-400">{t.quickTest}</span>
               <button type="button" onClick={() => { setWhatsappInput("Opt out of dinner"); }} className="text-emerald-400 underline cursor-pointer font-mono">"Opt out of dinner"</button>
               <button type="button" onClick={() => { setWhatsappInput("Show project score"); }} className="text-emerald-400 underline cursor-pointer font-mono">"Show project score"</button>
             </div>
