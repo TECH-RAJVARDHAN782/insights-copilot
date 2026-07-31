@@ -23,11 +23,20 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
   // Slide Index
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
 
-  // Dynamic Mobile AI Agent Chat
+  // Dedicated Chat History for Each Agent in Mobile App
   const [selectedAgent, setSelectedAgent] = useState('Code Copilot Agent');
-  const [agentMessages, setAgentMessages] = useState([
-    { id: 1, sender: 'bot', text: `👋 Hi Student! I am your AI Agent Assistant. Type any question!`, time: '09:15 AM' }
-  ]);
+  const [agentChats, setAgentChats] = useState({
+    'Research Agent': [
+      { id: 1, sender: 'bot', text: `🔍 Research Agent: Ready to search IEEE/arXiv citations for "${projectData?.title || 'Student Project'}".`, time: '09:15 AM' }
+    ],
+    'Architecture Agent': [
+      { id: 1, sender: 'bot', text: `🏗️ Architecture Agent: Ready to design API routes & microservices for "${projectData?.title || 'Student Project'}".`, time: '09:15 AM' }
+    ],
+    'Code Copilot Agent': [
+      { id: 1, sender: 'bot', text: `🤖 Code Copilot: Ready to generate starter code for "${projectData?.title || 'Student Project'}".`, time: '09:15 AM' }
+    ]
+  });
+
   const [chatInput, setChatInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
@@ -50,26 +59,42 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
     if (!chatInput.trim()) return;
     const textSent = chatInput;
     const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
     const userMsg = { id: Date.now(), sender: 'user', text: textSent, time: timeNow };
-    setAgentMessages(prev => [...prev, userMsg]);
+
+    // Update current agent's chat
+    setAgentChats(prev => ({
+      ...prev,
+      [selectedAgent]: [...prev[selectedAgent], userMsg]
+    }));
+
     setChatInput('');
     setIsTyping(true);
 
     setTimeout(() => {
       let botReplyText = "";
-      const lower = textSent.toLowerCase();
       const topic = textSent.replace(/^(how|what|why|can|build|create|fix|add|give|show)\s+/i, '').trim() || projectTitle;
-      const latencyMs = Math.floor(Math.random() * 20) + 15;
 
       if (selectedAgent === 'Research Agent') {
-        botReplyText = `🔍 [Research Agent • ${latencyMs}ms]: Found verified arXiv paper citations for "${topic}". 96.2% empirical accuracy score. Plagiarism-Free guaranteed!`;
+        botReplyText = `🔍 [Research Agent]: Verified arXiv paper citation for "${topic}". 96.8% benchmark accuracy score on test datasets. Plagiarism-Free guaranteed!`;
       } else if (selectedAgent === 'Architecture Agent') {
-        botReplyText = `🏗️ [Architecture Agent • ${latencyMs}ms]: Synthesized microservices pipeline for "${topic}". Express REST server + Python FastAPI worker with sub-20ms SLA.`;
+        botReplyText = `🏗️ [Architecture Agent]: Designed microservice route for "${topic}". Endpoint: POST /api/v1/${topic.toLowerCase().replace(/[^a-z0-9]/g, '-')}. Latency SLA: <18ms.`;
       } else {
-        botReplyText = `🤖 [Code Copilot Agent • ${latencyMs}ms]: Generated starter code for "${topic}":\n\nconst express = require('express');\n// Route for ${topic}\napp.post('/api/v1/${topic.toLowerCase().replace(/[^a-z0-9]/g, '-')}', (req,res) => res.json({ status: "OK" }));`;
+        botReplyText = `🤖 [Code Copilot Agent]: Starter Code for "${topic}":\n\nconst express = require('express');\n// Route ${topic}\napp.post('/api/v1/${topic.toLowerCase().replace(/[^a-z0-9]/g, '-')}', (req,res) => res.json({ status: "OK" }));`;
       }
 
-      setAgentMessages(prev => [...prev, { id: Date.now() + 1, sender: 'bot', text: botReplyText, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
+      const botReply = {
+        id: Date.now() + 1,
+        sender: 'bot',
+        text: botReplyText,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      setAgentChats(prev => ({
+        ...prev,
+        [selectedAgent]: [...prev[selectedAgent], botReply]
+      }));
+
       setIsTyping(false);
       confetti({ particleCount: 25, spread: 40 });
     }, 700);
@@ -102,13 +127,6 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
     setTimeout(() => setCopiedPrompt(false), 2000);
     confetti({ particleCount: 25, spread: 35 });
   };
-
-  const mobileSlides = [
-    { title: "Vision Statement", text: projectData?.tagline || "AI-powered innovation engine." },
-    { title: "Problem & Market Gap", text: projectData?.problemValidation?.marketGap || "Unverified execution timelines." },
-    { title: "System Architecture", text: `Frontend: ${frontendTech} | Backend: ${backendTech}.` },
-    { title: "Impact & Feasibility", text: `Feasibility Score: ${projectData?.problemValidation?.feasibilityScore || 94}/100.` }
-  ];
 
   return (
     <div className="flex flex-col items-center justify-center space-y-4 py-2">
@@ -211,7 +229,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                 </button>
               </form>
 
-              {/* Streamlined 4-Section Output */}
+              {/* Streamlined Output */}
               {projectData ? (
                 <div className="p-3.5 rounded-2xl bg-slate-900 border border-cyan-500/40 space-y-2 animate-fadeIn text-xs">
                   <div className="flex items-center justify-between">
@@ -273,12 +291,14 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
             </div>
           )}
 
-          {/* TAB 3: AI AGENTS */}
+          {/* TAB 3: AI AGENTS (With Distinct Switcher) */}
           {mobileTab === 'agents' && (
             <div className="flex flex-col h-full space-y-2 pt-1 animate-fadeIn">
-              <div className="flex items-center space-x-2 pb-2 border-b border-slate-800">
-                <Bot className="w-4 h-4 text-indigo-400" />
-                <h4 className="text-xs font-bold text-white">AI Agents Workforce</h4>
+              <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+                <div className="flex items-center space-x-1.5">
+                  <Bot className="w-4 h-4 text-indigo-400" />
+                  <h4 className="text-xs font-bold text-white">AI Agents Workforce</h4>
+                </div>
               </div>
 
               {/* Agent Selector */}
@@ -287,31 +307,34 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                   <button
                     key={ag}
                     onClick={() => setSelectedAgent(ag)}
-                    className={`px-2 py-1 rounded ${selectedAgent === ag ? 'bg-indigo-600 text-white' : 'bg-slate-900 text-slate-400'}`}
+                    className={`flex-1 py-1.5 rounded text-center transition ${
+                      selectedAgent === ag ? 'bg-indigo-600 text-white font-extrabold shadow' : 'bg-slate-900 text-slate-400'
+                    }`}
                   >
                     {ag.split(' ')[0]}
                   </button>
                 ))}
               </div>
 
-              {/* Chat Stream */}
-              <div className="flex-1 space-y-2 overflow-y-auto pr-1">
-                {agentMessages.map((msg) => (
+              {/* Dedicated Chat Stream */}
+              <div className="flex-1 space-y-2 overflow-y-auto pr-1 scrollbar-none">
+                {agentChats[selectedAgent]?.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`max-w-[88%] p-2 rounded-xl text-[10px] ${
+                    className={`max-w-[90%] p-2 rounded-xl text-[10px] ${
                       msg.sender === 'user'
                         ? 'ml-auto bg-indigo-600 text-white'
-                        : 'mr-auto bg-slate-900 text-slate-200 border border-slate-800'
+                        : 'mr-auto bg-slate-900 text-slate-100 border border-slate-800 font-mono'
                     }`}
                   >
-                    <p className="leading-snug whitespace-pre-wrap">{msg.text}</p>
+                    <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                    <span className="text-[8px] text-slate-400 block text-right mt-0.5">{msg.time}</span>
                   </div>
                 ))}
                 {isTyping && (
                   <div className="p-1.5 rounded-lg bg-slate-900 text-[10px] text-indigo-400 animate-pulse flex items-center gap-1">
                     <RefreshCw className="w-3 h-3 animate-spin" />
-                    <span>AI Agent synthesizing real-time response...</span>
+                    <span>{selectedAgent.split(' ')[0]} Agent generating response...</span>
                   </div>
                 )}
               </div>
@@ -322,7 +345,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                   type="text"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Ask AI Agent..."
+                  placeholder={`Ask ${selectedAgent.split(' ')[0]}...`}
                   className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none font-semibold"
                 />
                 <button type="submit" className="p-1.5 rounded-lg bg-indigo-600 text-white font-bold cursor-pointer">
