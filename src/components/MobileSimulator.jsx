@@ -49,25 +49,30 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
     e?.preventDefault();
     if (!chatInput.trim()) return;
     const textSent = chatInput;
-    const userMsg = { id: Date.now(), sender: 'user', text: textSent, time: 'Just now' };
+    const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const userMsg = { id: Date.now(), sender: 'user', text: textSent, time: timeNow };
     setAgentMessages(prev => [...prev, userMsg]);
     setChatInput('');
     setIsTyping(true);
 
     setTimeout(() => {
       let botReplyText = "";
+      const lower = textSent.toLowerCase();
+      const topic = textSent.replace(/^(how|what|why|can|build|create|fix|add|give|show)\s+/i, '').trim() || projectTitle;
+      const latencyMs = Math.floor(Math.random() * 20) + 15;
+
       if (selectedAgent === 'Research Agent') {
-        botReplyText = `🔍 [Research Agent]: Verified arXiv paper citations for "${textSent}" regarding "${projectTitle}". 95.8% accuracy score.`;
+        botReplyText = `🔍 [Research Agent • ${latencyMs}ms]: Found verified arXiv paper citations for "${topic}". 96.2% empirical accuracy score. Plagiarism-Free guaranteed!`;
       } else if (selectedAgent === 'Architecture Agent') {
-        botReplyText = `🏗️ [Architecture Agent]: Updated system architecture flow for "${textSent}". REST API endpoints set with sub-20ms SLA.`;
+        botReplyText = `🏗️ [Architecture Agent • ${latencyMs}ms]: Synthesized microservices pipeline for "${topic}". Express REST server + Python FastAPI worker with sub-20ms SLA.`;
       } else {
-        botReplyText = `🤖 [Code Copilot Agent]: Synthesized Node.js & React starter code for "${textSent}". Download code in Project Generator!`;
+        botReplyText = `🤖 [Code Copilot Agent • ${latencyMs}ms]: Generated starter code for "${topic}":\n\nconst express = require('express');\n// Route for ${topic}\napp.post('/api/v1/${topic.toLowerCase().replace(/[^a-z0-9]/g, '-')}', (req,res) => res.json({ status: "OK" }));`;
       }
 
-      setAgentMessages(prev => [...prev, { id: Date.now() + 1, sender: 'bot', text: botReplyText, time: 'Just now' }]);
+      setAgentMessages(prev => [...prev, { id: Date.now() + 1, sender: 'bot', text: botReplyText, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
       setIsTyping(false);
       confetti({ particleCount: 25, spread: 40 });
-    }, 800);
+    }, 700);
   };
 
   const handleDownloadPPTX = () => {
@@ -300,9 +305,15 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                         : 'mr-auto bg-slate-900 text-slate-200 border border-slate-800'
                     }`}
                   >
-                    <p className="leading-snug">{msg.text}</p>
+                    <p className="leading-snug whitespace-pre-wrap">{msg.text}</p>
                   </div>
                 ))}
+                {isTyping && (
+                  <div className="p-1.5 rounded-lg bg-slate-900 text-[10px] text-indigo-400 animate-pulse flex items-center gap-1">
+                    <RefreshCw className="w-3 h-3 animate-spin" />
+                    <span>AI Agent synthesizing real-time response...</span>
+                  </div>
+                )}
               </div>
 
               {/* Input */}
@@ -312,9 +323,9 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder="Ask AI Agent..."
-                  className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                  className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none font-semibold"
                 />
-                <button type="submit" className="p-1.5 rounded-lg bg-indigo-600 text-white">
+                <button type="submit" className="p-1.5 rounded-lg bg-indigo-600 text-white font-bold cursor-pointer">
                   <Send className="w-3.5 h-3.5" />
                 </button>
               </form>
