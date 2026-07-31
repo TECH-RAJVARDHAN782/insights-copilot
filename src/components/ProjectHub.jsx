@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, ExternalLink, Layers, Sparkles, Terminal, Copy, Check, Activity, FileCode, CheckSquare, Folder, ChevronDown } from 'lucide-react';
+import { Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, ExternalLink, Layers, Sparkles, Terminal, Copy, Check, Activity, FileCode, CheckSquare, Folder, ChevronDown, ListOrdered } from 'lucide-react';
 import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
 
 export default function ProjectHub({ projectData, currentLang = 'en' }) {
   const [copiedFolder, setCopiedFolder] = useState(false);
+  const [copiedLayerCode, setCopiedLayerCode] = useState(null);
   const [archChecked, setArchChecked] = useState(true);
+  const [activeLayer, setActiveLayer] = useState('frontend');
 
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
@@ -14,9 +16,187 @@ export default function ProjectHub({ projectData, currentLang = 'en' }) {
 
   const frontendTech = projectData?.architecture?.frontend || "React 18 + Tailwind CSS";
   const backendTech = projectData?.architecture?.backend || "Node.js Express + Python FastAPI";
-  const databaseTech = "Cloud Document Store / Cache";
+  const databaseTech = "Cloud Document Store / Redis Cache";
   const aiTech = projectData?.architecture?.aiModels?.[0] || "Gemini 1.5 Pro AI Engine";
   const deployTech = "Vercel Edge Network / Docker Container";
+
+  // Dynamic Step-by-Step Procedure & Code per Architecture Diagram Layer
+  const layerArchitectures = {
+    frontend: {
+      name: "Frontend Layer",
+      tech: frontendTech,
+      badge: "React 18 + Tailwind CSS",
+      steps: [
+        "1. Initialize Vite React project structure using `npm create vite@latest frontend -- --template react`.",
+        "2. Install Tailwind CSS and Lucide Icons (`npm install -D tailwindcss postcss autoprefixer && npm install lucide-react`).",
+        "3. Configure `App.jsx` component hierarchy and connect API fetch hooks for dynamic telemetry streaming.",
+        "4. Bind live state updates to UI cards for high-contrast presentation."
+      ],
+      code: `// Production React 18 UI Component for ${projectTitle}
+import React, { useState, useEffect } from 'react';
+
+export default function ${projectTitle.replace(/[^a-zA-Z]/g, '')}Dashboard() {
+  const [metrics, setMetrics] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/v1/telemetry')
+      .then(res => res.json())
+      .then(data => { setMetrics(data); setLoading(false); })
+      .catch(err => setLoading(false));
+  }, []);
+
+  return (
+    <div className="p-6 bg-slate-900 text-white rounded-2xl border border-slate-800">
+      <h2 className="text-xl font-bold">${projectTitle} Client UI</h2>
+      {loading ? (
+        <p className="text-slate-400">Connecting to Backend API...</p>
+      ) : (
+        <div className="mt-4 p-4 bg-slate-950 rounded-xl border border-slate-800">
+          <p className="text-emerald-400 font-mono font-bold">Status: {metrics?.status || "ONLINE"}</p>
+        </div>
+      )}
+    </div>
+  );
+}`
+    },
+
+    backend: {
+      name: "Backend Layer",
+      tech: backendTech,
+      badge: "Node.js Express / Python FastAPI",
+      steps: [
+        "1. Setup Express server environment (`npm init -y && npm install express cors dotenv`).",
+        "2. Define REST API router endpoints for `/api/v1/health` and `/api/v1/infer`.",
+        "3. Connect Python FastAPI worker for deep learning inference execution.",
+        "4. Implement CORS headers and request payload rate-limiting middleware."
+      ],
+      code: `// Production Node.js Express Server for ${projectTitle}
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+app.get('/api/v1/health', (req, res) => {
+  res.json({
+    project: "${projectTitle}",
+    status: "ACTIVE",
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/v1/infer', async (req, res) => {
+  try {
+    const payload = req.body;
+    console.log("Processing pipeline request for ${projectTitle}:", payload);
+    res.status(200).json({ success: true, result: "Pipeline execution complete", payload });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(\`🚀 ${projectTitle} Backend running on port \${PORT}\`));`
+    },
+
+    database: {
+      name: "Database Layer",
+      tech: databaseTech,
+      badge: "Cloud Document Store & Cache",
+      steps: [
+        "1. Create Cloud Document Database instance and configure IP access whitelist.",
+        "2. Define data schemas for project logs, telemetry records, and student user accounts.",
+        "3. Connect connection pooling with auto-reconnect retry policy.",
+        "4. Implement Redis memory caching layer for sub-10ms read query response times."
+      ],
+      code: `// Production Schema & Connection Pool for ${projectTitle}
+const mongoose = require('mongoose');
+
+const ${projectTitle.replace(/[^a-zA-Z]/g, '')}Schema = new mongoose.Schema({
+  title: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+  status: { type: String, default: "ACTIVE" },
+  metrics: { type: Object, default: {} }
+});
+
+const URI = process.env.DATABASE_URL || "mongodb://localhost:27017/${slug}_db";
+mongoose.connect(URI)
+  .then(() => console.log("✅ Connected to Database for ${projectTitle}"))
+  .catch(err => console.error("❌ Database Connection Error:", err));
+
+module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', ${projectTitle.replace(/[^a-zA-Z]/g, '')}Schema);`
+    },
+
+    ai: {
+      name: "AI Inference Layer",
+      tech: aiTech,
+      badge: "Gemini 1.5 Pro API & PyTorch Model",
+      steps: [
+        "1. Initialize AI API SDK or PyTorch model weights inside Python virtual environment.",
+        "2. Load pre-processing prompt transformers and image segmentation pipelines.",
+        "3. Execute forward pass model prediction with confidence score scoring.",
+        "4. Return structured JSON output containing research citations and verification parameters."
+      ],
+      code: `# Production Python AI Inference Microservice for ${projectTitle}
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import datetime
+
+app = FastAPI(title="${projectTitle} AI Engine")
+
+class InferencePayload(BaseModel):
+    query: str
+    confidence_threshold: float = 0.90
+
+@app.post("/api/v1/ai-infer")
+def run_model_inference(payload: InferencePayload):
+    # Process prompt via AI Model Pipeline
+    return {
+        "project": "${projectTitle}",
+        "input_query": payload.query,
+        "prediction_status": "PASSED",
+        "confidence_score": 0.96,
+        "processed_at": str(datetime.datetime.now())
+    }`
+    },
+
+    deployment: {
+      name: "Deployment Layer",
+      tech: deployTech,
+      badge: "Vercel Edge & Docker Compose",
+      steps: [
+        "1. Construct multi-stage `Dockerfile` and `docker-compose.yml` for microservice containerization.",
+        "2. Configure Vercel Edge configuration file (`vercel.json`) with serverless function routing.",
+        "3. Setup GitHub Actions CI/CD workflow pipeline for automated test execution on push.",
+        "4. Deploy production build with SSL HTTPS encryption and CDN edge routing."
+      ],
+      code: `# Docker Compose Orchestration File for ${projectTitle}
+version: '3.8'
+
+services:
+  backend-server:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+
+  python-ai-api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    command: uvicorn infer:app --host 0.0.0.0 --port 8000
+
+  frontend-react:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-server`
+    }
+  };
 
   const dynamicFolderStructure = projectData ? `// Dynamic Folder Structure for ${projectTitle}
 ${slug}/
@@ -55,6 +235,13 @@ models/`;
     confetti({ particleCount: 30, spread: 40 });
   };
 
+  const handleCopyCode = (layerKey) => {
+    navigator.clipboard.writeText(layerArchitectures[layerKey].code);
+    setCopiedLayerCode(layerKey);
+    setTimeout(() => setCopiedLayerCode(null), 2000);
+    confetti({ particleCount: 25, spread: 35 });
+  };
+
   return (
     <div className="space-y-8 animate-fadeIn">
       
@@ -65,19 +252,19 @@ models/`;
           <span>iNSIGHTS Generator Engine</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-          Phase 3 (Project Generator)
+          Project Generator
         </h2>
         <p className="text-slate-700 text-sm font-semibold">
-          Automatically generate full architecture diagrams and production folder structures tailored for "{projectTitle}".
+          Automatically generate full architecture diagrams, step-by-step procedures, and code boilerplates for "{projectTitle}".
         </p>
       </div>
 
       {/* PROJECT GENERATOR CONTAINER (MATCHING USER SCREENSHOT LAYOUT) */}
       <div className="bg-slate-950 p-6 sm:p-10 rounded-3xl border border-slate-800 text-white space-y-8 shadow-2xl">
         
-        {/* Phase 3 Title & Automatically Generate Header */}
+        {/* Project Generator Title & Automatically Generate Header */}
         <div className="space-y-3">
-          <h3 className="text-2xl font-bold text-white tracking-tight">Phase 3 (Project Generator)</h3>
+          <h3 className="text-2xl font-bold text-white tracking-tight">Project Generator</h3>
           <p className="text-sm text-slate-300 font-medium">Automatically generate</p>
 
           {/* Architecture Diagram Checklist Option */}
@@ -99,40 +286,117 @@ models/`;
         {/* Dynamic Vertical Flow Stack (Frontend -> Backend -> Database -> AI -> Deployment) */}
         {archChecked && (
           <div className="space-y-3 pt-2 max-w-lg">
-            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+            
+            {/* Frontend */}
+            <div
+              onClick={() => setActiveLayer('frontend')}
+              className={`p-3.5 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+                activeLayer === 'frontend' ? 'bg-cyan-950/80 border-cyan-400 ring-2 ring-cyan-500/50' : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+              }`}
+            >
               <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Frontend</span>
               <span className="text-xs text-slate-200 font-mono font-semibold">{frontendTech}</span>
             </div>
 
             <div className="text-center text-slate-500 font-bold text-base">↓</div>
 
-            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+            {/* Backend */}
+            <div
+              onClick={() => setActiveLayer('backend')}
+              className={`p-3.5 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+                activeLayer === 'backend' ? 'bg-indigo-950/80 border-indigo-400 ring-2 ring-indigo-500/50' : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+              }`}
+            >
               <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Backend</span>
               <span className="text-xs text-slate-200 font-mono font-semibold">{backendTech}</span>
             </div>
 
             <div className="text-center text-slate-500 font-bold text-base">↓</div>
 
-            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+            {/* Database */}
+            <div
+              onClick={() => setActiveLayer('database')}
+              className={`p-3.5 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+                activeLayer === 'database' ? 'bg-emerald-950/80 border-emerald-400 ring-2 ring-emerald-500/50' : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+              }`}
+            >
               <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Database</span>
               <span className="text-xs text-slate-200 font-mono font-semibold">{databaseTech}</span>
             </div>
 
             <div className="text-center text-slate-500 font-bold text-base">↓</div>
 
-            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+            {/* AI */}
+            <div
+              onClick={() => setActiveLayer('ai')}
+              className={`p-3.5 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+                activeLayer === 'ai' ? 'bg-purple-950/80 border-purple-400 ring-2 ring-purple-500/50' : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+              }`}
+            >
               <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">AI</span>
               <span className="text-xs text-slate-200 font-mono font-semibold">{aiTech}</span>
             </div>
 
             <div className="text-center text-slate-500 font-bold text-base">↓</div>
 
-            <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+            {/* Deployment */}
+            <div
+              onClick={() => setActiveLayer('deployment')}
+              className={`p-3.5 rounded-xl border transition cursor-pointer flex items-center justify-between ${
+                activeLayer === 'deployment' ? 'bg-amber-950/80 border-amber-400 ring-2 ring-amber-500/50' : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+              }`}
+            >
               <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Deployment</span>
               <span className="text-xs text-slate-200 font-mono font-semibold">{deployTech}</span>
             </div>
           </div>
         )}
+
+        {/* STEP-BY-STEP PROCEDURE & CODE PANEL FOR SELECTED ARCHITECTURE LAYER */}
+        <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <span className="px-2.5 py-0.5 rounded text-[10px] font-extrabold uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
+                {layerArchitectures[activeLayer].badge}
+              </span>
+              <h4 className="text-base font-bold text-white mt-1">
+                Step-by-Step Procedure & Code: {layerArchitectures[activeLayer].name}
+              </h4>
+            </div>
+
+            <button
+              onClick={() => handleCopyCode(activeLayer)}
+              className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold flex items-center gap-1.5 cursor-pointer shadow-md"
+            >
+              {copiedLayerCode === activeLayer ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copiedLayerCode === activeLayer ? "Copied Code!" : "Copy Layer Code"}</span>
+            </button>
+          </div>
+
+          {/* Step-by-Step Execution Procedure */}
+          <div className="space-y-2">
+            <h5 className="text-xs font-extrabold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+              <ListOrdered className="w-4 h-4" />
+              Step-by-Step Setup Procedure:
+            </h5>
+            <div className="space-y-1.5 pl-2 text-xs text-slate-300 font-medium">
+              {layerArchitectures[activeLayer].steps.map((step, i) => (
+                <p key={i} className="leading-relaxed">{step}</p>
+              ))}
+            </div>
+          </div>
+
+          {/* Layer Code Snippet Box */}
+          <div className="space-y-1.5 pt-2">
+            <h5 className="text-xs font-extrabold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Code className="w-4 h-4" />
+              Layer Production Code:
+            </h5>
+            <pre className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-emerald-300 font-mono overflow-x-auto leading-relaxed max-h-[300px]">
+              <code>{layerArchitectures[activeLayer].code}</code>
+            </pre>
+          </div>
+        </div>
 
         <hr className="border-slate-800" />
 
