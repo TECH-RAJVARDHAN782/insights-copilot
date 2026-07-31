@@ -1,52 +1,49 @@
 import React, { useState } from 'react';
 import { 
-  Smartphone, 
-  Wifi, 
-  Battery, 
-  Signal, 
-  Sparkles, 
-  Send, 
-  Bot, 
-  Search, 
-  Download, 
-  Code, 
-  Check, 
-  ExternalLink,
-  ChevronRight, 
-  Zap, 
-  FileCode,
-  Rocket,
-  Presentation,
-  Cpu,
-  RefreshCw,
-  User,
-  History,
-  Folder
+  Smartphone, Wifi, Battery, Signal, Sparkles, Send, Bot, Search, Download, Code, Check, 
+  ExternalLink, ChevronRight, Zap, FileCode, Rocket, Presentation, Cpu, RefreshCw, User, 
+  History, Share2, Award, Edit3, ListOrdered, Copy, Star, GitFork, Filter, BookOpen, CheckCircle2,
+  Terminal, ShieldCheck, UserCheck, Layers
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import pptxgen from 'pptxgenjs';
 
 export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onOpenHistory }) {
-  const [mobileTab, setMobileTab] = useState('search'); // 'search' | 'code' | 'agent' | 'generator' | 'ppt'
-  const [deviceType, setDeviceType] = useState('ios');
+  const [mobileTab, setMobileTab] = useState('search'); 
+  // Tabs: 'search' | 'readymade' | 'graph' | 'generator' | 'agents' | 'ppt' | 'talent'
   
+  const [deviceType, setDeviceType] = useState('ios');
   const [mobileIdeaInput, setMobileIdeaInput] = useState('');
+  const [selectedAiEngine, setSelectedAiEngine] = useState('gemini');
   const [copiedMobileCode, setCopiedMobileCode] = useState(false);
+  const [copiedPrompt, setCopiedPrompt] = useState(false);
+  const [downloadingPpt, setDownloadingPpt] = useState(false);
+
+  // Active Generator Layer
+  const [activeLayer, setActiveLayer] = useState('frontend');
+
+  // Slide Index & Editable State
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
 
   // Dynamic Mobile AI Agent Chat
+  const [selectedAgent, setSelectedAgent] = useState('Code Copilot Agent');
   const [agentMessages, setAgentMessages] = useState([
-    { id: 1, sender: 'bot', text: `👋 Hi Student! I am your mobile AI Agent Assistant. Type any question!`, time: '09:15 AM' }
+    { id: 1, sender: 'bot', text: `👋 Hi Student! I am your AI Agent Assistant. Type any question!`, time: '09:15 AM' }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
   const projectTitle = projectData?.title || "Custom Student Innovation";
+  const slug = projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '-');
+
+  const frontendTech = projectData?.architecture?.frontend || "React 18 + Tailwind CSS";
+  const backendTech = projectData?.architecture?.backend || "Node.js Express + Python FastAPI";
 
   const handleMobileSubmit = (e) => {
     e.preventDefault();
     if (!mobileIdeaInput.trim()) return;
     if (onSearch) {
-      onSearch(mobileIdeaInput);
+      onSearch(mobileIdeaInput, selectedAiEngine);
     }
   };
 
@@ -61,47 +58,53 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
 
     setTimeout(() => {
       let botReplyText = "";
-      const lower = textSent.toLowerCase();
-
-      if (lower.includes('code') || lower.includes('repo') || lower.includes('download')) {
-        botReplyText = `🚀 Code Repo for "${projectTitle}": insights-copilot/${projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '-')}-starter. Connected to API server!`;
-      } else if (lower.includes('score') || lower.includes('feasibility') || lower.includes('impact')) {
-        botReplyText = `📊 Feasibility Score: ${projectData?.problemValidation?.feasibilityScore || 94}/100. Innovation Score: ${projectData?.problemValidation?.innovationScore || 96}/100.`;
+      if (selectedAgent === 'Research Agent') {
+        botReplyText = `🔍 [Research Agent]: Verified arXiv paper citations for "${textSent}" regarding "${projectTitle}". 95.8% accuracy score.`;
+      } else if (selectedAgent === 'Architecture Agent') {
+        botReplyText = `🏗️ [Architecture Agent]: Updated system architecture flow for "${textSent}". REST API endpoints set with sub-20ms SLA.`;
       } else {
-        botReplyText = `🤖 AI Agent: Processed "${textSent}" for "${projectTitle}". DeepSearch synthesized paper citations and folder structure!`;
+        botReplyText = `🤖 [Code Copilot Agent]: Synthesized Node.js & React starter code for "${textSent}". Download code in Project Generator!`;
       }
 
-      const botReply = {
-        id: Date.now() + 1,
-        sender: 'bot',
-        text: botReplyText,
-        time: 'Just now'
-      };
-      setAgentMessages(prev => [...prev, botReply]);
+      setAgentMessages(prev => [...prev, { id: Date.now() + 1, sender: 'bot', text: botReplyText, time: 'Just now' }]);
       setIsTyping(false);
       confetti({ particleCount: 25, spread: 40 });
     }, 800);
   };
 
-  const handleDownloadMobileZip = () => {
-    const sampleCode = `// Readymade Mobile Starter File for ${projectTitle}\nconst express = require('express');\nconsole.log("Ready-to-use project loaded!");`;
-    const element = document.createElement("a");
-    const file = new Blob([sampleCode], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = `${projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '_')}_starter.js`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-    setCopiedMobileCode(true);
-    setTimeout(() => setCopiedMobileCode(false), 2000);
-    confetti({ particleCount: 35, spread: 50 });
+  const handleDownloadPPTX = () => {
+    setDownloadingPpt(true);
+    try {
+      const pres = new pptxgen();
+      pres.layout = 'LAYOUT_16x9';
+      const slide = pres.addSlide();
+      slide.background = { color: '0F172A' };
+      slide.addText(projectTitle, { x: 0.8, y: 2.0, w: '85%', fontSize: 32, bold: true, color: '38BDF8', align: 'center' });
+      slide.addText(projectData?.tagline || "Generated via iNSIGHTS Mobile", { x: 0.8, y: 3.5, w: '85%', fontSize: 16, color: 'CBD5E1', align: 'center' });
+      
+      const filename = `${slug}-Presentation.pptx`;
+      pres.writeFile({ fileName: filename }).then(() => {
+        setDownloadingPpt(false);
+        confetti({ particleCount: 60, spread: 60 });
+      });
+    } catch (error) {
+      setDownloadingPpt(false);
+    }
+  };
+
+  const handleCopySlidesgoPrompt = () => {
+    const promptText = `Create presentation deck for: "${projectTitle}". Problem: ${projectData?.problemValidation?.marketGap || "Student project setup"}.`;
+    navigator.clipboard.writeText(promptText);
+    setCopiedPrompt(true);
+    setTimeout(() => setCopiedPrompt(false), 2000);
+    confetti({ particleCount: 25, spread: 35 });
   };
 
   const mobileSlides = [
     { title: "Vision Statement", text: projectData?.tagline || "AI-powered innovation engine." },
-    { title: "Problem Gap", text: projectData?.problemValidation?.marketGap || "Unverified execution timelines." },
-    { title: "Tech Stack", text: `React 18 + Node.js Express + Python FastAPI.` },
-    { title: "Feasibility Score", text: `Feasibility: ${projectData?.problemValidation?.feasibilityScore || 94}/100 | Impact: 98/100.` }
+    { title: "Problem & Market Gap", text: projectData?.problemValidation?.marketGap || "Unverified execution timelines." },
+    { title: "System Architecture", text: `Frontend: ${frontendTech} | Backend: ${backendTech}.` },
+    { title: "Impact & Feasibility", text: `Feasibility Score: ${projectData?.problemValidation?.feasibilityScore || 94}/100.` }
   ];
 
   return (
@@ -111,7 +114,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
       <div className="flex items-center justify-between w-full max-w-sm px-2">
         <div className="flex items-center space-x-1.5 text-xs text-slate-900 font-extrabold">
           <Smartphone className="w-4 h-4 text-indigo-600" />
-          <span>Student Mobile Companion</span>
+          <span>Student Companion App</span>
         </div>
 
         <div className="flex items-center space-x-1 bg-slate-200 p-1 rounded-xl border border-slate-300 text-[11px]">
@@ -135,7 +138,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
       </div>
 
       {/* SMARTPHONE DEVICE SHELL */}
-      <div className="relative w-[360px] h-[720px] bg-slate-900 rounded-[48px] p-3 shadow-2xl border-4 border-slate-800 ring-1 ring-slate-700/50 flex flex-col overflow-hidden select-none">
+      <div className="relative w-[360px] h-[740px] bg-slate-900 rounded-[48px] p-3 shadow-2xl border-4 border-slate-800 ring-1 ring-slate-700/50 flex flex-col overflow-hidden select-none">
         
         {/* Notch / Dynamic Island */}
         {deviceType === 'ios' ? (
@@ -160,17 +163,17 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
         {/* MOBILE SCREEN CONTENT */}
         <div className="flex-1 overflow-y-auto bg-slate-950 text-slate-100 flex flex-col scrollbar-none px-3.5 pt-2 pb-16">
           
-          {/* TAB 1: MOBILE SEARCH AI */}
+          {/* TAB 1: DEEPSEARCH */}
           {mobileTab === 'search' && (
-            <div className="space-y-4 pt-1 animate-fadeIn">
+            <div className="space-y-3.5 pt-1 animate-fadeIn">
               
-              {/* App Brand & Profile Bar */}
+              {/* Top Bar */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-400 flex items-center justify-center font-black text-slate-950 text-xs">
                     iN
                   </div>
-                  <span className="font-extrabold text-sm text-white">iNSIGHTS<span className="text-cyan-400">.mobile</span></span>
+                  <span className="font-extrabold text-sm text-white">DeepSearch</span>
                 </div>
                 
                 <div className="flex items-center space-x-1">
@@ -183,7 +186,29 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                 </div>
               </div>
 
-              {/* Mobile Search Bar */}
+              {/* Multi-AI Model Switcher */}
+              <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 justify-around text-[10px] font-bold">
+                <button
+                  onClick={() => setSelectedAiEngine('gemini')}
+                  className={`px-2 py-1 rounded-lg ${selectedAiEngine === 'gemini' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}
+                >
+                  ♊ Gemini
+                </button>
+                <button
+                  onClick={() => setSelectedAiEngine('chatgpt')}
+                  className={`px-2 py-1 rounded-lg ${selectedAiEngine === 'chatgpt' ? 'bg-emerald-600 text-white' : 'text-slate-400'}`}
+                >
+                  🤖 ChatGPT-4o
+                </button>
+                <button
+                  onClick={() => setSelectedAiEngine('claude')}
+                  className={`px-2 py-1 rounded-lg ${selectedAiEngine === 'claude' ? 'bg-purple-600 text-white' : 'text-slate-400'}`}
+                >
+                  🧠 Claude 3.5
+                </button>
+              </div>
+
+              {/* Search Bar */}
               <form onSubmit={handleMobileSubmit} className="space-y-2">
                 <div className="relative flex items-center">
                   <input
@@ -191,195 +216,233 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                     value={mobileIdeaInput}
                     onChange={(e) => setMobileIdeaInput(e.target.value)}
                     placeholder="Search any project topic..."
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400 font-semibold"
                   />
-                  <Search className="absolute left-3 w-4 h-4 text-slate-300" />
+                  <Search className="absolute left-3 w-4 h-4 text-slate-400" />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 text-white font-bold text-xs shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full py-2 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 text-white font-bold text-xs shadow-md cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Search AI Project Solution</span>
+                  <span>Search AI Solution</span>
                 </button>
               </form>
 
-              {/* UNIFIED SINGLE OUTPUT CARD FOR MOBILE */}
+              {/* Streamlined 4-Section Output */}
               {projectData ? (
-                <div className="p-3.5 rounded-2xl bg-slate-900 border border-cyan-500/40 space-y-2.5 animate-fadeIn">
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-bold text-cyan-300">Structured AI Output</span>
-                    <span className="text-emerald-400 font-bold">{projectData.problemValidation.feasibilityScore}% Feasibility</span>
+                <div className="p-3.5 rounded-2xl bg-slate-900 border border-cyan-500/40 space-y-2 animate-fadeIn text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-cyan-300 truncate">{projectData.title}</span>
+                    <span className="text-emerald-400 font-mono font-bold text-[10px]">{projectData.problemValidation.feasibilityScore}%</span>
                   </div>
                   
-                  <h5 className="font-bold text-white text-xs leading-snug">{projectData.title}</h5>
-                  <p className="text-[11px] text-slate-200 leading-relaxed font-medium">{projectData.tagline}</p>
-
-                  <div className="p-2 rounded-xl bg-slate-950 text-[10px] text-slate-200 space-y-1 font-medium border border-slate-800">
-                    <p>• <strong>Problem:</strong> {projectData.problemValidation.marketGap}</p>
-                    <p>• <strong>Tech Stack:</strong> {projectData.architecture.frontend} + Node.js Express</p>
+                  <div className="p-2 rounded-xl bg-slate-950 text-[10px] space-y-1 border border-slate-800 text-slate-300 font-medium">
+                    <p>• <strong>Feasibility:</strong> {projectData.problemValidation.marketGap}</p>
+                    <p>• <strong>Citations:</strong> {projectData.deepSearch.citations.length} Verified Sources</p>
+                    <p>• <strong>Tech Stack:</strong> {frontendTech} + Express</p>
                   </div>
                 </div>
               ) : (
                 <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center space-y-2">
                   <Search className="w-8 h-8 text-cyan-400 mx-auto" />
-                  <h5 className="text-xs font-bold text-white">No Search Performed Yet</h5>
-                  <p className="text-[11px] text-slate-300 font-medium">Type any project topic above to generate your AI solution.</p>
+                  <p className="text-[11px] text-slate-300 font-medium">Type any topic above to generate your dynamic solution.</p>
                 </div>
               )}
 
             </div>
           )}
 
-          {/* TAB 2: READYMADE CODE */}
-          {mobileTab === 'code' && (
-            <div className="space-y-4 pt-1 animate-fadeIn">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <Rocket className="w-4 h-4 text-cyan-400" />
-                  Readymade Starter Code
-                </h4>
-                <span className="text-[10px] text-emerald-400 font-mono">100% Ready</span>
-              </div>
+          {/* TAB 2: PROJECT HUB */}
+          {mobileTab === 'readymade' && (
+            <div className="space-y-3 pt-1 animate-fadeIn">
+              <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
+                <Rocket className="w-4 h-4 text-indigo-400" />
+                Project Hub Catalog
+              </h4>
 
               {projectData ? (
-                <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-                  <h5 className="font-bold text-white text-xs">{projectData.title} Code Package</h5>
-                  <p className="text-[11px] text-slate-200 font-medium">{projectData.tagline}</p>
+                <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2.5">
+                  <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-indigo-500/20 text-indigo-300">
+                    Recommended Project
+                  </span>
+                  <h5 className="font-bold text-white text-xs">{projectData.title}</h5>
+                  <p className="text-[11px] text-slate-300 font-medium">{projectData.tagline}</p>
                   
-                  <div className="p-2.5 rounded-xl bg-slate-950 font-mono text-[10px] text-emerald-300 border border-slate-800">
-                    <code>git clone {projectData.githubRepos[0]?.name || "insights-copilot/starter"}.git</code>
+                  <div className="p-2 rounded-xl bg-slate-950 font-mono text-[9px] text-emerald-300 border border-slate-800 truncate">
+                    <code>git clone https://github.com/insights-copilot/{slug}.git</code>
                   </div>
-
-                  <button
-                    onClick={handleDownloadMobileZip}
-                    className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
-                  >
-                    {copiedMobileCode ? <Check className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
-                    <span>{copiedMobileCode ? "Downloaded Starter Zip!" : "Download Mobile Starter Code"}</span>
-                  </button>
                 </div>
               ) : (
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center space-y-2">
-                  <Code className="w-8 h-8 text-indigo-400 mx-auto" />
-                  <p className="text-[11px] text-slate-300 font-medium">Search for a project to view and download readymade code repositories.</p>
+                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center">
+                  <Rocket className="w-8 h-8 text-indigo-400 mx-auto mb-1" />
+                  <p className="text-[11px] text-slate-300 font-medium">Catalog of student code repositories.</p>
                 </div>
               )}
             </div>
           )}
 
-          {/* TAB 3: AI AGENTS */}
-          {mobileTab === 'agent' && (
-            <div className="flex flex-col h-full space-y-3 pt-1 animate-fadeIn">
-              <div className="flex items-center space-x-2 pb-2 border-b border-slate-800">
-                <div className="p-1 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/40">
-                  <Bot className="w-3.5 h-3.5" />
+          {/* TAB 3: CLUSTER GRAPH */}
+          {mobileTab === 'graph' && (
+            <div className="space-y-3 pt-1 animate-fadeIn text-center">
+              <h4 className="text-xs font-bold text-white flex items-center justify-center gap-1.5">
+                <Share2 className="w-4 h-4 text-purple-400" />
+                Cluster Graph Nodes
+              </h4>
+
+              <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
+                <div className="p-2 rounded-xl bg-purple-950/60 border border-purple-800 text-purple-200">
+                  <span className="font-bold">{projectTitle} Model Node</span>
+                  <span className="block text-[10px] text-emerald-400 font-mono">Reliability: 98%</span>
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white">iNSIGHTS AI Agents</h4>
-                  <span className="text-[9px] text-emerald-400 font-semibold">Online • Live Assistant</span>
+                <div className="p-2 rounded-xl bg-indigo-950/60 border border-indigo-800 text-indigo-200">
+                  <span className="font-bold">arXiv Empirical Paper (2025)</span>
+                  <span className="block text-[10px] text-emerald-400 font-mono">Reliability: 94%</span>
                 </div>
               </div>
-
-              {/* Chat Messages */}
-              <div className="flex-1 space-y-2 overflow-y-auto pr-1">
-                {agentMessages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`max-w-[88%] p-2.5 rounded-xl text-[11px] ${
-                      msg.sender === 'user'
-                        ? 'ml-auto bg-indigo-600 text-white rounded-br-none'
-                        : 'mr-auto bg-slate-900 text-slate-200 border border-slate-800 rounded-bl-none'
-                    }`}
-                  >
-                    <p className="leading-snug">{msg.text}</p>
-                    <span className="text-[9px] text-slate-300 block text-right mt-0.5">{msg.time}</span>
-                  </div>
-                ))}
-                {isTyping && (
-                  <div className="p-2 rounded-xl bg-slate-900 text-[10px] text-indigo-400 animate-pulse flex items-center gap-1">
-                    <RefreshCw className="w-3 h-3 animate-spin" />
-                    <span>AI Agent is typing response...</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Input Bar */}
-              <form onSubmit={handleSendAgentMessage} className="flex gap-1.5 pt-2 border-t border-slate-800">
-                <input
-                  type="text"
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Type message to AI Agent..."
-                  className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-400"
-                />
-                <button
-                  type="submit"
-                  className="p-2 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-500 cursor-pointer"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                </button>
-              </form>
             </div>
           )}
 
           {/* TAB 4: PROJECT GENERATOR */}
           {mobileTab === 'generator' && (
-            <div className="space-y-4 pt-1 animate-fadeIn">
+            <div className="space-y-3 pt-1 animate-fadeIn">
               <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
                 <FileCode className="w-4 h-4 text-cyan-400" />
-                Phase 3 (Project Generator)
+                Project Generator
               </h4>
 
-              <div className="p-3.5 rounded-2xl bg-slate-900 border border-indigo-500/40 space-y-2">
-                <span className="text-xs font-bold text-cyan-300">Stack Architecture Flow</span>
-                <div className="p-2 rounded-lg bg-slate-950 text-[10px] text-slate-200 font-mono space-y-1">
-                  <p>Frontend → {projectData?.architecture?.frontend || "React 18"}</p>
-                  <p>Backend → Node.js Express / Python FastAPI</p>
-                  <p>AI → Gemini 1.5 Pro AI Engine</p>
+              {/* Interactive Layer Flow */}
+              <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
+                <div className="flex justify-between items-center text-cyan-300 font-bold">
+                  <span>Stack Diagram Flow:</span>
+                  <span className="text-[10px] text-slate-400 font-mono">[x] Diagram</span>
+                </div>
+
+                <div className="space-y-1 text-[10px] font-mono">
+                  <div onClick={() => setActiveLayer('frontend')} className={`p-1.5 rounded cursor-pointer ${activeLayer === 'frontend' ? 'bg-cyan-900 text-white' : 'bg-slate-950 text-slate-300'}`}>
+                    Frontend → {frontendTech}
+                  </div>
+                  <div onClick={() => setActiveLayer('backend')} className={`p-1.5 rounded cursor-pointer ${activeLayer === 'backend' ? 'bg-indigo-900 text-white' : 'bg-slate-950 text-slate-300'}`}>
+                    Backend → Node.js Express / Python FastAPI
+                  </div>
+                  <div onClick={() => setActiveLayer('ai')} className={`p-1.5 rounded cursor-pointer ${activeLayer === 'ai' ? 'bg-purple-900 text-white' : 'bg-slate-950 text-slate-300'}`}>
+                    AI → Gemini 1.5 Pro AI Engine
+                  </div>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-900 border border-purple-500/40 space-y-2">
+              {/* Generated Folder Structure */}
+              <div className="p-3 rounded-2xl bg-slate-900 border border-purple-500/40 space-y-1">
                 <span className="text-xs font-bold text-purple-300">Generated Folder Structure</span>
-                <pre className="p-2 rounded-lg bg-slate-950 text-[9px] text-cyan-300 font-mono overflow-x-auto">
+                <pre className="p-2 rounded-xl bg-slate-950 text-[9px] text-cyan-300 font-mono">
                   <code>{`src/\nbackend/\nfrontend/\napi/\nmodels/`}</code>
                 </pre>
               </div>
             </div>
           )}
 
-          {/* TAB 5: PPT GENERATION */}
+          {/* TAB 5: AI AGENTS */}
+          {mobileTab === 'agents' && (
+            <div className="flex flex-col h-full space-y-2 pt-1 animate-fadeIn">
+              <div className="flex items-center space-x-2 pb-2 border-b border-slate-800">
+                <Bot className="w-4 h-4 text-indigo-400" />
+                <h4 className="text-xs font-bold text-white">AI Agents Workforce</h4>
+              </div>
+
+              {/* Agent Selector */}
+              <div className="flex gap-1 text-[9px] font-bold">
+                {['Research Agent', 'Architecture Agent', 'Code Copilot Agent'].map((ag) => (
+                  <button
+                    key={ag}
+                    onClick={() => setSelectedAgent(ag)}
+                    className={`px-2 py-1 rounded ${selectedAgent === ag ? 'bg-indigo-600 text-white' : 'bg-slate-900 text-slate-400'}`}
+                  >
+                    {ag.split(' ')[0]}
+                  </button>
+                ))}
+              </div>
+
+              {/* Chat Stream */}
+              <div className="flex-1 space-y-2 overflow-y-auto pr-1">
+                {agentMessages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`max-w-[88%] p-2 rounded-xl text-[10px] ${
+                      msg.sender === 'user'
+                        ? 'ml-auto bg-indigo-600 text-white'
+                        : 'mr-auto bg-slate-900 text-slate-200 border border-slate-800'
+                    }`}
+                  >
+                    <p className="leading-snug">{msg.text}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Input */}
+              <form onSubmit={handleSendAgentMessage} className="flex gap-1 pt-1 border-t border-slate-800">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="Ask AI Agent..."
+                  className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
+                />
+                <button type="submit" className="p-1.5 rounded-lg bg-indigo-600 text-white">
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* TAB 6: PPT GENERATION */}
           {mobileTab === 'ppt' && (
-            <div className="space-y-4 pt-1 animate-fadeIn text-center">
+            <div className="space-y-3 pt-1 animate-fadeIn text-center">
               <h4 className="text-xs font-bold text-white flex items-center justify-center gap-1.5">
                 <Presentation className="w-4 h-4 text-purple-400" />
-                PPT Generation Deck
+                PPT Generation
               </h4>
 
-              <div className="p-4 rounded-2xl bg-slate-900 border border-purple-500/40 space-y-3">
-                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-purple-500/20 text-purple-300">
-                  Slide {mobileSlideIndex + 1} of {mobileSlides.length}
-                </span>
-                <h5 className="font-bold text-white text-xs">{mobileSlides[mobileSlideIndex].title}</h5>
-                <p className="text-[11px] text-slate-200 leading-relaxed italic font-medium">"{mobileSlides[mobileSlideIndex].text}"</p>
+              {/* MERGED DASHBOARD CONTAINER WITH ONLY 2 BUTTONS */}
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-purple-500/40 space-y-2.5">
+                <h5 className="font-bold text-white text-xs">{projectTitle} Deck</h5>
 
-                <div className="flex justify-between pt-2">
+                <div className="flex flex-col gap-2">
                   <button
-                    onClick={() => setMobileSlideIndex(prev => Math.max(0, prev - 1))}
-                    disabled={mobileSlideIndex === 0}
-                    className="px-3 py-1 rounded bg-slate-800 text-xs text-slate-200 disabled:opacity-40"
+                    onClick={handleDownloadPPTX}
+                    disabled={downloadingPpt}
+                    className="w-full py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
                   >
-                    Prev Slide
+                    <Presentation className="w-3.5 h-3.5" />
+                    <span>{downloadingPpt ? "Generating PPTX..." : "Download PowerPoint (.pptx)"}</span>
                   </button>
+
                   <button
-                    onClick={() => setMobileSlideIndex(prev => Math.min(mobileSlides.length - 1, prev + 1))}
-                    disabled={mobileSlideIndex === mobileSlides.length - 1}
-                    className="px-3 py-1 rounded bg-purple-600 text-xs text-white disabled:opacity-40"
+                    onClick={handleCopySlidesgoPrompt}
+                    className="w-full py-2 rounded-xl bg-slate-800 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700 cursor-pointer"
                   >
-                    Next Slide
+                    <Copy className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>{copiedPrompt ? "Copied Prompt!" : "Copy Prompt for Slidesgo"}</span>
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 7: AI TALENT */}
+          {mobileTab === 'talent' && (
+            <div className="space-y-3 pt-1 animate-fadeIn text-center">
+              <h4 className="text-xs font-bold text-white flex items-center justify-center gap-1.5">
+                <Award className="w-4 h-4 text-amber-400" />
+                AI Talent & Verification
+              </h4>
+
+              <div className="p-4 rounded-2xl bg-slate-900 border border-amber-500/40 space-y-2">
+                <span className="text-[10px] text-slate-400 uppercase font-mono">Student AI Talent Score™</span>
+                <div className="text-3xl font-black text-amber-400">94<span className="text-xs text-slate-400 font-normal">/100</span></div>
+                <div className="flex flex-wrap justify-center gap-1 text-[9px] font-bold">
+                  <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">Verified React 18</span>
+                  <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">Node.js Express</span>
                 </div>
               </div>
             </div>
@@ -387,56 +450,35 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
 
         </div>
 
-        {/* BOTTOM NAVIGATION BAR */}
-        <div className="absolute bottom-3 left-3 right-3 bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-2xl px-2 py-2 flex items-center justify-around z-40">
-          <button
-            onClick={() => setMobileTab('search')}
-            className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'search' ? 'text-cyan-400' : 'text-slate-300 hover:text-white'
-            }`}
-          >
+        {/* BOTTOM NAVIGATION BAR FOR MOBILE APP */}
+        <div className="absolute bottom-2 left-2 right-2 bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-2xl px-1 py-1.5 flex items-center justify-around z-40 text-[8px] font-extrabold">
+          <button onClick={() => setMobileTab('search')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'search' ? 'text-cyan-400' : 'text-slate-400'}`}>
             <Search className="w-3.5 h-3.5" />
             <span>Search</span>
           </button>
-
-          <button
-            onClick={() => setMobileTab('code')}
-            className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'code' ? 'text-indigo-400' : 'text-slate-300 hover:text-white'
-            }`}
-          >
-            <Code className="w-3.5 h-3.5" />
-            <span>Code</span>
+          <button onClick={() => setMobileTab('readymade')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'readymade' ? 'text-indigo-400' : 'text-slate-400'}`}>
+            <Rocket className="w-3.5 h-3.5" />
+            <span>Projects</span>
           </button>
-
-          <button
-            onClick={() => setMobileTab('agent')}
-            className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'agent' ? 'text-indigo-400' : 'text-slate-300 hover:text-white'
-            }`}
-          >
-            <Bot className="w-3.5 h-3.5" />
-            <span>Agents</span>
+          <button onClick={() => setMobileTab('graph')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'graph' ? 'text-purple-400' : 'text-slate-400'}`}>
+            <Share2 className="w-3.5 h-3.5" />
+            <span>Graph</span>
           </button>
-
-          <button
-            onClick={() => setMobileTab('generator')}
-            className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'generator' ? 'text-cyan-400' : 'text-slate-300 hover:text-white'
-            }`}
-          >
+          <button onClick={() => setMobileTab('generator')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'generator' ? 'text-cyan-400' : 'text-slate-400'}`}>
             <FileCode className="w-3.5 h-3.5" />
             <span>Generator</span>
           </button>
-
-          <button
-            onClick={() => setMobileTab('ppt')}
-            className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'ppt' ? 'text-purple-400' : 'text-slate-300 hover:text-white'
-            }`}
-          >
+          <button onClick={() => setMobileTab('agents')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'agents' ? 'text-indigo-400' : 'text-slate-400'}`}>
+            <Bot className="w-3.5 h-3.5" />
+            <span>Agents</span>
+          </button>
+          <button onClick={() => setMobileTab('ppt')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'ppt' ? 'text-purple-400' : 'text-slate-400'}`}>
             <Presentation className="w-3.5 h-3.5" />
             <span>PPT</span>
+          </button>
+          <button onClick={() => setMobileTab('talent')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'talent' ? 'text-amber-400' : 'text-slate-400'}`}>
+            <Award className="w-3.5 h-3.5" />
+            <span>Talent</span>
           </button>
         </div>
 
