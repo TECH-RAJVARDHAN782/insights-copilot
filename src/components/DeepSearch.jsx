@@ -8,24 +8,23 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
   const [inputPrompt, setInputPrompt] = useState('');
   const [selectedCitation, setSelectedCitation] = useState(null);
   const [copiedCode, setCopiedCode] = useState(false);
-  const [selectedAiEngine, setSelectedAiEngine] = useState('gemini'); // 'gemini' | 'chatgpt' | 'claude'
 
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!inputPrompt.trim()) return;
-    onGenerateCustom(inputPrompt, selectedAiEngine);
+    onGenerateCustom(inputPrompt);
   };
 
   const handlePresetClick = (sample) => {
     setInputPrompt(sample.prompt);
-    onSelectSample(sample.id, selectedAiEngine);
+    onSelectSample(sample.id);
   };
 
   const generateStructuredText = () => {
     if (!projectData) return "";
-    return `=== iNSIGHTS COPILOT STRUCTURED AI RESPONSE (${selectedAiEngine.toUpperCase()} ENGINE) ===
+    return `=== iNSIGHTS COPILOT STRUCTURED AI RESPONSE ===
 
 1. 📊 PROBLEM & MARKET FEASIBILITY
 • Is this a real problem? Yes (Feasibility Score: ${projectData.problemValidation.feasibilityScore}/100)
@@ -33,7 +32,6 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
 • Target Users: ${projectData.problemValidation.targetUsers.join(', ')}
 
 2. 🔬 VERIFIED RESEARCH CITATIONS
-• AI Model Engine: ${aiEngineDetails[selectedAiEngine].name}
 • Scoured arXiv, IEEE Xplore, Kaggle Datasets, and GitHub Repositories.
 • Verified Citations: ${projectData.deepSearch.citations.length} sources attached.
 
@@ -53,16 +51,10 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
     confetti({ particleCount: 30, spread: 40 });
   };
 
-  const aiEngineDetails = {
-    gemini: { name: "Google Gemini 1.5 Pro API", badge: "♊ Gemini 1.5 Pro", color: "bg-indigo-600 text-white" },
-    chatgpt: { name: "OpenAI ChatGPT-4o API", badge: "🤖 ChatGPT-4o", color: "bg-emerald-600 text-white" },
-    claude: { name: "Anthropic Claude 3.5 API", badge: "🧠 Claude 3.5 Sonnet", color: "bg-purple-600 text-white" }
-  };
-
   return (
     <div className="space-y-6 animate-fadeIn">
       
-      {/* Hero Section & Multi-AI API Search Portal */}
+      {/* Hero Section & Search Portal */}
       <div className="relative rounded-2xl glass-panel-glow p-6 sm:p-8 overflow-hidden bg-gradient-to-br from-white via-indigo-50/40 to-cyan-50/40 border border-slate-200 shadow-md">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-cyan-200/30 rounded-full blur-3xl pointer-events-none"></div>
@@ -70,7 +62,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
         <div className="relative z-10 max-w-3xl mx-auto text-center space-y-3">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-100 border border-indigo-200 text-indigo-900 text-xs font-bold">
             <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-            <span>iNSIGHTS Multi-Model AI API Search Portal</span>
+            <span>iNSIGHTS AI Search Portal</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
@@ -80,48 +72,14 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
             {t.heroDesc}
           </p>
 
-          {/* AI ENGINE SELECTOR TABS (GEMINI / CHATGPT / CLAUDE) */}
-          <div className="flex justify-center items-center space-x-2 pt-1">
-            <span className="text-xs font-bold text-slate-700">Active AI Model API:</span>
-            <div className="flex bg-slate-200/80 p-1 rounded-xl border border-slate-300 gap-1 text-xs font-extrabold">
-              <button
-                type="button"
-                onClick={() => setSelectedAiEngine('gemini')}
-                className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
-                  selectedAiEngine === 'gemini' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-900'
-                }`}
-              >
-                ♊ Gemini 1.5 Pro
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedAiEngine('chatgpt')}
-                className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
-                  selectedAiEngine === 'chatgpt' ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-900'
-                }`}
-              >
-                🤖 ChatGPT-4o
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedAiEngine('claude')}
-                className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
-                  selectedAiEngine === 'claude' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-700 hover:text-slate-900'
-                }`}
-              >
-                🧠 Claude 3.5
-              </button>
-            </div>
-          </div>
-
           {/* Search Bar Input */}
-          <form onSubmit={handleSubmit} className="relative pt-1">
+          <form onSubmit={handleSubmit} className="relative pt-2">
             <div className="relative flex items-center">
               <input
                 type="text"
                 value={inputPrompt}
                 onChange={(e) => setInputPrompt(e.target.value)}
-                placeholder={`Search using ${aiEngineDetails[selectedAiEngine].name}...`}
+                placeholder={t.searchPlaceholder}
                 className="w-full pl-11 pr-36 py-3.5 rounded-xl glass-input text-slate-900 placeholder-slate-400 text-xs sm:text-sm focus:outline-none transition-all shadow-md font-semibold"
               />
               <Search className="absolute left-3.5 w-4 h-4 text-slate-400" />
@@ -180,7 +138,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
             </div>
             <div className="flex-1 space-y-1">
               <div className="flex justify-between items-center text-xs font-bold text-indigo-900">
-                <span>Analyzing via {aiEngineDetails[selectedAiEngine].name}...</span>
+                <span>Analyzing AI Literature & Solution Architecture...</span>
                 <span>arXiv • IEEE • GitHub • Kaggle</span>
               </div>
               <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">
@@ -197,16 +155,13 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
 
           <div className="glass-panel p-5 sm:p-6 rounded-2xl border border-slate-200 bg-white space-y-4 shadow-lg">
             
-            {/* UNIFIED CONTAINER HEADER: Title + Model Badge + Copy Button */}
+            {/* UNIFIED CONTAINER HEADER: Title + Badge + Copy Button */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
               <div>
                 <div className="flex items-center space-x-2 mb-1">
                   <span className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                     Structured AI Response Generated
-                  </span>
-                  <span className={`px-2 py-0.5 text-[10px] font-extrabold rounded ${aiEngineDetails[selectedAiEngine].color}`}>
-                    {aiEngineDetails[selectedAiEngine].badge}
                   </span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-black text-slate-900">{projectData.title}</h2>
@@ -228,7 +183,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
             <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-between flex-wrap gap-2 text-xs">
               <div className="flex items-center space-x-2">
                 <Award className="w-5 h-5 text-indigo-600 shrink-0" />
-                <span className="font-extrabold text-indigo-950">Unique Student Project Architecture ({aiEngineDetails[selectedAiEngine].name}):</span>
+                <span className="font-extrabold text-indigo-950">Unique Student Project Architecture:</span>
                 <span className="text-slate-800 font-medium">Includes 100% Plagiarism-Free Literature Citations and Ready Starter Code!</span>
               </div>
               <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-mono text-[10px] font-bold">VERIFIED UNIQUE</span>
@@ -261,7 +216,6 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                   <span className="font-mono font-bold text-slate-700 text-[11px]">{projectData.deepSearch.citations.length} Sources</span>
                 </div>
                 <div className="space-y-1 text-slate-800 font-semibold leading-relaxed">
-                  <p>• <strong>AI Model:</strong> {aiEngineDetails[selectedAiEngine].name}</p>
                   <p>• <strong>Sources:</strong> Scoured arXiv, IEEE Xplore, Kaggle & GitHub.</p>
                   <p className="text-purple-700 font-bold">• <strong>Status:</strong> 100% Plagiarism-Free Academic Guarantee</p>
                 </div>

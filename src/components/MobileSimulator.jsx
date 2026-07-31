@@ -10,19 +10,17 @@ import pptxgen from 'pptxgenjs';
 
 export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onOpenHistory }) {
   const [mobileTab, setMobileTab] = useState('search'); 
-  // Tabs: 'search' | 'readymade' | 'graph' | 'generator' | 'agents' | 'ppt' | 'talent'
+  // 4 Simple Student Essential Tabs: 'search' | 'generator' | 'agents' | 'ppt'
   
   const [deviceType, setDeviceType] = useState('ios');
   const [mobileIdeaInput, setMobileIdeaInput] = useState('');
-  const [selectedAiEngine, setSelectedAiEngine] = useState('gemini');
-  const [copiedMobileCode, setCopiedMobileCode] = useState(false);
   const [copiedPrompt, setCopiedPrompt] = useState(false);
   const [downloadingPpt, setDownloadingPpt] = useState(false);
 
   // Active Generator Layer
   const [activeLayer, setActiveLayer] = useState('frontend');
 
-  // Slide Index & Editable State
+  // Slide Index
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
 
   // Dynamic Mobile AI Agent Chat
@@ -43,7 +41,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
     e.preventDefault();
     if (!mobileIdeaInput.trim()) return;
     if (onSearch) {
-      onSearch(mobileIdeaInput, selectedAiEngine);
+      onSearch(mobileIdeaInput);
     }
   };
 
@@ -138,7 +136,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
       </div>
 
       {/* SMARTPHONE DEVICE SHELL */}
-      <div className="relative w-[360px] h-[740px] bg-slate-900 rounded-[48px] p-3 shadow-2xl border-4 border-slate-800 ring-1 ring-slate-700/50 flex flex-col overflow-hidden select-none">
+      <div className="relative w-[360px] h-[720px] bg-slate-900 rounded-[48px] p-3 shadow-2xl border-4 border-slate-800 ring-1 ring-slate-700/50 flex flex-col overflow-hidden select-none">
         
         {/* Notch / Dynamic Island */}
         {deviceType === 'ios' ? (
@@ -184,28 +182,6 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                     <User className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              </div>
-
-              {/* Multi-AI Model Switcher */}
-              <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 justify-around text-[10px] font-bold">
-                <button
-                  onClick={() => setSelectedAiEngine('gemini')}
-                  className={`px-2 py-1 rounded-lg ${selectedAiEngine === 'gemini' ? 'bg-indigo-600 text-white' : 'text-slate-400'}`}
-                >
-                  ♊ Gemini
-                </button>
-                <button
-                  onClick={() => setSelectedAiEngine('chatgpt')}
-                  className={`px-2 py-1 rounded-lg ${selectedAiEngine === 'chatgpt' ? 'bg-emerald-600 text-white' : 'text-slate-400'}`}
-                >
-                  🤖 ChatGPT-4o
-                </button>
-                <button
-                  onClick={() => setSelectedAiEngine('claude')}
-                  className={`px-2 py-1 rounded-lg ${selectedAiEngine === 'claude' ? 'bg-purple-600 text-white' : 'text-slate-400'}`}
-                >
-                  🧠 Claude 3.5
-                </button>
               </div>
 
               {/* Search Bar */}
@@ -254,57 +230,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
             </div>
           )}
 
-          {/* TAB 2: PROJECT HUB */}
-          {mobileTab === 'readymade' && (
-            <div className="space-y-3 pt-1 animate-fadeIn">
-              <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                <Rocket className="w-4 h-4 text-indigo-400" />
-                Project Hub Catalog
-              </h4>
-
-              {projectData ? (
-                <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2.5">
-                  <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-indigo-500/20 text-indigo-300">
-                    Recommended Project
-                  </span>
-                  <h5 className="font-bold text-white text-xs">{projectData.title}</h5>
-                  <p className="text-[11px] text-slate-300 font-medium">{projectData.tagline}</p>
-                  
-                  <div className="p-2 rounded-xl bg-slate-950 font-mono text-[9px] text-emerald-300 border border-slate-800 truncate">
-                    <code>git clone https://github.com/insights-copilot/{slug}.git</code>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center">
-                  <Rocket className="w-8 h-8 text-indigo-400 mx-auto mb-1" />
-                  <p className="text-[11px] text-slate-300 font-medium">Catalog of student code repositories.</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 3: CLUSTER GRAPH */}
-          {mobileTab === 'graph' && (
-            <div className="space-y-3 pt-1 animate-fadeIn text-center">
-              <h4 className="text-xs font-bold text-white flex items-center justify-center gap-1.5">
-                <Share2 className="w-4 h-4 text-purple-400" />
-                Cluster Graph Nodes
-              </h4>
-
-              <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
-                <div className="p-2 rounded-xl bg-purple-950/60 border border-purple-800 text-purple-200">
-                  <span className="font-bold">{projectTitle} Model Node</span>
-                  <span className="block text-[10px] text-emerald-400 font-mono">Reliability: 98%</span>
-                </div>
-                <div className="p-2 rounded-xl bg-indigo-950/60 border border-indigo-800 text-indigo-200">
-                  <span className="font-bold">arXiv Empirical Paper (2025)</span>
-                  <span className="block text-[10px] text-emerald-400 font-mono">Reliability: 94%</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 4: PROJECT GENERATOR */}
+          {/* TAB 2: PROJECT GENERATOR */}
           {mobileTab === 'generator' && (
             <div className="space-y-3 pt-1 animate-fadeIn">
               <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
@@ -327,7 +253,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                     Backend → Node.js Express / Python FastAPI
                   </div>
                   <div onClick={() => setActiveLayer('ai')} className={`p-1.5 rounded cursor-pointer ${activeLayer === 'ai' ? 'bg-purple-900 text-white' : 'bg-slate-950 text-slate-300'}`}>
-                    AI → Gemini 1.5 Pro AI Engine
+                    AI → Gemini AI Engine
                   </div>
                 </div>
               </div>
@@ -342,7 +268,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
             </div>
           )}
 
-          {/* TAB 5: AI AGENTS */}
+          {/* TAB 3: AI AGENTS */}
           {mobileTab === 'agents' && (
             <div className="flex flex-col h-full space-y-2 pt-1 animate-fadeIn">
               <div className="flex items-center space-x-2 pb-2 border-b border-slate-800">
@@ -395,7 +321,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
             </div>
           )}
 
-          {/* TAB 6: PPT GENERATION */}
+          {/* TAB 4: PPT GENERATION */}
           {mobileTab === 'ppt' && (
             <div className="space-y-3 pt-1 animate-fadeIn text-center">
               <h4 className="text-xs font-bold text-white flex items-center justify-center gap-1.5">
@@ -429,56 +355,25 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
             </div>
           )}
 
-          {/* TAB 7: AI TALENT */}
-          {mobileTab === 'talent' && (
-            <div className="space-y-3 pt-1 animate-fadeIn text-center">
-              <h4 className="text-xs font-bold text-white flex items-center justify-center gap-1.5">
-                <Award className="w-4 h-4 text-amber-400" />
-                AI Talent & Verification
-              </h4>
-
-              <div className="p-4 rounded-2xl bg-slate-900 border border-amber-500/40 space-y-2">
-                <span className="text-[10px] text-slate-400 uppercase font-mono">Student AI Talent Score™</span>
-                <div className="text-3xl font-black text-amber-400">94<span className="text-xs text-slate-400 font-normal">/100</span></div>
-                <div className="flex flex-wrap justify-center gap-1 text-[9px] font-bold">
-                  <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">Verified React 18</span>
-                  <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">Node.js Express</span>
-                </div>
-              </div>
-            </div>
-          )}
-
         </div>
 
-        {/* BOTTOM NAVIGATION BAR FOR MOBILE APP */}
-        <div className="absolute bottom-2 left-2 right-2 bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-2xl px-1 py-1.5 flex items-center justify-around z-40 text-[8px] font-extrabold">
-          <button onClick={() => setMobileTab('search')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'search' ? 'text-cyan-400' : 'text-slate-400'}`}>
-            <Search className="w-3.5 h-3.5" />
+        {/* SIMPLE 4-TAB STUDENT BOTTOM NAVIGATION BAR FOR MOBILE APP */}
+        <div className="absolute bottom-2 left-3 right-3 bg-slate-900/95 backdrop-blur-xl border border-slate-800 rounded-2xl px-2 py-2 flex items-center justify-around z-40 text-[9px] font-extrabold">
+          <button onClick={() => setMobileTab('search')} className={`flex flex-col items-center space-y-0.5 cursor-pointer ${mobileTab === 'search' ? 'text-cyan-400' : 'text-slate-400'}`}>
+            <Search className="w-4 h-4" />
             <span>Search</span>
           </button>
-          <button onClick={() => setMobileTab('readymade')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'readymade' ? 'text-indigo-400' : 'text-slate-400'}`}>
-            <Rocket className="w-3.5 h-3.5" />
-            <span>Projects</span>
-          </button>
-          <button onClick={() => setMobileTab('graph')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'graph' ? 'text-purple-400' : 'text-slate-400'}`}>
-            <Share2 className="w-3.5 h-3.5" />
-            <span>Graph</span>
-          </button>
-          <button onClick={() => setMobileTab('generator')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'generator' ? 'text-cyan-400' : 'text-slate-400'}`}>
-            <FileCode className="w-3.5 h-3.5" />
+          <button onClick={() => setMobileTab('generator')} className={`flex flex-col items-center space-y-0.5 cursor-pointer ${mobileTab === 'generator' ? 'text-indigo-400' : 'text-slate-400'}`}>
+            <FileCode className="w-4 h-4" />
             <span>Generator</span>
           </button>
-          <button onClick={() => setMobileTab('agents')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'agents' ? 'text-indigo-400' : 'text-slate-400'}`}>
-            <Bot className="w-3.5 h-3.5" />
+          <button onClick={() => setMobileTab('agents')} className={`flex flex-col items-center space-y-0.5 cursor-pointer ${mobileTab === 'agents' ? 'text-purple-400' : 'text-slate-400'}`}>
+            <Bot className="w-4 h-4" />
             <span>Agents</span>
           </button>
-          <button onClick={() => setMobileTab('ppt')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'ppt' ? 'text-purple-400' : 'text-slate-400'}`}>
-            <Presentation className="w-3.5 h-3.5" />
+          <button onClick={() => setMobileTab('ppt')} className={`flex flex-col items-center space-y-0.5 cursor-pointer ${mobileTab === 'ppt' ? 'text-amber-400' : 'text-slate-400'}`}>
+            <Presentation className="w-4 h-4" />
             <span>PPT</span>
-          </button>
-          <button onClick={() => setMobileTab('talent')} className={`flex flex-col items-center space-y-0.5 ${mobileTab === 'talent' ? 'text-amber-400' : 'text-slate-400'}`}>
-            <Award className="w-3.5 h-3.5" />
-            <span>Talent</span>
           </button>
         </div>
 

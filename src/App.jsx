@@ -45,17 +45,17 @@ export default function App() {
     setConversationHistory(prev => [historyItem, ...prev]);
   };
 
-  const handleSelectSample = (id, aiEngine = 'gemini') => {
+  const handleSelectSample = (id) => {
     setIsSearching(true);
     setActiveIdeaId(id);
     
     setTimeout(() => {
       let dataToSet = null;
       if (DEFAULT_PROJECT_DATA[id]) {
-        dataToSet = { ...DEFAULT_PROJECT_DATA[id], aiEngine };
+        dataToSet = DEFAULT_PROJECT_DATA[id];
       } else {
         const sample = SAMPLE_IDEAS.find(s => s.id === id);
-        dataToSet = createDynamicProjectData(sample ? sample.title : "Custom Student Project", sample ? sample.prompt : "", aiEngine);
+        dataToSet = createDynamicProjectData(sample ? sample.title : "Custom Student Project", sample ? sample.prompt : "");
       }
       setProjectData(dataToSet);
       saveToHistory(dataToSet);
@@ -63,15 +63,14 @@ export default function App() {
     }, 900);
   };
 
-  const handleGenerateCustom = (customPrompt, aiEngine = 'gemini') => {
+  const handleGenerateCustom = (customPrompt) => {
     setIsSearching(true);
     setActiveIdeaId('custom');
 
     setTimeout(() => {
       const generatedData = createDynamicProjectData(
         extractTitleFromPrompt(customPrompt),
-        customPrompt,
-        aiEngine
+        customPrompt
       );
       setProjectData(generatedData);
       saveToHistory(generatedData);
@@ -101,63 +100,35 @@ export default function App() {
     return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
   };
 
-  const createDynamicProjectData = (title, prompt, aiEngine = 'gemini') => {
+  const createDynamicProjectData = (title, prompt) => {
     const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
-
-    const modelSpecs = {
-      gemini: {
-        engineName: "Google Gemini 1.5 Pro API",
-        badge: "♊ Gemini 1.5 Pro",
-        focus: "Multimodal Research & Scholar Citation Synthesis",
-        citationsVenue: "Google Scholar & arXiv Multimodal Corpus",
-        feasiModifier: 2
-      },
-      chatgpt: {
-        engineName: "OpenAI ChatGPT-4o API",
-        badge: "🤖 ChatGPT-4o",
-        focus: "Production Code Architecture & Microservices",
-        citationsVenue: "GitHub Production & OpenAI Code Benchmarks",
-        feasiModifier: 4
-      },
-      claude: {
-        engineName: "Anthropic Claude 3.5 Sonnet API",
-        badge: "🧠 Claude 3.5 Sonnet",
-        focus: "Rigorous Feasibility Logic & System Auditing",
-        citationsVenue: "IEEE Transactions & ACM Computer Science",
-        feasiModifier: 1
-      }
-    };
-
-    const currentModel = modelSpecs[aiEngine] || modelSpecs.gemini;
 
     return {
       title: title,
-      tagline: `[${currentModel.badge}] AI-Engineered framework for: "${prompt || title}"`,
-      aiEngine: aiEngine,
-      aiEngineName: currentModel.engineName,
+      tagline: `AI-Engineered framework for: "${prompt || title}"`,
       problemValidation: {
-        marketGap: `[Synthesized via ${currentModel.engineName}] Existing systems lack real-time automated computer vision audits, predictive ML forecasting, and live MongoDB Atlas cloud synchronization for ${title}.`,
-        feasibilityScore: Math.min(99, Math.floor(Math.random() * 6) + 92 + currentModel.feasiModifier),
+        marketGap: `Existing systems lack real-time automated computer vision audits, predictive ML forecasting, and live cloud synchronization for ${title}.`,
+        feasibilityScore: Math.min(99, Math.floor(Math.random() * 6) + 94),
         innovationScore: Math.min(99, Math.floor(Math.random() * 6) + 93),
         impactScore: Math.min(99, Math.floor(Math.random() * 5) + 94),
         targetUsers: ["Students", "Domain Experts", "Academic Mentors", "Hackathon Judges"],
         keyPainPoints: [
           `Manual overhead and unverified execution timelines in traditional ${title} solutions.`,
-          `Fragmented research data analyzed by ${currentModel.engineName}.`,
-          "Lack of automated MongoDB schema generation, Mongoose models, and architecture diagrams."
+          `Fragmented research data analyzed by DeepSearch.`,
+          "Lack of automated system architecture diagrams and starter code."
         ]
       },
       deepSearch: {
-        summary: `Scoured literature via ${currentModel.engineName} focusing on ${currentModel.focus} for ${title}.`,
+        summary: `Scoured literature focusing on research paper citations and open-source models for ${title}.`,
         sourcesCount: 42,
         citations: [
           {
-            title: `${currentModel.badge}: Deep Learning Neural Pipeline for ${title}`,
+            title: `Deep Learning Neural Pipeline for ${title}`,
             authors: "Zhang et al. (2025)",
-            venue: currentModel.citationsVenue,
+            venue: "IEEE Transactions & arXiv Papers",
             url: `https://arxiv.org/abs/2304.${Math.floor(Math.random() * 8000) + 1000}`,
             type: "Paper",
-            snippet: `Empirical benchmarking by ${currentModel.engineName} demonstrates 95.8% accuracy when deploying quantized models for ${title} connected to MongoDB Atlas.`
+            snippet: `Empirical benchmarking demonstrates 95.8% accuracy when deploying quantized models for ${title}.`
           },
           {
             title: `${title} Reference Open-Source Annotated Corpus`,
@@ -168,47 +139,36 @@ export default function App() {
             snippet: `18,000+ curated datapoints formatted for model training and verification for ${title}.`
           },
           {
-            title: `${title} Microservices & Live MongoDB Atlas Engine`,
+            title: `${title} Microservices Engine`,
             authors: "OpenSource Tech Lab",
             venue: "GitHub Repositories",
             url: `https://github.com/insights-copilot/${slug}`,
             type: "GitHub",
-            snippet: `Production-ready Node.js Express & Python FastAPI code synthesized by ${currentModel.engineName}.`
+            snippet: `Production-ready Node.js Express & Python FastAPI code synthesized for ${title}.`
           }
         ]
       },
       existingSolutions: [
         { name: "Manual Approaches", pros: "Zero tech cost", cons: "High error rates, zero scalability", status: "Outdated" },
         { name: "Basic Web Search", pros: "Wide sources", cons: "No architecture synthesis or agent automation", status: "Partial" },
-        { name: `iNSIGHTS ${title}`, pros: "Automated architecture + Live MongoDB + WhatsApp Bot workforce", cons: "Requires API configuration", status: "Optimal" }
+        { name: `iNSIGHTS ${title}`, pros: "Automated architecture + AI workforce", cons: "Requires API configuration", status: "Optimal" }
       ],
-      mongoDbSpec: {
-        connectionStatus: "Connected to MongoDB Atlas Cluster (aws-iad1-shard-0)",
-        clusterName: "insights-copilot-production",
-        databaseName: `${slug.replace(/-/g, '_')}_db`,
-        collections: [
-          { name: `${slug.replace(/-/g, '_')}_logs`, count: 9420, size: "8.2 MB", schema: "{ timestamp: Date, payload: Object }" },
-          { name: "user_submissions", count: 4120, size: "3.4 MB", schema: "{ studentId: String, prompt: String }" }
-        ],
-        mongooseCode: `// Live Mongoose Schema for ${title} (${currentModel.badge})\nconst mongoose = require('mongoose');\n\nconst Schema = new mongoose.Schema({\n  title: { type: String, required: true },\n  createdAt: { type: Date, default: Date.now },\n  status: { type: String, default: "ACTIVE" }\n});\n\nmodule.exports = mongoose.model('${title.replace(/[^a-zA-Z]/g, '')}', Schema);`
-      },
       architecture: {
-        frontend: "React 18 + Tailwind CSS + Lucide Icons",
+        frontend: "React 18 + Tailwind CSS",
         backend: "Node.js Express + Python FastAPI Microservices",
-        database: "MongoDB Atlas (Live Cluster) + Redis Cache",
-        aiModels: [currentModel.engineName, "Prophet Time-Series", "YOLOv8 Vision"],
-        apis: ["MongoDB Atlas Data API", "WhatsApp Business API", "GitHub REST API"],
+        database: "Cloud Document Store / Redis Cache",
+        aiModels: ["Gemini 1.5 Pro", "Prophet Time-Series", "YOLOv8 Vision"],
+        apis: ["GitHub REST API"],
         nodes: [
           { id: "1", label: `Data Input Pipeline for ${title}`, type: "Input", color: "bg-cyan-100 text-cyan-900 border-cyan-300", detail: "Data ingestion pipeline." },
-          { id: "2", label: `${currentModel.badge} AI Synthesizer`, type: "AI Engine", color: "bg-purple-100 text-purple-900 border-purple-300", detail: "Generates paper citations and problem validation." },
-          { id: "3", label: "Express Central Orchestrator", type: "Backend", color: "bg-indigo-100 text-indigo-900 border-indigo-300", detail: "REST & WebSockets server." },
-          { id: "4", label: "MongoDB Atlas Live Data Vault", type: "Database", color: "bg-emerald-100 text-emerald-900 border-emerald-300", detail: "Live MongoDB Atlas document store." }
+          { id: "2", label: "AI Synthesizer Engine", type: "AI Engine", color: "bg-purple-100 text-purple-900 border-purple-300", detail: "Generates paper citations and problem validation." },
+          { id: "3", label: "Express Central Orchestrator", type: "Backend", color: "bg-indigo-100 text-indigo-900 border-indigo-300", detail: "REST & WebSockets server." }
         ]
       },
       roadmap: [
-        { phase: "Phase 1 (Week 1)", title: "Literature Search & Synthesis", task: `Extract paper citations via ${currentModel.engineName} for ${title}.` },
-        { phase: "Phase 2 (Week 2)", title: "MongoDB Atlas & Express API", task: "Setup Mongoose models, database collections, and AI inference endpoints." },
-        { phase: "Phase 3 (Week 3)", title: "Agent Integration & Dashboard", task: "Connect WhatsApp bot agent and build interactive React dashboard." },
+        { phase: "Phase 1 (Week 1)", title: "Literature Search & Synthesis", task: `Extract paper citations for ${title}.` },
+        { phase: "Phase 2 (Week 2)", title: "Backend & Express API", task: "Setup models, database collections, and AI inference endpoints." },
+        { phase: "Phase 3 (Week 3)", title: "Agent Integration & Dashboard", task: "Connect AI agents and build interactive React dashboard." },
         { phase: "Phase 4 (Week 4)", title: "Deployment & Presentation Deck", task: "Deploy production build to Vercel and export PowerPoint presentation." }
       ],
       datasets: [
@@ -218,8 +178,8 @@ export default function App() {
         { name: `insights-copilot/${slug}`, stars: "3.2k", description: `Readymade template repository for ${title}.` }
       ],
       agentWorkflows: [
-        { agent: "Research Agent", avatar: "🔍", text: `DeepSearch verified citations via ${currentModel.engineName} for ${title}.` },
-        { agent: "Architecture Agent", avatar: "🏗️", text: "Generated MongoDB Atlas schema with sub-20ms latency SLA." },
+        { agent: "Research Agent", avatar: "🔍", text: `DeepSearch verified citations for ${title}.` },
+        { agent: "Architecture Agent", avatar: "🏗️", text: "Generated system architecture with sub-20ms latency SLA." },
         { agent: "Code Copilot Agent", avatar: "🤖", text: "Ready to export Node.js server.js and PowerPoint pitch deck." }
       ]
     };
@@ -368,11 +328,6 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
           <p>© 2026 iNSIGHTS Copilot Platform.</p>
           <div className="flex items-center space-x-4">
-            <span className="text-emerald-700 font-extrabold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-              Live MongoDB Atlas
-            </span>
-            <span>•</span>
             <span className="text-indigo-700 font-extrabold">Presentation Generator v3.0</span>
           </div>
         </div>
