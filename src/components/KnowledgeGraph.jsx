@@ -13,7 +13,7 @@ export default function KnowledgeGraph({ projectData, currentLang = 'en' }) {
     { id: 2, label: 'arXiv Empirical Paper (2025)', cat: 'Paper', val: 94, x: 25, y: 25, color: 'bg-purple-600' },
     { id: 3, label: 'IEEE Neural Pipeline Benchmark', cat: 'Paper', val: 91, x: 75, y: 30, color: 'bg-purple-600' },
     { id: 4, label: 'Kaggle Annotated Dataset', cat: 'Dataset', val: 88, x: 30, y: 70, color: 'bg-emerald-600' },
-    { id: 5, label: 'MongoDB Atlas Schema Vault', cat: 'Database', val: 95, x: 70, y: 65, color: 'bg-cyan-600' }
+    { id: 5, label: 'Production Microservice Vault', cat: 'System', val: 95, x: 70, y: 65, color: 'bg-cyan-600' }
   ];
 
   const filteredNodes = selectedCategory === 'All' ? nodes : nodes.filter(n => n.cat === selectedCategory);
@@ -25,10 +25,10 @@ export default function KnowledgeGraph({ projectData, currentLang = 'en' }) {
       <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-200 bg-white shadow-md">
         <div className="flex items-center space-x-2 text-indigo-700 text-xs font-bold">
           <Sparkles className="w-4 h-4 text-indigo-600" />
-          <span>Knowledge Cluster Visualizer</span>
+          <span>Research Network Engine</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-          {t.knowledgeHeader}
+          Cluster Graph
         </h2>
         <p className="text-slate-700 text-sm font-semibold">
           {t.knowledgeDesc}
@@ -44,7 +44,7 @@ export default function KnowledgeGraph({ projectData, currentLang = 'en' }) {
           </div>
 
           <div className="flex flex-wrap gap-1.5 text-xs font-extrabold">
-            {['All', 'Model', 'Paper', 'Dataset', 'Database'].map(cat => (
+            {['All', 'Model', 'Paper', 'Dataset', 'System'].map(cat => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}

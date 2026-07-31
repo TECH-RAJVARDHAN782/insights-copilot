@@ -18,7 +18,7 @@ export default function Header({
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
 
-  // Primary essential tabs visible in top bar
+  // Primary tabs visible in top navigation bar
   const primaryTabs = [
     { id: 'search', label: t.tabs.search, icon: Compass },
     { id: 'readymade', label: t.tabs.readymade, icon: Rocket },
@@ -122,7 +122,7 @@ export default function Header({
               onClick={onOpenAuth}
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold border border-slate-200 cursor-pointer"
             >
-              <User className="w-3.5 h-3.5 text-emerald-600" />
+              <User className="w-3.5 h-3.5 text-indigo-600" />
               <span className="hidden sm:inline truncate max-w-[100px]">
                 {userAuth ? userAuth.name : "Sign In"}
               </span>
@@ -148,7 +148,7 @@ export default function Header({
 
         </div>
 
-        {/* Tab Navigation Bar with Bright Theme */}
+        {/* Tab Navigation Bar */}
         <div className="flex items-center justify-between py-2 border-t border-slate-200">
           <div className="flex space-x-2 overflow-x-auto scrollbar-none py-0.5">
             {primaryTabs.map((tab) => {

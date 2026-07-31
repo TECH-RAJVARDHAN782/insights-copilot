@@ -20,22 +20,22 @@ import {
   Cpu,
   RefreshCw,
   User,
-  History
+  History,
+  Folder
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onOpenHistory }) {
-  const [mobileTab, setMobileTab] = useState('search'); // 'search' | 'code' | 'bot' | 'boilerplates' | 'pitch'
-  const [deviceType, setDeviceType] = useState('ios'); // 'ios' | 'android'
+  const [mobileTab, setMobileTab] = useState('search'); // 'search' | 'code' | 'agent' | 'generator' | 'ppt'
+  const [deviceType, setDeviceType] = useState('ios');
   
-  // Mobile Search state
   const [mobileIdeaInput, setMobileIdeaInput] = useState('');
   const [copiedMobileCode, setCopiedMobileCode] = useState(false);
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
 
-  // Dynamic Mobile WhatsApp Chat
-  const [botMessages, setBotMessages] = useState([
-    { id: 1, sender: 'bot', text: `👋 Hi Student! I am your mobile iNSIGHTS WhatsApp Assistant. Type any question!`, time: '09:15 AM' }
+  // Dynamic Mobile AI Agent Chat
+  const [agentMessages, setAgentMessages] = useState([
+    { id: 1, sender: 'bot', text: `👋 Hi Student! I am your mobile AI Agent Assistant. Type any question!`, time: '09:15 AM' }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -50,12 +50,12 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
     }
   };
 
-  const handleSendBotMessage = (e) => {
+  const handleSendAgentMessage = (e) => {
     e?.preventDefault();
     if (!chatInput.trim()) return;
     const textSent = chatInput;
     const userMsg = { id: Date.now(), sender: 'user', text: textSent, time: 'Just now' };
-    setBotMessages(prev => [...prev, userMsg]);
+    setAgentMessages(prev => [...prev, userMsg]);
     setChatInput('');
     setIsTyping(true);
 
@@ -64,13 +64,11 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
       const lower = textSent.toLowerCase();
 
       if (lower.includes('code') || lower.includes('repo') || lower.includes('download')) {
-        botReplyText = `🚀 Code Repo for "${projectTitle}": insights-copilot/${projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '-')}-starter. Connected to Live MongoDB Atlas!`;
+        botReplyText = `🚀 Code Repo for "${projectTitle}": insights-copilot/${projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '-')}-starter. Connected to API server!`;
       } else if (lower.includes('score') || lower.includes('feasibility') || lower.includes('impact')) {
         botReplyText = `📊 Feasibility Score: ${projectData?.problemValidation?.feasibilityScore || 94}/100. Innovation Score: ${projectData?.problemValidation?.innovationScore || 96}/100.`;
-      } else if (lower.includes('boilerplate') || lower.includes('fastapi') || lower.includes('express')) {
-        botReplyText = `💻 Boilerplates Ready: Node.js Express, Python FastAPI, React 18, and Docker Compose scripts available in Boilerplates tab.`;
       } else {
-        botReplyText = `🤖 Received "${textSent}" for "${projectTitle}". DeepSearch processed request with 94.6% accuracy SLA!`;
+        botReplyText = `🤖 AI Agent: Processed "${textSent}" for "${projectTitle}". DeepSearch synthesized paper citations and folder structure!`;
       }
 
       const botReply = {
@@ -79,14 +77,14 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
         text: botReplyText,
         time: 'Just now'
       };
-      setBotMessages(prev => [...prev, botReply]);
+      setAgentMessages(prev => [...prev, botReply]);
       setIsTyping(false);
       confetti({ particleCount: 25, spread: 40 });
     }, 800);
   };
 
   const handleDownloadMobileZip = () => {
-    const sampleCode = `// Readymade Mobile Starter File for ${projectTitle}\n// Connected to Live MongoDB Atlas Cluster\n\nconst mongoose = require('mongoose');\nconsole.log("Ready-to-use project loaded!");`;
+    const sampleCode = `// Readymade Mobile Starter File for ${projectTitle}\nconst express = require('express');\nconsole.log("Ready-to-use project loaded!");`;
     const element = document.createElement("a");
     const file = new Blob([sampleCode], { type: 'text/plain' });
     element.href = URL.createObjectURL(file);
@@ -102,7 +100,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
   const mobileSlides = [
     { title: "Vision Statement", text: projectData?.tagline || "AI-powered innovation engine." },
     { title: "Problem Gap", text: projectData?.problemValidation?.marketGap || "Unverified execution timelines." },
-    { title: "Tech Stack", text: `React 18 + Node.js + Live MongoDB Atlas + Python FastAPI.` },
+    { title: "Tech Stack", text: `React 18 + Node.js Express + Python FastAPI.` },
     { title: "Feasibility Score", text: `Feasibility: ${projectData?.problemValidation?.feasibilityScore || 94}/100 | Impact: 98/100.` }
   ];
 
@@ -136,7 +134,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
         </div>
       </div>
 
-      {/* SMARTPHONE DEVICE SHELL IN CLEAN LIGHT DESIGN */}
+      {/* SMARTPHONE DEVICE SHELL */}
       <div className="relative w-[360px] h-[720px] bg-slate-900 rounded-[48px] p-3 shadow-2xl border-4 border-slate-800 ring-1 ring-slate-700/50 flex flex-col overflow-hidden select-none">
         
         {/* Notch / Dynamic Island */}
@@ -220,12 +218,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
 
                   <div className="p-2 rounded-xl bg-slate-950 text-[10px] text-slate-200 space-y-1 font-medium border border-slate-800">
                     <p>• <strong>Problem:</strong> {projectData.problemValidation.marketGap}</p>
-                    <p>• <strong>Tech Stack:</strong> {projectData.architecture.frontend} + Node.js + MongoDB</p>
-                  </div>
-
-                  <div className="pt-1 border-t border-slate-800 flex items-center justify-between text-[10px] text-cyan-300 font-mono">
-                    <span>DB: Live MongoDB Atlas</span>
-                    <span>Citations: {projectData.deepSearch.citations.length} sources</span>
+                    <p>• <strong>Tech Stack:</strong> {projectData.architecture.frontend} + Node.js Express</p>
                   </div>
                 </div>
               ) : (
@@ -276,27 +269,27 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
             </div>
           )}
 
-          {/* TAB 3: WHATSAPP BOT */}
-          {mobileTab === 'bot' && (
+          {/* TAB 3: AI AGENTS */}
+          {mobileTab === 'agent' && (
             <div className="flex flex-col h-full space-y-3 pt-1 animate-fadeIn">
               <div className="flex items-center space-x-2 pb-2 border-b border-slate-800">
-                <div className="p-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                <div className="p-1 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/40">
                   <Bot className="w-3.5 h-3.5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-white">iNSIGHTS WhatsApp Assistant</h4>
-                  <span className="text-[9px] text-emerald-400 font-semibold">Online • Live Webhook</span>
+                  <h4 className="text-xs font-bold text-white">iNSIGHTS AI Agents</h4>
+                  <span className="text-[9px] text-emerald-400 font-semibold">Online • Live Assistant</span>
                 </div>
               </div>
 
               {/* Chat Messages */}
               <div className="flex-1 space-y-2 overflow-y-auto pr-1">
-                {botMessages.map((msg) => (
+                {agentMessages.map((msg) => (
                   <div
                     key={msg.id}
                     className={`max-w-[88%] p-2.5 rounded-xl text-[11px] ${
                       msg.sender === 'user'
-                        ? 'ml-auto bg-emerald-700 text-white rounded-br-none'
+                        ? 'ml-auto bg-indigo-600 text-white rounded-br-none'
                         : 'mr-auto bg-slate-900 text-slate-200 border border-slate-800 rounded-bl-none'
                     }`}
                   >
@@ -305,25 +298,25 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
                   </div>
                 ))}
                 {isTyping && (
-                  <div className="p-2 rounded-xl bg-slate-900 text-[10px] text-emerald-400 animate-pulse flex items-center gap-1">
+                  <div className="p-2 rounded-xl bg-slate-900 text-[10px] text-indigo-400 animate-pulse flex items-center gap-1">
                     <RefreshCw className="w-3 h-3 animate-spin" />
-                    <span>WhatsApp Bot is typing response...</span>
+                    <span>AI Agent is typing response...</span>
                   </div>
                 )}
               </div>
 
               {/* Input Bar */}
-              <form onSubmit={handleSendBotMessage} className="flex gap-1.5 pt-2 border-t border-slate-800">
+              <form onSubmit={handleSendAgentMessage} className="flex gap-1.5 pt-2 border-t border-slate-800">
                 <input
                   type="text"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Type message to WhatsApp Bot..."
-                  className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                  placeholder="Type message to AI Agent..."
+                  className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-400"
                 />
                 <button
                   type="submit"
-                  className="p-2 rounded-xl bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 cursor-pointer"
+                  className="p-2 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-500 cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                 </button>
@@ -331,42 +324,38 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
             </div>
           )}
 
-          {/* TAB 4: BOILERPLATES */}
-          {mobileTab === 'boilerplates' && (
+          {/* TAB 4: PROJECT GENERATOR */}
+          {mobileTab === 'generator' && (
             <div className="space-y-4 pt-1 animate-fadeIn">
               <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
                 <FileCode className="w-4 h-4 text-cyan-400" />
-                Multi-Framework Boilerplates
+                Phase 3 (Project Generator)
               </h4>
 
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-indigo-500/40 space-y-2">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-cyan-300 font-bold">Node.js / Express Server</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300">READY</span>
+                <span className="text-xs font-bold text-cyan-300">Stack Architecture Flow</span>
+                <div className="p-2 rounded-lg bg-slate-950 text-[10px] text-slate-200 font-mono space-y-1">
+                  <p>Frontend → {projectData?.architecture?.frontend || "React 18"}</p>
+                  <p>Backend → Node.js Express / Python FastAPI</p>
+                  <p>AI → Gemini 1.5 Pro AI Engine</p>
                 </div>
-                <pre className="p-2 rounded-lg bg-slate-950 text-[9px] text-emerald-300 font-mono overflow-x-auto">
-                  <code>{`// Express.js Server for ${projectTitle}\nconst express = require('express');\nconst app = express();\napp.listen(5000);`}</code>
-                </pre>
               </div>
 
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-purple-500/40 space-y-2">
-                <div className="flex items-center justify-between text-[11px]">
-                  <span className="text-purple-300 font-bold">Python FastAPI Service</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300">READY</span>
-                </div>
+                <span className="text-xs font-bold text-purple-300">Generated Folder Structure</span>
                 <pre className="p-2 rounded-lg bg-slate-950 text-[9px] text-cyan-300 font-mono overflow-x-auto">
-                  <code>{`from fastapi import FastAPI\napp = FastAPI()\n@app.get('/')\ndef root(): return {"status": "ONLINE"}`}</code>
+                  <code>{`src/\nbackend/\nfrontend/\napi/\nmodels/`}</code>
                 </pre>
               </div>
             </div>
           )}
 
-          {/* TAB 5: PITCH DECK SLIDES */}
-          {mobileTab === 'pitch' && (
+          {/* TAB 5: PPT GENERATION */}
+          {mobileTab === 'ppt' && (
             <div className="space-y-4 pt-1 animate-fadeIn text-center">
               <h4 className="text-xs font-bold text-white flex items-center justify-center gap-1.5">
                 <Presentation className="w-4 h-4 text-purple-400" />
-                Mobile Pitch Deck Viewer
+                PPT Generation Deck
               </h4>
 
               <div className="p-4 rounded-2xl bg-slate-900 border border-purple-500/40 space-y-3">
@@ -421,33 +410,33 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
           </button>
 
           <button
-            onClick={() => setMobileTab('bot')}
+            onClick={() => setMobileTab('agent')}
             className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'bot' ? 'text-emerald-400' : 'text-slate-300 hover:text-white'
+              mobileTab === 'agent' ? 'text-indigo-400' : 'text-slate-300 hover:text-white'
             }`}
           >
             <Bot className="w-3.5 h-3.5" />
-            <span>WhatsApp</span>
+            <span>Agents</span>
           </button>
 
           <button
-            onClick={() => setMobileTab('boilerplates')}
+            onClick={() => setMobileTab('generator')}
             className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'boilerplates' ? 'text-cyan-400' : 'text-slate-300 hover:text-white'
+              mobileTab === 'generator' ? 'text-cyan-400' : 'text-slate-300 hover:text-white'
             }`}
           >
             <FileCode className="w-3.5 h-3.5" />
-            <span>Boilerplates</span>
+            <span>Generator</span>
           </button>
 
           <button
-            onClick={() => setMobileTab('pitch')}
+            onClick={() => setMobileTab('ppt')}
             className={`flex flex-col items-center space-y-0.5 text-[9px] font-bold transition cursor-pointer ${
-              mobileTab === 'pitch' ? 'text-purple-400' : 'text-slate-300 hover:text-white'
+              mobileTab === 'ppt' ? 'text-purple-400' : 'text-slate-300 hover:text-white'
             }`}
           >
             <Presentation className="w-3.5 h-3.5" />
-            <span>Pitch</span>
+            <span>PPT</span>
           </button>
         </div>
 

@@ -41,7 +41,6 @@ export default function DeepSearch({ projectData, onSelectSample, onGenerateCust
 • Recommended Solution: ${projectData.title} - ${projectData.tagline}
 • Frontend: ${projectData.architecture.frontend}
 • Backend: ${projectData.architecture.backend}
-• Database: MongoDB Atlas (Live Cluster)
 
 4. 🚀 4-WEEK SPRINT EXECUTION ROADMAP
 ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\n')}`;
@@ -182,7 +181,7 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
             <div className="flex-1 space-y-1">
               <div className="flex justify-between items-center text-xs font-bold text-indigo-900">
                 <span>Analyzing via {aiEngineDetails[selectedAiEngine].name}...</span>
-                <span>arXiv • IEEE • GitHub • Kaggle • Live MongoDB Atlas</span>
+                <span>arXiv • IEEE • GitHub • Kaggle</span>
               </div>
               <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">
                 <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-500 h-full animate-pulse w-4/5"></div>
@@ -225,7 +224,17 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
               </div>
             </div>
 
-            {/* CONSOLIDATED 4-SECTION STREAMLINED OUTPUT (NO EXCESS BREADTH SPACE) */}
+            {/* UNIQUE HIGHLIGHT BADGE FOR STUDENTS */}
+            <div className="p-4 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-between flex-wrap gap-2 text-xs">
+              <div className="flex items-center space-x-2">
+                <Award className="w-5 h-5 text-indigo-600 shrink-0" />
+                <span className="font-extrabold text-indigo-950">Unique Student Project Architecture ({aiEngineDetails[selectedAiEngine].name}):</span>
+                <span className="text-slate-800 font-medium">Includes 100% Plagiarism-Free Literature Citations and Ready Starter Code!</span>
+              </div>
+              <span className="px-2 py-0.5 rounded bg-indigo-600 text-white font-mono text-[10px] font-bold">VERIFIED UNIQUE</span>
+            </div>
+
+            {/* CONSOLIDATED 4-SECTION STREAMLINED OUTPUT */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-900">
               
               {/* Section 1: Problem & Market Feasibility */}
@@ -269,7 +278,6 @@ ${projectData.roadmap.map(r => `• ${r.phase} - ${r.title}: ${r.task}`).join('\
                 <div className="space-y-1 font-mono text-[11px] text-slate-800 font-semibold">
                   <p>• <strong>Frontend:</strong> {projectData.architecture.frontend}</p>
                   <p>• <strong>Backend:</strong> {projectData.architecture.backend}</p>
-                  <p>• <strong>Database:</strong> MongoDB Atlas (Live Cluster)</p>
                 </div>
               </div>
 

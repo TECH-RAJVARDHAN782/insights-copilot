@@ -24,8 +24,7 @@ export default function ReadymadeProjects({ projectData, activeIdeaId, onSelectP
           forks: 380,
           cloneCmd: `git clone https://github.com/insights-copilot/${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}.git`,
           demoUrl: 'https://insights-copilot-chi.vercel.app',
-          mongodbStatus: 'MongoDB Atlas Connected',
-          techStack: [projectData.architecture.frontend, 'Node.js Express', 'Python FastAPI', 'Live MongoDB Atlas']
+          techStack: [projectData.architecture.frontend, 'Node.js Express', 'Python FastAPI']
         },
         ...READYMADE_PROJECTS_CATALOG
       ]
@@ -38,10 +37,10 @@ export default function ReadymadeProjects({ projectData, activeIdeaId, onSelectP
       <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-200 bg-white shadow-md">
         <div className="flex items-center space-x-2 text-indigo-700 text-xs font-bold">
           <Sparkles className="w-4 h-4 text-indigo-600" />
-          <span>Readymade Student Repositories</span>
+          <span>Student Repository Catalog</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
-          {t.readymadeHeader}
+          Project Hub
         </h2>
         <p className="text-slate-700 text-sm font-semibold">
           {t.readymadeDesc}
