@@ -170,10 +170,10 @@ export default function App() {
         aiModels: ["Transformer Engine", "Prophet Time-Series", "YOLOv8 Vision"],
         apis: ["MongoDB Atlas Data API", "WhatsApp Business API", "GitHub REST API"],
         nodes: [
-          { id: "1", label: `Input Sensor & Data Layer for ${title}`, type: "Input", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500", detail: "Data ingestion pipeline." },
-          { id: "2", label: "iNSIGHTS DeepSearch Synthesizer", type: "AI Engine", color: "bg-purple-500/20 text-purple-300 border-purple-500", detail: "Generates paper citations and problem validation." },
-          { id: "3", label: "Express Central Orchestrator", type: "Backend", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500", detail: "REST & WebSockets server." },
-          { id: "4", label: "MongoDB Atlas Live Data Vault", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500", detail: "Live MongoDB Atlas document store." }
+          { id: "1", label: `Input Sensor & Data Layer for ${title}`, type: "Input", color: "bg-cyan-100 text-cyan-900 border-cyan-300", detail: "Data ingestion pipeline." },
+          { id: "2", label: "iNSIGHTS DeepSearch Synthesizer", type: "AI Engine", color: "bg-purple-100 text-purple-900 border-purple-300", detail: "Generates paper citations and problem validation." },
+          { id: "3", label: "Express Central Orchestrator", type: "Backend", color: "bg-indigo-100 text-indigo-900 border-indigo-300", detail: "REST & WebSockets server." },
+          { id: "4", label: "MongoDB Atlas Live Data Vault", type: "Database", color: "bg-emerald-100 text-emerald-900 border-emerald-300", detail: "Live MongoDB Atlas document store." }
         ]
       },
       roadmap: [
@@ -239,7 +239,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-indigo-600 selection:text-white">
       
       {/* Top Header Navigation */}
       <Header
@@ -284,24 +284,24 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn">
             {/* Left 8 Cols: Web Dashboard */}
             <div className="lg:col-span-8 space-y-6">
-              <div className="flex items-center justify-between bg-indigo-950/40 p-3 rounded-xl border border-indigo-800/40 text-xs">
-                <span className="font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
+              <div className="flex items-center justify-between bg-indigo-50 p-3 rounded-xl border border-indigo-200 text-xs">
+                <span className="font-extrabold text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
                   🖥️ Desktop Web Application Active
                 </span>
-                <span className="text-slate-300 font-semibold">Live Sync with Mobile Companion App</span>
+                <span className="text-slate-700 font-bold">Live Sync with Mobile Companion App</span>
               </div>
               {renderWebTabContent()}
             </div>
 
             {/* Right 4 Cols: Mobile App Simulator */}
             <div className="lg:col-span-4 space-y-6">
-              <div className="flex items-center justify-between bg-purple-950/40 p-3 rounded-xl border border-purple-800/40 text-xs">
-                <span className="font-bold text-purple-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+              <div className="flex items-center justify-between bg-purple-50 p-3 rounded-xl border border-purple-200 text-xs">
+                <span className="font-extrabold text-purple-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-purple-600 animate-ping"></span>
                   📱 Companion Mobile App Simulator
                 </span>
-                <span className="text-slate-300 font-mono">Student Friendly</span>
+                <span className="text-slate-700 font-mono font-bold">Student Friendly</span>
               </div>
               <div className="sticky top-24">
                 <MobileSimulator
@@ -335,16 +335,16 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="glass-panel border-t border-slate-800/80 py-6 text-center text-xs text-slate-300 font-medium">
+      <footer className="glass-panel border-t border-slate-200 py-6 text-center text-xs text-slate-700 font-semibold bg-white">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
           <p>© 2026 iNSIGHTS Copilot Platform.</p>
           <div className="flex items-center space-x-4">
-            <span className="text-emerald-400 font-semibold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-emerald-700 font-extrabold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
               Live MongoDB Atlas
             </span>
             <span>•</span>
-            <span className="text-cyan-400 font-semibold">Presentation Generator v3.0</span>
+            <span className="text-indigo-700 font-extrabold">Presentation Generator v3.0</span>
           </div>
         </div>
       </footer>

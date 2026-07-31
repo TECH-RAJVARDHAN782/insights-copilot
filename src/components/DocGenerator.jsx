@@ -13,10 +13,10 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
 
   if (!projectData) {
     return (
-      <div className="glass-panel p-12 text-center rounded-2xl space-y-4">
-        <FileText className="w-12 h-12 text-indigo-400 mx-auto" />
-        <h3 className="text-xl font-bold text-white">No Active Project Data</h3>
-        <p className="text-slate-200 text-sm font-medium">Please generate a project via DeepSearch first.</p>
+      <div className="glass-panel p-12 text-center rounded-2xl space-y-4 bg-white border border-slate-200 shadow-md">
+        <FileText className="w-12 h-12 text-indigo-600 mx-auto" />
+        <h3 className="text-xl font-bold text-slate-900">No Active Project Data</h3>
+        <p className="text-slate-700 text-sm font-medium">Please generate a project via DeepSearch first.</p>
       </div>
     );
   }
@@ -155,14 +155,14 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
 <meta charset="utf-8">
 <title>${projectData.title} Presentation Deck</title>
 <style>
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; color: #ffffff; padding: 40px; }
-  .slide { background: #1e293b; border: 2px solid #6366f1; border-radius: 20px; padding: 40px; margin-bottom: 40px; page-break-after: always; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #ffffff; color: #0f172a; padding: 40px; }
+  .slide { background: #f8fafc; border: 2px solid #6366f1; border-radius: 20px; padding: 40px; margin-bottom: 40px; page-break-after: always; box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
   .badge { background: #6366f1; color: #ffffff; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; display: inline-block; }
-  h1 { font-size: 28px; color: #38bdf8; margin-top: 15px; }
-  h2 { font-size: 20px; color: #f8fafc; }
-  p { font-size: 16px; color: #cbd5e1; line-height: 1.6; }
-  ul { font-size: 14px; color: #94a3b8; line-height: 1.8; }
-  .footer { margin-top: 30px; font-size: 12px; color: #64748b; border-top: 1px solid #334155; padding-top: 10px; }
+  h1 { font-size: 28px; color: #4f46e5; margin-top: 15px; }
+  h2 { font-size: 20px; color: #1e293b; }
+  p { font-size: 16px; color: #334155; line-height: 1.6; }
+  ul { font-size: 14px; color: #475569; line-height: 1.8; }
+  .footer { margin-top: 30px; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 10px; }
 </style>
 </head>
 <body>
@@ -211,17 +211,17 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
     <div className="space-y-8 animate-fadeIn">
       
       {/* Header Banner */}
-      <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-500/30">
+      <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-200 bg-white shadow-lg">
         <div className="flex justify-between items-start flex-wrap gap-4">
           <div>
-            <div className="flex items-center space-x-2 text-indigo-300 text-xs font-semibold">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
+            <div className="flex items-center space-x-2 text-indigo-700 text-xs font-bold">
+              <Sparkles className="w-4 h-4 text-indigo-600" />
               <span>iNSIGHTS Export Engine</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
               {t.pitchHeader}
             </h2>
-            <p className="text-slate-200 text-sm font-medium">
+            <p className="text-slate-700 text-sm font-semibold">
               {t.pitchDesc}
             </p>
           </div>
@@ -232,7 +232,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
               href="https://slidesgo.com/ai/presentation-maker"
               target="_blank"
               rel="noreferrer"
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-500 to-rose-500 hover:brightness-110 text-white font-extrabold text-xs flex items-center space-x-2 shadow-lg shadow-purple-500/30 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 hover:brightness-110 text-white font-extrabold text-xs flex items-center space-x-2 shadow-md cursor-pointer"
             >
               <Wand2 className="w-4 h-4" />
               <span>Slidesgo AI Presentation Maker ↗</span>
@@ -241,7 +241,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
             <button
               onClick={handleDownloadPPT}
               disabled={downloadingPpt}
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-slate-950 font-extrabold text-xs flex items-center space-x-2 shadow-lg shadow-amber-500/20 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:brightness-110 text-slate-950 font-extrabold text-xs flex items-center space-x-2 shadow-md cursor-pointer"
             >
               <Presentation className="w-4 h-4" />
               <span>{downloadingPpt ? "Generating..." : "Download Presentation (.doc/.ppt)"}</span>
@@ -249,7 +249,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
 
             <button
               onClick={handleDownloadReadme}
-              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center space-x-2 shadow-md shadow-indigo-500/30 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center space-x-2 shadow-md cursor-pointer"
             >
               <Download className="w-4 h-4" />
               <span>{t.downloadReadme}</span>
@@ -257,9 +257,9 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
 
             <button
               onClick={handlePrintPDF}
-              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center space-x-2 border border-slate-700 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center space-x-2 border border-slate-300 cursor-pointer"
             >
-              <Printer className="w-4 h-4 text-cyan-400" />
+              <Printer className="w-4 h-4 text-indigo-600" />
               <span>{t.printPdf}</span>
             </button>
           </div>
@@ -267,30 +267,30 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
       </div>
 
       {/* SLIDESGO AI PRESENTATION MAKER INTEGRATION BANNER */}
-      <div className="glass-panel p-6 rounded-2xl border border-purple-500/40 bg-gradient-to-r from-purple-950/60 via-slate-900 to-indigo-950/60 space-y-4 shadow-xl">
+      <div className="glass-panel p-6 rounded-2xl border border-purple-200 bg-gradient-to-r from-purple-50 via-white to-pink-50 space-y-4 shadow-md">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center space-x-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1">
-                <Wand2 className="w-3.5 h-3.5 text-pink-400" />
+              <span className="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-900 border border-purple-300 text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1">
+                <Wand2 className="w-3.5 h-3.5 text-pink-600" />
                 AI Slides & Flowcharts Integration
               </span>
-              <span className="text-xs text-slate-300 font-mono">Slidesgo AI Engine</span>
+              <span className="text-xs text-slate-600 font-mono font-bold">Slidesgo AI Engine</span>
             </div>
-            <h3 className="text-lg sm:text-xl font-extrabold text-white">
+            <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
               Generate Designed AI Presentations, Flowcharts & Graphics
             </h3>
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
-              Create presentation decks with AI flowcharts, diagrams, and graphic templates directly on <strong>Slidesgo AI Presentation Maker</strong> for <strong className="text-cyan-300">"{projectData.title}"</strong>.
+            <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold">
+              Create presentation decks with AI flowcharts, diagrams, and graphic templates directly on <strong>Slidesgo AI Presentation Maker</strong> for <strong className="text-indigo-700">"{projectData.title}"</strong>.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               onClick={handleCopySlidesgoPrompt}
-              className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center space-x-1.5 border border-slate-700 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center space-x-1.5 border border-slate-300 cursor-pointer"
             >
-              {copiedPrompt ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-cyan-400" />}
+              {copiedPrompt ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-indigo-600" />}
               <span>{copiedPrompt ? "Copied Prompt!" : "Copy Prompt for Slidesgo"}</span>
             </button>
 
@@ -298,7 +298,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
               href="https://slidesgo.com/ai/presentation-maker"
               target="_blank"
               rel="noreferrer"
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:brightness-110 text-white font-extrabold text-xs flex items-center space-x-1.5 shadow-md shadow-pink-500/30 cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 hover:brightness-110 text-white font-extrabold text-xs flex items-center space-x-1.5 shadow-md cursor-pointer"
             >
               <span>Launch Slidesgo AI Maker</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -308,29 +308,29 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
       </div>
 
       {/* Pitch Deck Presentation Slide Viewer */}
-      <div className="glass-panel p-6 sm:p-8 rounded-2xl space-y-6 border border-purple-500/30">
+      <div className="glass-panel p-6 sm:p-8 rounded-2xl space-y-6 border border-slate-200 bg-white shadow-md">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-purple-400 font-bold text-base">
+          <div className="flex items-center space-x-2 text-purple-700 font-bold text-base">
             <Presentation className="w-5 h-5" />
             <span>{t.pitchViewer}</span>
           </div>
-          <span className="text-xs text-slate-200 font-mono">{t.slide} {activeSlideIndex + 1} of {slides.length}</span>
+          <span className="text-xs text-slate-700 font-mono font-bold">{t.slide} {activeSlideIndex + 1} of {slides.length}</span>
         </div>
 
         {/* Active Slide Display Box */}
-        <div className="relative bg-slate-950 p-8 sm:p-10 rounded-2xl border border-purple-500/40 text-center space-y-4 shadow-2xl min-h-[280px] flex flex-col justify-center">
+        <div className="relative bg-slate-900 p-8 sm:p-10 rounded-2xl border border-purple-500/40 text-center space-y-4 shadow-2xl min-h-[280px] flex flex-col justify-center text-white">
           <span className="px-3 py-1 text-xs font-bold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 inline-block mx-auto uppercase tracking-wider">
             {slides[activeSlideIndex].badge}
           </span>
           <h3 className="text-2xl sm:text-3xl font-extrabold text-white">{slides[activeSlideIndex].subtitle}</h3>
-          <p className="text-slate-200 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed italic font-medium">
+          <p className="text-slate-200 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed italic font-semibold">
             "{slides[activeSlideIndex].content}"
           </p>
 
           {/* Details Bullet List */}
           <div className="pt-2 flex flex-wrap justify-center gap-2 max-w-xl mx-auto">
             {slides[activeSlideIndex].details.map((item, idx) => (
-              <span key={idx} className="px-2.5 py-1 rounded-lg bg-slate-900 text-slate-200 border border-slate-800 text-xs font-medium">
+              <span key={idx} className="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-200 border border-slate-700 text-xs font-medium">
                 • {item}
               </span>
             ))}
@@ -342,7 +342,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
           <button
             onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
             disabled={activeSlideIndex === 0}
-            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 disabled:opacity-30 text-xs font-bold flex items-center space-x-1.5 border border-slate-800 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 disabled:opacity-30 text-xs font-bold flex items-center space-x-1.5 border border-slate-300 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{t.prevSlide}</span>
@@ -356,7 +356,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                   activeSlideIndex === idx
                     ? 'bg-purple-600 text-white shadow-md'
-                    : 'bg-slate-900 text-slate-300 hover:text-white'
+                    : 'bg-slate-100 text-slate-700 hover:text-slate-900'
                 }`}
               >
                 {t.slide} {idx + 1}
@@ -367,7 +367,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
           <button
             onClick={() => setActiveSlideIndex(prev => Math.min(slides.length - 1, prev + 1))}
             disabled={activeSlideIndex === slides.length - 1}
-            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 disabled:opacity-30 text-xs font-bold flex items-center space-x-1.5 border border-slate-800 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 disabled:opacity-30 text-xs font-bold flex items-center space-x-1.5 border border-slate-300 cursor-pointer"
           >
             <span>{t.nextSlide}</span>
             <ArrowRight className="w-4 h-4" />
@@ -376,18 +376,18 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
       </div>
 
       {/* GitHub README Markdown Code Viewer */}
-      <div className="glass-panel p-6 rounded-2xl space-y-4">
+      <div className="glass-panel p-6 rounded-2xl space-y-4 bg-white border border-slate-200 shadow-md">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-cyan-400 font-bold text-base">
+          <div className="flex items-center space-x-2 text-indigo-700 font-bold text-base">
             <Code className="w-5 h-5" />
             <span>Auto-Generated GitHub README.md</span>
           </div>
 
           <button
             onClick={handleCopyReadme}
-            className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center space-x-1.5 border border-slate-700 cursor-pointer"
+            className="px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center space-x-1.5 border border-slate-300 cursor-pointer"
           >
-            {copiedReadme ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+            {copiedReadme ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
             <span>{copiedReadme ? t.copied : t.copyRawReadme}</span>
           </button>
         </div>
