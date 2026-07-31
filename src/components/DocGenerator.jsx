@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { FileText, Download, Copy, Check, Presentation, Code, Printer, Sparkles, ArrowRight, ArrowLeft, ExternalLink, Image, Wand2 } from 'lucide-react';
+import { FileText, Download, Copy, Check, Presentation, Code, Printer, Sparkles, ArrowRight, ArrowLeft, ExternalLink, Wand2, Cpu } from 'lucide-react';
 import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
+import pptxgen from 'pptxgenjs';
 
 export default function DocGenerator({ projectData, currentLang = 'en' }) {
   const [copiedReadme, setCopiedReadme] = useState(false);
@@ -28,7 +29,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
       subtitle: projectData.title,
       content: projectData.tagline,
       badge: "Slide 1: Vision Statement",
-      details: ["Theme: Smart Automation & AI Copilot", "PS Category: Software", "Powered by Live MongoDB Atlas & Layer 2 DeepSearch"]
+      details: ["Theme: Smart Automation & AI Copilot", "PS Category: Software", "Powered by Live MongoDB Atlas & Gemini API"]
     },
     {
       slideNum: 2,
@@ -79,6 +80,89 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
       details: ["Feasible today on existing APIs", "Measurably speeds up hackathon builds", "Ready for student deployment"]
     }
   ];
+
+  // REAL BINARY POWERPOINT (.pptx) GENERATION USING PPTXGENJS + GEMINI METADATA
+  const handleDownloadPPTX = () => {
+    setDownloadingPpt(true);
+
+    try {
+      const pres = new pptxgen();
+      pres.layout = 'LAYOUT_16x9';
+
+      // Define Theme Colors
+      const primaryColor = '4F46E5'; // Indigo
+      const darkBg = '0F172A'; // Slate 900
+      const lightBg = 'FFFFFF';
+      const textColor = '0F172A';
+
+      // Title Slide
+      const slide1 = pres.addSlide();
+      slide1.background = { color: darkBg };
+      slide1.addText(projectData.title, {
+        x: 0.8, y: 1.8, w: '85%', h: 1.2,
+        fontSize: 32, bold: true, color: '38BDF8', align: 'center'
+      });
+      slide1.addText(projectData.tagline, {
+        x: 0.8, y: 3.2, w: '85%', h: 0.8,
+        fontSize: 18, color: 'CBD5E1', align: 'center', italic: true
+      });
+      slide1.addText("Generated via iNSIGHTS Copilot • Gemini API + pptxgenjs Engine", {
+        x: 0.8, y: 4.8, w: '85%', h: 0.5,
+        fontSize: 12, color: '818CF8', align: 'center'
+      });
+
+      // Content Slides (Slides 2 to 7)
+      slides.slice(1).forEach((s) => {
+        const slide = pres.addSlide();
+        slide.background = { color: lightBg };
+
+        // Top Badge & Slide Title
+        slide.addText(s.badge.toUpperCase(), {
+          x: 0.8, y: 0.5, w: '85%', h: 0.4,
+          fontSize: 11, bold: true, color: primaryColor
+        });
+
+        slide.addText(s.title, {
+          x: 0.8, y: 0.9, w: '85%', h: 0.6,
+          fontSize: 24, bold: true, color: textColor
+        });
+
+        slide.addText(s.subtitle, {
+          x: 0.8, y: 1.6, w: '85%', h: 0.5,
+          fontSize: 16, bold: true, color: '475569'
+        });
+
+        // Main Paragraph Box
+        slide.addText(s.content, {
+          x: 0.8, y: 2.3, w: '85%', h: 1.0,
+          fontSize: 14, color: '334155', fontFace: 'Calibri'
+        });
+
+        // Key Points Bullet List
+        const bullets = s.details.map(d => ({ text: d, options: { bullet: true, fontSize: 13, color: '1E293B' } }));
+        slide.addText(bullets, {
+          x: 0.8, y: 3.5, w: '85%', h: 1.8
+        });
+
+        // Footer
+        slide.addText("iNSIGHTS Copilot Presentation Deck | Live MongoDB Atlas & Gemini API", {
+          x: 0.8, y: 6.6, w: '85%', h: 0.4,
+          fontSize: 10, color: '94A3B8'
+        });
+      });
+
+      // Export File
+      const filename = `${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-Presentation.pptx`;
+      pres.writeFile({ fileName: filename }).then(() => {
+        setDownloadingPpt(false);
+        confetti({ particleCount: 70, spread: 70 });
+      });
+
+    } catch (error) {
+      console.error("PPT Generation Error:", error);
+      setDownloadingPpt(false);
+    }
+  };
 
   const generateMarkdownReadme = () => {
     return `# ${projectData.title}
@@ -145,64 +229,6 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
     confetti({ particleCount: 50, spread: 60 });
   };
 
-  // Generate valid HTML PowerPoint OpenXML compatible presentation document
-  const handleDownloadPPT = () => {
-    setDownloadingPpt(true);
-    setTimeout(() => {
-      let xmlPptContent = `<!DOCTYPE html>
-<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:powerpoint' xmlns='http://www.w3.org/TR/REC-html40'>
-<head>
-<meta charset="utf-8">
-<title>${projectData.title} Presentation Deck</title>
-<style>
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #ffffff; color: #0f172a; padding: 40px; }
-  .slide { background: #f8fafc; border: 2px solid #6366f1; border-radius: 20px; padding: 40px; margin-bottom: 40px; page-break-after: always; box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
-  .badge { background: #6366f1; color: #ffffff; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; display: inline-block; }
-  h1 { font-size: 28px; color: #4f46e5; margin-top: 15px; }
-  h2 { font-size: 20px; color: #1e293b; }
-  p { font-size: 16px; color: #334155; line-height: 1.6; }
-  ul { font-size: 14px; color: #475569; line-height: 1.8; }
-  .footer { margin-top: 30px; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 10px; }
-</style>
-</head>
-<body>
-  <div style="text-align: center; margin-bottom: 50px;">
-    <span class="badge">POWERPOINT PRESENTATION DECK</span>
-    <h1>${projectData.title}</h1>
-    <p>${projectData.tagline}</p>
-  </div>
-`;
-
-      slides.forEach((s) => {
-        xmlPptContent += `
-  <div class="slide">
-    <span class="badge">${s.badge}</span>
-    <h1>${s.title}</h1>
-    <h2>${s.subtitle}</h2>
-    <p><strong>Overview:</strong> ${s.content}</p>
-    <h3>Key Slide Details:</h3>
-    <ul>
-      ${s.details.map(d => `<li>${d}</li>`).join('')}
-    </ul>
-    <div class="footer">iNSIGHTS Copilot Presentation • Slide ${s.slideNum} of ${slides.length}</div>
-  </div>`;
-      });
-
-      xmlPptContent += `</body></html>`;
-
-      const element = document.createElement("a");
-      const file = new Blob([xmlPptContent], { type: 'application/vnd.ms-powerpoint' });
-      element.href = URL.createObjectURL(file);
-      element.download = `${projectData.title.toLowerCase().replace(/[^a-z0-9]/g, '-')}-Presentation.doc`;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-
-      setDownloadingPpt(false);
-      confetti({ particleCount: 70, spread: 70 });
-    }, 600);
-  };
-
   const handlePrintPDF = () => {
     window.print();
   };
@@ -216,7 +242,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
           <div>
             <div className="flex items-center space-x-2 text-indigo-700 text-xs font-bold">
               <Sparkles className="w-4 h-4 text-indigo-600" />
-              <span>iNSIGHTS Export Engine</span>
+              <span>iNSIGHTS Export Engine • Gemini API + pptxgenjs</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
               {t.pitchHeader}
@@ -228,6 +254,15 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
 
           {/* Download Action Buttons */}
           <div className="flex flex-wrap space-x-2 gap-y-2">
+            <button
+              onClick={handleDownloadPPTX}
+              disabled={downloadingPpt}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:brightness-110 text-slate-950 font-extrabold text-xs flex items-center space-x-2 shadow-md cursor-pointer disabled:opacity-50"
+            >
+              {downloadingPpt ? <Cpu className="w-4 h-4 animate-spin" /> : <Presentation className="w-4 h-4" />}
+              <span>{downloadingPpt ? "Generating PPTX..." : "Download PowerPoint (.pptx)"}</span>
+            </button>
+
             <a
               href="https://slidesgo.com/ai/presentation-maker"
               target="_blank"
@@ -237,15 +272,6 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
               <Wand2 className="w-4 h-4" />
               <span>Slidesgo AI Presentation Maker ↗</span>
             </a>
-
-            <button
-              onClick={handleDownloadPPT}
-              disabled={downloadingPpt}
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:brightness-110 text-slate-950 font-extrabold text-xs flex items-center space-x-2 shadow-md cursor-pointer"
-            >
-              <Presentation className="w-4 h-4" />
-              <span>{downloadingPpt ? "Generating..." : "Download Presentation (.doc/.ppt)"}</span>
-            </button>
 
             <button
               onClick={handleDownloadReadme}
@@ -275,7 +301,7 @@ ${projectData.roadmap.map(r => `### ${r.phase}: ${r.title}\n- ${r.task}`).join('
                 <Wand2 className="w-3.5 h-3.5 text-pink-600" />
                 AI Slides & Flowcharts Integration
               </span>
-              <span className="text-xs text-slate-600 font-mono font-bold">Slidesgo AI Engine</span>
+              <span className="text-xs text-slate-600 font-mono font-bold">Gemini API + Slidesgo Engine</span>
             </div>
             <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
               Generate Designed AI Presentations, Flowcharts & Graphics

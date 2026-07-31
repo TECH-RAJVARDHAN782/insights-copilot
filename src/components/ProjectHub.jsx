@@ -6,7 +6,7 @@ import confetti from 'canvas-confetti';
 export default function ProjectHub({ projectData, currentLang = 'en' }) {
   const [completedRoadmap, setCompletedRoadmap] = useState([0]);
   const [selectedNode, setSelectedNode] = useState(null);
-  const [activeCodeTab, setActiveCodeTab] = useState('express_server'); // 'express_server' | 'fastapi_python' | 'react_frontend' | 'docker_compose' | 'mongoose_schema'
+  const [activeCodeTab, setActiveCodeTab] = useState('express_server');
   const [copiedCode, setCopiedCode] = useState(false);
 
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
@@ -87,7 +87,6 @@ def read_root():
 
 @app.post("/api/v1/infer")
 def predict_pipeline(payload: ProjectDataPayload):
-    # Execute AI neural network model inference
     result = {
         "input": payload.student_id,
         "prediction": "PASSED",
@@ -113,14 +112,14 @@ export default function ${projectTitle.replace(/[^a-zA-Z]/g, '')}Dashboard() {
   }, []);
 
   return (
-    <div className="p-6 bg-slate-950 text-white rounded-2xl border border-slate-800">
+    <div className="p-6 bg-slate-50 text-slate-900 rounded-2xl border border-slate-200">
       <h2 className="text-xl font-bold">${projectTitle} Dashboard</h2>
       {loading ? (
-        <p className="text-slate-400">Loading Live MongoDB Atlas metrics...</p>
+        <p className="text-slate-600">Loading Live MongoDB Atlas metrics...</p>
       ) : (
-        <div className="mt-4 p-4 bg-slate-900 rounded-xl">
-          <p className="text-emerald-400 font-mono">Status: {data?.status || "ONLINE"}</p>
-          <p className="text-xs text-slate-400 mt-1">Database: Live MongoDB Atlas</p>
+        <div className="mt-4 p-4 bg-white rounded-xl border border-slate-200">
+          <p className="text-emerald-700 font-mono font-bold">Status: {data?.status || "ONLINE"}</p>
+          <p className="text-xs text-slate-600 mt-1">Database: Live MongoDB Atlas</p>
         </div>
       )}
     </div>
@@ -173,10 +172,10 @@ module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', Pro
   };
 
   const architectureNodes = projectData?.architecture?.nodes || [
-    { id: "1", label: "Data Input Pipeline", type: "Input", color: "bg-cyan-500/20 text-cyan-300 border-cyan-500" },
-    { id: "2", label: "AI Inference Engine", type: "AI Model", color: "bg-purple-500/20 text-purple-300 border-purple-500" },
-    { id: "3", label: "Node.js Express Server", type: "Backend", color: "bg-indigo-500/20 text-indigo-300 border-indigo-500" },
-    { id: "4", label: "Live MongoDB Atlas Vault", type: "Database", color: "bg-emerald-500/20 text-emerald-300 border-emerald-500" }
+    { id: "1", label: "Data Input Pipeline", type: "Input", color: "bg-cyan-100 text-cyan-900 border-cyan-300" },
+    { id: "2", label: "AI Inference Engine", type: "AI Model", color: "bg-purple-100 text-purple-900 border-purple-300" },
+    { id: "3", label: "Node.js Express Server", type: "Backend", color: "bg-indigo-100 text-indigo-900 border-indigo-300" },
+    { id: "4", label: "Live MongoDB Atlas Vault", type: "Database", color: "bg-emerald-100 text-emerald-900 border-emerald-300" }
   ];
 
   const roadmapSteps = projectData?.roadmap || [
@@ -190,43 +189,43 @@ module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', Pro
     <div className="space-y-8 animate-fadeIn">
       
       {/* Header Banner */}
-      <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-500/30">
-        <div className="flex items-center space-x-2 text-indigo-300 text-xs font-semibold">
-          <Sparkles className="w-4 h-4 text-cyan-400" />
+      <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-200 bg-white shadow-md">
+        <div className="flex items-center space-x-2 text-indigo-700 text-xs font-bold">
+          <Sparkles className="w-4 h-4 text-indigo-600" />
           <span>iNSIGHTS Project HUB</span>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+        <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
           Full-Stack Boilerplates & Production Code Hub
         </h2>
-        <p className="text-slate-300 text-sm">
+        <p className="text-slate-700 text-sm font-semibold">
           Instant multi-language code boilerplates for Express.js, Python FastAPI, React 18, Docker Compose, and Live MongoDB Atlas.
         </p>
       </div>
 
       {/* MULTI-FRAMEWORK CODE BOILERPLATES SECTION */}
-      <div className="glass-panel p-6 rounded-2xl space-y-4 border border-indigo-500/40">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+      <div className="glass-panel p-6 rounded-2xl space-y-4 border border-indigo-200 bg-white shadow-md">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
           <div>
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <FileCode className="w-5 h-5 text-cyan-400" />
+            <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <FileCode className="w-5 h-5 text-indigo-600" />
               Full Production Starter Code Boilerplates
             </h3>
-            <p className="text-xs text-slate-400">Select language or framework to copy 100% production-ready starter code for "{projectTitle}".</p>
+            <p className="text-xs text-slate-700 font-semibold">Select language or framework to copy 100% production-ready starter code for "{projectTitle}".</p>
           </div>
 
           <div className="flex items-center space-x-2">
             <button
               onClick={handleCopyCode}
-              className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-md"
+              className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold flex items-center gap-1.5 transition cursor-pointer shadow-md"
             >
-              {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
+              {copiedCode ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copiedCode ? "Copied!" : "Copy Code"}</span>
             </button>
           </div>
         </div>
 
         {/* Framework Tabs */}
-        <div className="flex flex-wrap gap-1.5 bg-slate-950 p-1.5 rounded-xl border border-slate-800 text-xs font-mono">
+        <div className="flex flex-wrap gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs font-mono font-bold">
           {[
             { id: 'express_server', label: 'Node.js Express' },
             { id: 'fastapi_python', label: 'Python FastAPI' },
@@ -237,10 +236,10 @@ module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', Pro
             <button
               key={tab.id}
               onClick={() => setActiveCodeTab(tab.id)}
-              className={`px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
                 activeCodeTab === tab.id
-                  ? 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200'
               }`}
             >
               {tab.label}
@@ -249,19 +248,19 @@ module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', Pro
         </div>
 
         {/* Code Box */}
-        <pre className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-cyan-300 font-mono overflow-x-auto leading-relaxed max-h-[380px]">
+        <pre className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs text-emerald-300 font-mono overflow-x-auto leading-relaxed max-h-[380px]">
           <code>{codeBoilerplates[activeCodeTab]}</code>
         </pre>
       </div>
 
       {/* System Architecture Flow Diagram */}
-      <div className="glass-panel p-6 rounded-2xl space-y-6">
+      <div className="glass-panel p-6 rounded-2xl space-y-6 bg-white border border-slate-200 shadow-md">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-cyan-400 font-bold text-base">
+          <div className="flex items-center space-x-2 text-indigo-700 font-extrabold text-base">
             <Cpu className="w-5 h-5" />
             <span>Interactive System Architecture & Pipeline Nodes</span>
           </div>
-          <span className="text-xs text-slate-400">Click any node to inspect details</span>
+          <span className="text-xs text-slate-600 font-mono font-bold">Click any node to inspect details</span>
         </div>
 
         {/* Node Pipeline Layout */}
@@ -273,19 +272,19 @@ module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', Pro
                 key={node.id}
                 onClick={() => setSelectedNode(node)}
                 className={`p-4 rounded-xl border transition-all cursor-pointer ${node.color} ${
-                  isSelected ? 'ring-2 ring-cyan-400 scale-[1.02] shadow-xl' : 'hover:scale-[1.01]'
+                  isSelected ? 'ring-2 ring-indigo-600 scale-[1.02] shadow-xl' : 'hover:scale-[1.01]'
                 }`}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-900/80">
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white/80">
                     {node.type}
                   </span>
                   <span className="text-xs font-mono font-bold">Node #{node.id}</span>
                 </div>
-                <h4 className="text-sm font-bold text-white mb-1">{node.label}</h4>
-                <p className="text-[11px] text-slate-300 flex items-center space-x-1">
+                <h4 className="text-sm font-black mb-1">{node.label}</h4>
+                <p className="text-[11px] flex items-center space-x-1 font-bold">
                   <span>Inspect Pipeline Data</span>
-                  <ArrowRight className="w-3 h-3 text-cyan-400" />
+                  <ArrowRight className="w-3 h-3 text-indigo-600" />
                 </p>
               </div>
             );
@@ -294,13 +293,13 @@ module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', Pro
 
         {/* Selected Node Inspector Drawer */}
         {selectedNode && (
-          <div className="bg-slate-900/90 p-4 rounded-xl border border-cyan-500/40 text-xs space-y-2 animate-fadeIn">
-            <div className="flex justify-between items-center text-cyan-300 font-bold">
+          <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-200 text-xs space-y-2 animate-fadeIn text-slate-900 font-semibold">
+            <div className="flex justify-between items-center text-indigo-900 font-black">
               <span>Node Inspector: {selectedNode.label}</span>
-              <button onClick={() => setSelectedNode(null)} className="text-slate-400 hover:text-white cursor-pointer">✕</button>
+              <button onClick={() => setSelectedNode(null)} className="text-slate-600 hover:text-slate-900 cursor-pointer">✕</button>
             </div>
-            <p className="text-slate-300">
-              Type: <strong className="text-white">{selectedNode.type}</strong> | Status: <strong className="text-emerald-400">ACTIVE & READY</strong>.
+            <p>
+              Type: <strong className="text-indigo-950">{selectedNode.type}</strong> | Status: <strong className="text-emerald-700">ACTIVE & READY</strong>.
             </p>
           </div>
         )}
@@ -308,15 +307,15 @@ module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', Pro
       </div>
 
       {/* Phased Execution Roadmap */}
-      <div className="glass-panel p-6 rounded-2xl space-y-4">
+      <div className="glass-panel p-6 rounded-2xl space-y-4 bg-white border border-slate-200 shadow-md">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-amber-400 font-bold text-base">
+          <div className="flex items-center space-x-2 text-amber-700 font-extrabold text-base">
             <Terminal className="w-5 h-5" />
             <span>Sprint Roadmap & Milestones ({completedRoadmap.length} of {roadmapSteps.length} Completed)</span>
           </div>
-          <div className="w-32 bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
+          <div className="w-32 bg-slate-200 rounded-full h-2 overflow-hidden border border-slate-300">
             <div
-              className="bg-amber-400 h-full transition-all duration-300"
+              className="bg-amber-500 h-full transition-all duration-300"
               style={{ width: `${(completedRoadmap.length / roadmapSteps.length) * 100}%` }}
             ></div>
           </div>
@@ -331,22 +330,22 @@ module.exports = mongoose.model('${projectTitle.replace(/[^a-zA-Z]/g, '')}', Pro
                 onClick={() => toggleRoadmap(idx)}
                 className={`p-4 rounded-xl border transition-all cursor-pointer ${
                   isDone
-                    ? 'bg-slate-900/90 border-emerald-500/40 text-slate-200'
-                    : 'bg-slate-900/50 border-slate-800 text-slate-400 hover:border-slate-700'
+                    ? 'bg-emerald-50 border-emerald-300 text-slate-900'
+                    : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center space-x-3 mb-2">
                   {isDone ? (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                   ) : (
-                    <Circle className="w-5 h-5 text-slate-600 shrink-0" />
+                    <Circle className="w-5 h-5 text-slate-400 shrink-0" />
                   )}
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400 font-mono">{step.phase}</span>
-                    <h4 className={`text-sm font-bold ${isDone ? 'text-white line-through opacity-80' : 'text-slate-100'}`}>{step.title}</h4>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 font-mono">{step.phase}</span>
+                    <h4 className={`text-sm font-extrabold ${isDone ? 'text-slate-900 line-through opacity-80' : 'text-slate-900'}`}>{step.title}</h4>
                   </div>
                 </div>
-                <p className="text-xs text-slate-400 pl-8">{step.task}</p>
+                <p className="text-xs text-slate-700 pl-8 font-semibold">{step.task}</p>
               </div>
             );
           })}
