@@ -9,7 +9,9 @@ import DocGenerator from './components/DocGenerator';
 import TalentPlatform from './components/TalentPlatform';
 import AuthModal from './components/AuthModal';
 import HistoryDrawer from './components/HistoryDrawer';
+import ApiKeyModal from './components/ApiKeyModal';
 import { DEFAULT_PROJECT_DATA, SAMPLE_IDEAS } from './data/mockData';
+import { callGeminiDeepSearch } from './services/geminiService';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('search');
@@ -27,6 +29,7 @@ export default function App() {
     university: 'IIT Bombay'
   });
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
 
   // Conversation History State
   const [conversationHistory, setConversationHistory] = useState([]);
@@ -61,10 +64,20 @@ export default function App() {
     }, 900);
   };
 
-  const handleGenerateCustom = (customPrompt) => {
+  const handleGenerateCustom = async (customPrompt) => {
     setIsSearching(true);
     setActiveIdeaId('custom');
 
+    // 1. Try Live Gemini API Search
+    const geminiResult = await callGeminiDeepSearch(customPrompt);
+    if (geminiResult) {
+      setProjectData(geminiResult);
+      saveToHistory(geminiResult);
+      setIsSearching(false);
+      return;
+    }
+
+    // 2. Fallback to Dynamic Synthesizer
     setTimeout(() => {
       const generatedData = createDynamicProjectData(
         extractTitleFromPrompt(customPrompt),
@@ -98,12 +111,11 @@ export default function App() {
     return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
   };
 
-  // DYNAMIC TOPIC SYNTHESIZER ENGINE: Produces 100% domain-specific content for ANY searched topic
+  // DYNAMIC TOPIC SYNTHESIZER ENGINE
   const createDynamicProjectData = (title, prompt) => {
     const slug = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
     const topic = (title + " " + prompt).toLowerCase();
 
-    // Synthesize domain-specific validated need
     let validatedNeed = `High-priority requirement for real-time automated workflows and analytics in ${title}.`;
     let marketGap = `Existing solutions lack real-time computer vision audits, predictive ML forecasting, and live cloud synchronization for ${title}.`;
     let targetUsers = ["Domain Operators", "System Administrators", "Academic Mentors", "Hackathon Reviewers"];
@@ -267,6 +279,7 @@ export default function App() {
         userAuth={userAuth}
         onOpenAuth={() => setShowAuthModal(true)}
         onOpenHistory={() => setShowHistoryDrawer(true)}
+        onOpenApiKeyModal={() => setShowApiKeyModal(true)}
         onNewConversation={handleNewConversation}
       />
 
@@ -282,6 +295,12 @@ export default function App() {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         onLoginSuccess={(userData) => setUserAuth(userData)}
+      />
+
+      {/* AI API Key Modal */}
+      <ApiKeyModal
+        isOpen={showApiKeyModal}
+        onClose={() => setShowApiKeyModal(false)}
       />
 
       {/* Search & Conversation History Drawer */}
