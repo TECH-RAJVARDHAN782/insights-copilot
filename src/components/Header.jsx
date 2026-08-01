@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Compass, Globe, Zap, Layout, UserCheck, Rocket, Bot, Share2, FileCode, FileText, ChevronDown, Plus, History, User, Key } from 'lucide-react';
+import { Sparkles, Compass, Globe, Zap, Layout, UserCheck, Rocket, Bot, Share2, FileCode, FileText, ChevronDown, Plus, History, User } from 'lucide-react';
 import { LANGUAGES } from '../data/mockData';
 import { TRANSLATIONS } from '../data/translations';
 
@@ -11,7 +11,6 @@ export default function Header({
   userAuth,
   onOpenAuth,
   onOpenHistory,
-  onOpenApiKeyModal,
   onNewConversation
 }) {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -54,18 +53,9 @@ export default function Header({
             </div>
           </div>
 
-          {/* Right Action Tools: + New Chat, AI Key, History, Auth, Language */}
+          {/* Right Action Tools: + New Chat, History, Auth, Language */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             
-            {/* AI API Key Integration Button */}
-            <button
-              onClick={onOpenApiKeyModal}
-              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 text-slate-950 font-extrabold text-xs flex items-center space-x-1.5 shadow-md cursor-pointer border border-amber-300"
-            >
-              <Key className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">AI API Key</span>
-            </button>
-
             {/* New Conversation Button */}
             <button
               onClick={onNewConversation}
