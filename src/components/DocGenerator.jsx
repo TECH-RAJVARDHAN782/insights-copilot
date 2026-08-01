@@ -17,26 +17,26 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
   const [isGeneratingAiPpt, setIsGeneratingAiPpt] = useState(false);
 
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
-  const projectTitle = projectData?.title || "Custom Student Innovation";
+  const projectTitle = projectData?.title || "Hospital Management";
   const slug = projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '-');
 
   const frontendTech = projectData?.architecture?.frontend || "React 18 + Tailwind CSS";
   const backendTech = projectData?.architecture?.backend || "Node.js Express + Python FastAPI";
 
-  // Dynamic Slides Data with Editable Titles and Content
+  // Dynamic 7 Slides Presentation Deck
   const [slides, setSlides] = useState([
     {
       id: 1,
       title: "Title & Executive Vision",
       subtitle: projectTitle,
-      body: `${projectData?.tagline || 'AI-Engineered student solution'}.\n\nBuilt for Hackathon Presentation & University Thesis.`,
+      body: `${projectData?.tagline || `AI-Engineered student solution for ${projectTitle}`}.\n\nBuilt for National Hackathon Presentation & University Thesis.`,
       icon: "🚀"
     },
     {
       id: 2,
       title: "Validated Problem & Market Gap",
       subtitle: "Market Gap Analysis",
-      body: `Problem: ${projectData?.problemValidation?.marketGap || 'Lack of automated AI verification in student solutions'}.\n\nFeasibility Score: ${projectData?.problemValidation?.feasibilityScore || 96}/100.`,
+      body: `Problem Statement: ${projectData?.problemValidation?.validatedNeed || `Critical operational bottleneck in ${projectTitle}.`}\n\nMarket Gap: ${projectData?.problemValidation?.marketGap || 'Lack of automated AI verification in existing solutions'}.\n\nFeasibility Score: ${projectData?.problemValidation?.feasibilityScore || 97}/100.`,
       icon: "🎯"
     },
     {
@@ -50,14 +50,14 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
       id: 4,
       title: "Empirical Literature & Citations",
       subtitle: "DeepSearch Verification",
-      body: `Verified Sources: Scoured arXiv papers, IEEE Xplore, Kaggle Datasets & GitHub repos.\n\nPlagiarism Score: 0% Guarantee.`,
+      body: `Verified Sources: Scoured arXiv papers, IEEE Xplore, Kaggle Datasets & GitHub repos.\n\nStatus: 100% Plagiarism-Free Academic Guarantee.`,
       icon: "📚"
     },
     {
       id: 5,
       title: "4-Week Execution Sprint Roadmap",
       subtitle: "Implementation Milestones",
-      body: `Phase 1: Literature Synthesis & Problem Validation\nPhase 2: Express & FastAPI Router Backend\nPhase 3: React 18 UI & Agent Integration\nPhase 4: Production Vercel Deployment`,
+      body: `Phase 1 (Week 1): Literature Synthesis & Problem Validation\nPhase 2 (Week 2): Express & FastAPI Router Backend\nPhase 3 (Week 3): React 18 UI & Agent Integration\nPhase 4 (Week 4): Production Vercel Deployment`,
       icon: "🗓️"
     },
     {
@@ -71,7 +71,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
       id: 7,
       title: "Live Prototype & Impact Summary",
       subtitle: "Production Live Demo",
-      body: `Live URL: https://insights-copilot-chi.vercel.app\n\nGitHub Repo: github.com/TECH-RAJVARDHAN782/insights-copilot`,
+      body: `Live Application URL: https://insights-copilot-chi.vercel.app\n\nGitHub Repository: github.com/TECH-RAJVARDHAN782/insights-copilot`,
       icon: "🏆"
     }
   ]);
@@ -84,7 +84,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
       const formatted = aiSlides.map((s, i) => ({
         id: i + 1,
         title: s.title || `Slide ${i + 1}`,
-        subtitle: `Gemini AI Generated`,
+        subtitle: `Gemini AI Synthesized`,
         body: s.content || s.body || "",
         icon: ["🚀", "🎯", "🏗️", "📚", "🗓️", "🛡️", "🏆"][i % 7]
       }));
@@ -114,7 +114,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
 
       slides.forEach((slideData) => {
         const slide = ppt.addSlide();
-        slide.background = { color: '0F172A' }; // Dark slate theme
+        slide.background = { color: '0F172A' }; // Dark slate background
 
         // Slide Header Title
         slide.addText(slideData.title.toUpperCase(), {
@@ -163,7 +163,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
     }
   };
 
-  const currentSlide = slides[activeSlideIndex];
+  const currentSlide = slides[activeSlideIndex] || slides[0];
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -174,7 +174,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
           <div>
             <div className="flex items-center space-x-2 text-indigo-700 text-xs font-bold mb-1">
               <Sparkles className="w-4 h-4 text-indigo-600" />
-              <span>Judge-Ready Presentation & One-Pager Generator</span>
+              <span>Judge-Ready Presentation & Executive One-Pager Exporter</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
               PPT Generation
@@ -184,7 +184,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               onClick={handleRegeneratePptWithGemini}
               disabled={isGeneratingAiPpt}
@@ -242,10 +242,10 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
                 <button
                   key={s.id}
                   onClick={() => setActiveSlideIndex(idx)}
-                  className={`px-3 py-1.5 rounded-xl font-mono text-xs font-bold transition cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-xl font-mono text-xs font-bold transition cursor-pointer ${
                     activeSlideIndex === idx
                       ? 'bg-indigo-600 text-white shadow-md scale-105'
-                      : 'bg-slate-900 text-slate-400 hover:bg-slate-800'
+                      : 'bg-slate-900 text-slate-400 hover:bg-slate-800 border border-slate-800'
                   }`}
                 >
                   Slide {s.id}
@@ -253,37 +253,49 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
               ))}
             </div>
 
-            <div className="flex items-center space-x-2 text-xs font-mono font-bold text-slate-400">
-              <span>{activeSlideIndex + 1} of {slides.length}</span>
+            <div className="flex items-center space-x-2 text-xs font-mono font-bold text-cyan-400">
+              <span>Slide {activeSlideIndex + 1} of {slides.length}</span>
             </div>
           </div>
 
           {/* EDITABLE SLIDE STAGE CARD */}
-          <div className="bg-slate-900 p-6 sm:p-10 rounded-2xl border border-indigo-500/40 space-y-6 shadow-2xl relative min-h-[360px] flex flex-col justify-between">
+          <div className="bg-slate-900 p-6 sm:p-10 rounded-2xl border border-indigo-500/40 space-y-6 shadow-2xl relative min-h-[380px] flex flex-col justify-between">
             
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-3xl">{currentSlide.icon}</span>
-                <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-mono font-bold border border-indigo-500/40">
-                  SLIDE {currentSlide.id}: {currentSlide.subtitle.toUpperCase()}
-                </span>
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="flex items-center space-x-2">
+                  <span className="text-3xl">{currentSlide.icon}</span>
+                  <div>
+                    <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-mono font-bold border border-indigo-500/40">
+                      SLIDE {currentSlide.id}: {currentSlide.subtitle.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+
+                <span className="text-[10px] text-emerald-400 font-mono font-bold">100% EDITABLE & EXPORTABLE</span>
               </div>
 
               {/* Editable Slide Title */}
-              <input
-                type="text"
-                value={currentSlide.title}
-                onChange={(e) => handleUpdateSlideContent(activeSlideIndex, 'title', e.target.value)}
-                className="w-full bg-transparent text-xl sm:text-2xl font-black text-white focus:outline-none focus:border-b focus:border-cyan-400 pb-1"
-              />
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono text-slate-400 uppercase font-bold">Slide Title:</label>
+                <input
+                  type="text"
+                  value={currentSlide.title}
+                  onChange={(e) => handleUpdateSlideContent(activeSlideIndex, 'title', e.target.value)}
+                  className="w-full bg-slate-950 px-4 py-2.5 rounded-xl border border-slate-800 text-lg sm:text-xl font-black text-white focus:outline-none focus:border-cyan-400"
+                />
+              </div>
 
               {/* Editable Slide Content Body */}
-              <textarea
-                rows={6}
-                value={currentSlide.body}
-                onChange={(e) => handleUpdateSlideContent(activeSlideIndex, 'body', e.target.value)}
-                className="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 text-slate-200 text-xs sm:text-sm font-sans focus:outline-none focus:border-indigo-500 leading-relaxed"
-              />
+              <div className="space-y-1">
+                <label className="text-[10px] font-mono text-slate-400 uppercase font-bold">Slide Body Content / Bullet Points:</label>
+                <textarea
+                  rows={6}
+                  value={currentSlide.body}
+                  onChange={(e) => handleUpdateSlideContent(activeSlideIndex, 'body', e.target.value)}
+                  className="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 text-slate-200 text-xs sm:text-sm font-sans focus:outline-none focus:border-indigo-500 leading-relaxed font-medium"
+                />
+              </div>
             </div>
 
             {/* Bottom Slide Controller Buttons */}
@@ -291,11 +303,21 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
               <button
                 onClick={() => setActiveSlideIndex(prev => Math.max(prev - 1, 0))}
                 disabled={activeSlideIndex === 0}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold flex items-center space-x-1 cursor-pointer disabled:opacity-40"
+                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold flex items-center space-x-1 cursor-pointer disabled:opacity-40 border border-slate-700"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>Previous Slide</span>
               </button>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleDownloadPptx}
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold flex items-center space-x-1.5 cursor-pointer shadow-md"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download .pptx</span>
+                </button>
+              </div>
 
               <button
                 onClick={() => setActiveSlideIndex(prev => Math.min(prev + 1, slides.length - 1))}
@@ -323,7 +345,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
                 JUDGE-READY EXECUTIVE SUMMARY
               </span>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2">{projectTitle}</h2>
-              <p className="text-slate-600 text-xs sm:text-sm font-semibold mt-1">{projectData?.tagline}</p>
+              <p className="text-slate-600 text-xs sm:text-sm font-semibold mt-1">{projectData?.tagline || `AI-Engineered framework for ${projectTitle}`}</p>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -352,7 +374,10 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
                 <h3>1. Problem & Feasibility Validation</h3>
               </div>
               <p className="text-xs text-slate-700 leading-relaxed font-semibold">
-                {projectData?.problemValidation?.marketGap || 'Validated high-priority market gap.'}
+                {projectData?.problemValidation?.validatedNeed || `Validated high-priority requirement for ${projectTitle}.`}
+              </p>
+              <p className="text-xs text-slate-600 font-medium">
+                {projectData?.problemValidation?.marketGap}
               </p>
             </div>
 
