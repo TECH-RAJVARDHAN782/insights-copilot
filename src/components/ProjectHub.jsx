@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import { Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, ExternalLink, Layers, Sparkles, Terminal, Copy, Check, Activity, FileCode, CheckSquare, Folder, ChevronDown, ListOrdered } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { 
+  Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, 
+  ExternalLink, Layers, Sparkles, Terminal, Copy, Check, Activity, FileCode, CheckSquare, 
+  Folder, ChevronDown, ListOrdered, Play, RefreshCw, BarChart2, Zap, Clock
+} from 'lucide-react';
 import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
 
@@ -8,9 +12,18 @@ export default function ProjectHub({ projectData, currentLang = 'en' }) {
   const [copiedLayerCode, setCopiedLayerCode] = useState(null);
   const [archChecked, setArchChecked] = useState(true);
   const [activeLayer, setActiveLayer] = useState('frontend');
+  const [isSimulatingBuild, setIsSimulatingBuild] = useState(false);
+  const [downloadingZip, setDownloadingZip] = useState(false);
+
+  // Dynamic Interactive Phased Progress Tracker State
+  const [milestones, setMilestones] = useState([
+    { id: 1, phase: "Phase 1 (Week 1)", title: "Literature Search & Citations", desc: "arXiv papers & Kaggle datasets synthesized", done: true },
+    { id: 2, phase: "Phase 2 (Week 2)", title: "Architecture & Express REST API", desc: "Architecture stack diagram & endpoints defined", done: true },
+    { id: 3, phase: "Phase 3 (Week 3)", title: "Project Generator & Code Export", desc: "Stack flow, step-by-step procedure & code compiled", done: true },
+    { id: 4, phase: "Phase 4 (Week 4)", title: "Vercel Deployment & Presentation Deck", desc: "Production build deployed & PowerPoint generated", done: false }
+  ]);
 
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
-
   const projectTitle = projectData?.title || "Custom Student Project";
   const slug = projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
@@ -20,7 +33,49 @@ export default function ProjectHub({ projectData, currentLang = 'en' }) {
   const aiTech = projectData?.architecture?.aiModels?.[0] || "Gemini 1.5 Pro AI Engine";
   const deployTech = "Vercel Edge Network / Docker Container";
 
-  // Dynamic Step-by-Step Procedure & Code per Architecture Diagram Layer
+  // Compute Real-Time Completion Percentage
+  const completedCount = useMemo(() => milestones.filter(m => m.done).length, [milestones]);
+  const progressPercent = Math.round((completedCount / milestones.length) * 100);
+
+  const toggleMilestone = (id) => {
+    setMilestones(prev => prev.map(m => m.id === id ? { ...m, done: !m.done } : m));
+    confetti({ particleCount: 25, spread: 35 });
+  };
+
+  const handleSimulateBuild = () => {
+    setIsSimulatingBuild(true);
+    const layers = ['frontend', 'backend', 'database', 'ai', 'deployment'];
+    let idx = 0;
+
+    const interval = setInterval(() => {
+      if (idx < layers.length) {
+        setActiveLayer(layers[idx]);
+        idx++;
+      } else {
+        clearInterval(interval);
+        setIsSimulatingBuild(false);
+        confetti({ particleCount: 60, spread: 60 });
+      }
+    }, 600);
+  };
+
+  const handleDownloadZip = () => {
+    setDownloadingZip(true);
+    setTimeout(() => {
+      const packageContent = `// Real-Time Generated Code Package for "${projectTitle}"\n\n1. FRONTEND: ${frontendTech}\n2. BACKEND: ${backendTech}\n3. ARCHITECTURE: Express REST + Python FastAPI\n\nStatus: 100% Ready for Student Deployment.`;
+      const element = document.createElement("a");
+      const file = new Blob([packageContent], { type: 'text/plain' });
+      element.href = URL.createObjectURL(file);
+      element.download = `${slug}_generator_package.txt`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+      setDownloadingZip(false);
+      confetti({ particleCount: 40, spread: 50 });
+    }, 800);
+  };
+
+  // Dynamic Step-by-Step Procedure & Code per Architecture Layer
   const layerArchitectures = {
     frontend: {
       name: "Frontend Layer",
@@ -152,7 +207,6 @@ class InferencePayload(BaseModel):
 
 @app.post("/api/v1/ai-infer")
 def run_model_inference(payload: InferencePayload):
-    # Process prompt via AI Model Pipeline
     return {
         "project": "${projectTitle}",
         "input_query": payload.query,
@@ -167,8 +221,8 @@ def run_model_inference(payload: InferencePayload):
       tech: deployTech,
       badge: "Vercel Edge & Docker Compose",
       steps: [
-        "1. Construct multi-stage `Dockerfile` and `docker-compose.yml` for microservice containerization.",
-        "2. Configure Vercel Edge configuration file (`vercel.json`) with serverless function routing.",
+        "1. Construct multi-stage \`Dockerfile\` and \`docker-compose.yml\` for microservice containerization.",
+        "2. Configure Vercel Edge configuration file (\`vercel.json\`) with serverless function routing.",
         "3. Setup GitHub Actions CI/CD workflow pipeline for automated test execution on push.",
         "4. Deploy production build with SSL HTTPS encryption and CDN edge routing."
       ],
@@ -255,32 +309,122 @@ models/`;
           Project Generator
         </h2>
         <p className="text-slate-700 text-sm font-semibold">
-          Automatically generate full architecture diagrams, step-by-step procedures, and code boilerplates for "{projectTitle}".
+          Automatically generate full architecture diagrams, step-by-step procedures, real-time progress tracking, and code boilerplates for "{projectTitle}".
         </p>
+      </div>
+
+      {/* REAL-TIME DYNAMIC PROGRESS TRACKER CARD */}
+      <div className="glass-panel p-6 sm:p-8 rounded-2xl space-y-6 bg-white border border-slate-200 shadow-md">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+          <div>
+            <div className="flex items-center space-x-2 text-indigo-700 font-extrabold text-sm mb-0.5">
+              <BarChart2 className="w-5 h-5 text-indigo-600" />
+              <span>Real-Time Project Generation Progress Tracker</span>
+            </div>
+            <p className="text-xs text-slate-600 font-semibold">
+              Track real-time sprint execution milestones for "{projectTitle}". Click any milestone to update progress.
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-3 shrink-0">
+            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold border border-emerald-300">
+              {progressPercent}% Complete
+            </span>
+            <button
+              onClick={handleSimulateBuild}
+              disabled={isSimulatingBuild}
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:brightness-110 text-white text-xs font-extrabold flex items-center space-x-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+            >
+              {isSimulatingBuild ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-white" />}
+              <span>{isSimulatingBuild ? "Simulating Build..." : "Simulate Build Run"}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Real-Time Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-center text-xs font-bold text-slate-800">
+            <span>Overall Sprint Execution Progress</span>
+            <span className="font-mono text-indigo-700 font-black">{completedCount} of {milestones.length} Milestones Completed</span>
+          </div>
+          <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-200 p-0.5">
+            <div
+              className="bg-gradient-to-r from-indigo-600 via-purple-600 to-emerald-500 h-full rounded-full transition-all duration-500 shadow-sm"
+              style={{ width: `${progressPercent}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Phased Milestones Checklist Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          {milestones.map((m) => (
+            <div
+              key={m.id}
+              onClick={() => toggleMilestone(m.id)}
+              className={`p-4 rounded-xl border transition-all cursor-pointer flex items-start space-x-3 ${
+                m.done
+                  ? 'bg-emerald-50 border-emerald-300 text-slate-900 shadow-sm'
+                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300'
+              }`}
+            >
+              <div className="pt-0.5 shrink-0">
+                {m.done ? (
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                ) : (
+                  <Circle className="w-5 h-5 text-slate-400" />
+                )}
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white border border-slate-200 text-indigo-700 font-mono">
+                    {m.phase}
+                  </span>
+                </div>
+                <h4 className={`text-xs sm:text-sm font-extrabold ${m.done ? 'text-slate-900 line-through opacity-85' : 'text-slate-900'}`}>
+                  {m.title}
+                </h4>
+                <p className="text-[11px] text-slate-600 font-medium">{m.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
 
       {/* PROJECT GENERATOR CONTAINER (MATCHING USER SCREENSHOT LAYOUT) */}
       <div className="bg-slate-950 p-6 sm:p-10 rounded-3xl border border-slate-800 text-white space-y-8 shadow-2xl">
         
         {/* Project Generator Title & Automatically Generate Header */}
-        <div className="space-y-3">
-          <h3 className="text-2xl font-bold text-white tracking-tight">Project Generator</h3>
-          <p className="text-sm text-slate-300 font-medium">Automatically generate</p>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h3 className="text-2xl font-bold text-white tracking-tight">Project Generator</h3>
+            <p className="text-sm text-slate-300 font-medium">Automatically generate</p>
 
-          {/* Architecture Diagram Checklist Option */}
-          <div className="flex items-center space-x-2 pt-1">
-            <button
-              onClick={() => setArchChecked(!archChecked)}
-              className="flex items-center space-x-2 text-xs sm:text-sm font-bold text-emerald-400 cursor-pointer"
-            >
-              <div className={`w-4 h-4 rounded flex items-center justify-center border transition ${
-                archChecked ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'border-slate-600'
-              }`}>
-                {archChecked && <Check className="w-3 h-3 stroke-[3]" />}
-              </div>
-              <span className="text-white">Architecture Diagram</span>
-            </button>
+            {/* Architecture Diagram Checklist Option */}
+            <div className="flex items-center space-x-2 pt-1">
+              <button
+                onClick={() => setArchChecked(!archChecked)}
+                className="flex items-center space-x-2 text-xs sm:text-sm font-bold text-emerald-400 cursor-pointer"
+              >
+                <div className={`w-4 h-4 rounded flex items-center justify-center border transition ${
+                  archChecked ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'border-slate-600'
+                }`}>
+                  {archChecked && <Check className="w-3 h-3 stroke-[3]" />}
+                </div>
+                <span className="text-white">Architecture Diagram</span>
+              </button>
+            </div>
           </div>
+
+          {/* Related Action: Download Package Zip */}
+          <button
+            onClick={handleDownloadZip}
+            disabled={downloadingZip}
+            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center space-x-2 shadow-lg cursor-pointer disabled:opacity-50"
+          >
+            {downloadingZip ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            <span>{downloadingZip ? "Preparing Download..." : "Download Generator Package (.ZIP)"}</span>
+          </button>
         </div>
 
         {/* Dynamic Vertical Flow Stack (Frontend -> Backend -> Database -> AI -> Deployment) */}
