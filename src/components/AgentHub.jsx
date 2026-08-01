@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Sparkles, Bot, Send, RefreshCw, Cpu, Code, BookOpen, User, Layers, Clock, CheckCircle2, ShieldCheck, Database, Terminal } from 'lucide-react';
+import { 
+  Sparkles, Bot, Send, RefreshCw, Cpu, Code, BookOpen, User, Layers, Clock, 
+  CheckCircle2, ShieldCheck, Database, Terminal, MessageSquare, Check, Activity, Zap
+} from 'lucide-react';
 import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
 
@@ -9,6 +12,17 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
 
   // Dedicated Chat History for Each Agent to Ensure 100% Distinct Dialogues
   const [agentChats, setAgentChats] = useState({
+    'Sprint Agent (WhatsApp Dev-Buddy)': [
+      {
+        agent: "Dev-Buddy Bot (WhatsApp / Telegram)",
+        avatar: "📱",
+        role: "Active AI Sprint Agent",
+        text: `📲 [DAILY MICRO-SPRINT TASK FOR TODAY]:
+Hello Dev Team! For "${projectTitle}", your micro-task today is: "Set up FastAPI Auth endpoint & Express CORS headers".
+Reply in this chat when done (e.g. "Done with API routes") to dynamically update your live project status bar on screen!`,
+        time: "09:00 AM"
+      }
+    ],
     'Research Agent': [
       {
         agent: "Research Agent",
@@ -39,16 +53,33 @@ export default function AgentHub({ projectData, currentLang = 'en' }) {
   });
 
   const [inputMessage, setInputMessage] = useState('');
-  const [selectedAgent, setSelectedAgent] = useState('Code Copilot Agent');
+  const [selectedAgent, setSelectedAgent] = useState('Sprint Agent (WhatsApp Dev-Buddy)');
   const [isThinking, setIsThinking] = useState(false);
+
+  // Live Standup Project Status Bar state driven by WhatsApp Dev-Buddy replies
+  const [sprintProgress, setSprintProgress] = useState(75);
+  const [lastStandupUpdate, setLastStandupUpdate] = useState("API Auth Endpoint Verified");
 
   // 100% DISTINCT DYNAMIC RESPONSE GENERATORS FOR EACH AGENT
   const generateAgentResponse = (query, agentName) => {
-    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const cleanTopic = query.replace(/^(how|what|why|can|build|create|fix|add|give|show)\s+/i, '').trim() || projectTitle;
+    const cleanTopic = query.replace(/^(how|what|why|can|build|create|fix|add|give|show|done|completed|finished)\s+/i, '').trim() || projectTitle;
     const latency = Math.floor(Math.random() * 20) + 15;
 
-    if (agentName === 'Research Agent') {
+    if (agentName === 'Sprint Agent (WhatsApp Dev-Buddy)') {
+      // Update Live Standup Progress Bar
+      const newProgress = Math.min(100, sprintProgress + 10);
+      setSprintProgress(newProgress);
+      setLastStandupUpdate(cleanTopic);
+
+      return `🟢 [WHATSAPP / TELEGRAM DEV-BUDDY SYNC]:
+✅ Daily Standup Received from Developer!
+Task Logged: "${query}"
+Status Updated: Live Project Progress Bar updated to ${newProgress}% on screen!
+
+📲 Next Micro-Sprint Task Queue:
+• "Configure Redis memory cache & deploy Vercel Edge functions for ${projectTitle}"`;
+
+    } else if (agentName === 'Research Agent') {
       return `🔍 [RESEARCH AGENT • Academic Citation Report]:
 Target Topic: "${cleanTopic}" (Project: ${projectTitle})
 
@@ -121,14 +152,13 @@ Copy code into your server.js file!`;
     const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
     const userMsg = {
-      agent: "You (Student Lead)",
+      agent: "You (Student Developer)",
       avatar: "👤",
       text: userText,
       isUser: true,
       time: timeNow
     };
 
-    // Add message to current agent's dedicated chat
     setAgentChats(prev => ({
       ...prev,
       [selectedAgent]: [...prev[selectedAgent], userMsg]
@@ -139,7 +169,7 @@ Copy code into your server.js file!`;
 
     setTimeout(() => {
       const botResponseText = generateAgentResponse(userText, selectedAgent);
-      const avatarIcon = selectedAgent === 'Research Agent' ? '🔍' : selectedAgent === 'Architecture Agent' ? '🏗️' : '🤖';
+      const avatarIcon = selectedAgent.includes('WhatsApp') ? '📱' : selectedAgent === 'Research Agent' ? '🔍' : selectedAgent === 'Architecture Agent' ? '🏗️' : '🤖';
 
       const botMsg = {
         agent: selectedAgent,
@@ -154,11 +184,18 @@ Copy code into your server.js file!`;
       }));
 
       setIsThinking(false);
-      confetti({ particleCount: 30, spread: 45 });
-    }, 700);
+      confetti({ particleCount: 35, spread: 50 });
+    }, 600);
   };
 
   const agentsList = [
+    { 
+      name: "Sprint Agent (WhatsApp Dev-Buddy)", 
+      avatar: "📱", 
+      role: "Interactive WhatsApp & Telegram Sync", 
+      desc: "Sends daily micro-tasks & updates live project status bar via chat standups",
+      color: "border-emerald-300 bg-emerald-50 text-emerald-900" 
+    },
     { 
       name: "Research Agent", 
       avatar: "🔍", 
@@ -189,18 +226,58 @@ Copy code into your server.js file!`;
       <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-200 bg-white shadow-md">
         <div className="flex items-center space-x-2 text-indigo-700 text-xs font-bold">
           <Sparkles className="w-4 h-4 text-indigo-600" />
-          <span>iNSIGHTS Specialized Autonomous Workforce</span>
+          <span>iNSIGHTS Autonomous Workforce & WhatsApp Dev-Buddy Sync</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
           AI Agents
         </h2>
         <p className="text-slate-700 text-sm font-semibold">
-          Each agent has a unique domain specialty. Click any agent below to talk to that specialized assistant for "{projectTitle}".
+          Includes the WhatsApp / Telegram Dev-Buddy for daily micro-sprints and live standup status bar sync.
         </p>
       </div>
 
-      {/* Agents Selection Cards (Click to switch active agent chat) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* FEATURE 1: WHATSAPP DEV-BUDDY LIVE STANDUP STATUS BAR */}
+      <div className="p-5 rounded-2xl bg-slate-950 border border-emerald-500/40 text-white space-y-3 shadow-lg">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/40">
+              <MessageSquare className="w-4 h-4 text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="text-sm font-extrabold text-white">Live WhatsApp / Telegram Standup Status Bar</h3>
+              <p className="text-[11px] text-slate-400 font-medium">Updated live in real-time as developers reply to Dev-Buddy</p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-mono font-bold">
+              STANDUP SYNC ACTIVE
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-1">
+          <div className="flex-1 space-y-1 w-full">
+            <div className="flex justify-between items-center text-xs font-bold text-slate-300">
+              <span>Sprint Progress for "{projectTitle}":</span>
+              <span className="text-emerald-400 font-mono text-sm">{sprintProgress}% COMPLETE</span>
+            </div>
+            <div className="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+              <div
+                className="bg-gradient-to-r from-emerald-500 via-cyan-400 to-indigo-500 h-full transition-all duration-500"
+                style={{ width: `${sprintProgress}%` }}
+              ></div>
+            </div>
+          </div>
+
+          <div className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-300 font-mono font-semibold shrink-0">
+            Last Standup: <span className="text-cyan-300">"{lastStandupUpdate}"</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Agents Selection Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {agentsList.map((ag) => {
           const isSelected = selectedAgent === ag.name;
           return (
@@ -214,33 +291,30 @@ Copy code into your server.js file!`;
               <div className="flex items-center space-x-3 mb-2">
                 <span className="text-3xl">{ag.avatar}</span>
                 <div>
-                  <h4 className="text-sm font-black text-slate-900">{ag.name}</h4>
-                  <p className="text-[11px] font-bold text-indigo-700">{ag.role}</p>
+                  <h4 className="text-xs font-black text-slate-900 leading-snug">{ag.name.split(' ')[0]}</h4>
+                  <p className="text-[10px] font-bold text-indigo-700">{ag.role}</p>
                 </div>
               </div>
               <p className="text-[11px] text-slate-700 leading-snug font-medium border-t border-slate-200/60 pt-2 mt-2">
                 {ag.desc}
               </p>
-              <div className="flex items-center space-x-1 text-[10px] text-emerald-700 font-extrabold pt-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-                <span>Distinct Specialized Memory Active</span>
-              </div>
             </div>
           );
         })}
       </div>
 
-      {/* Main Agent Dialogue Box for Selected Agent */}
+      {/* Main Agent Dialogue Box */}
       <div className="glass-panel p-6 rounded-2xl flex flex-col h-[560px] bg-white border border-slate-200 shadow-md">
         
         {/* Active Agent Dialogue Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-200">
           <div className="flex items-center space-x-3">
-            <span className="text-2xl">{selectedAgent === 'Research Agent' ? '🔍' : selectedAgent === 'Architecture Agent' ? '🏗️' : '🤖'}</span>
+            <span className="text-2xl">{selectedAgent.includes('WhatsApp') ? '📱' : selectedAgent === 'Research Agent' ? '🔍' : selectedAgent === 'Architecture Agent' ? '🏗️' : '🤖'}</span>
             <div>
-              <h3 className="text-base font-black text-slate-900">{selectedAgent} Workspace</h3>
+              <h3 className="text-base font-black text-slate-900">{selectedAgent}</h3>
               <p className="text-xs text-indigo-700 font-semibold">
-                {selectedAgent === 'Research Agent' ? 'Academic Citations & Literature Paper Verification' :
+                {selectedAgent.includes('WhatsApp') ? 'Daily Micro-Sprints & Standup Sync Bot' :
+                 selectedAgent === 'Research Agent' ? 'Academic Citations & Literature Paper Verification' :
                  selectedAgent === 'Architecture Agent' ? 'System Microservices & Database Schema Architecture' :
                  'Full-Stack Code Generation & Production Boilerplates'}
               </p>
@@ -280,7 +354,7 @@ Copy code into your server.js file!`;
           {isThinking && (
             <div className="p-3 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs flex items-center space-x-2 animate-pulse w-max">
               <RefreshCw className="w-4 h-4 animate-spin text-indigo-600" />
-              <span className="font-bold">{selectedAgent} is synthesizing specialized {selectedAgent.split(' ')[0]} response...</span>
+              <span className="font-bold">{selectedAgent} processing standup response...</span>
             </div>
           )}
         </div>
@@ -291,7 +365,7 @@ Copy code into your server.js file!`;
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            placeholder={`Ask ${selectedAgent} specialized query for ${projectTitle}...`}
+            placeholder={selectedAgent.includes('WhatsApp') ? "Reply standup task (e.g. 'Done with API routes')..." : `Ask ${selectedAgent} query...`}
             className="flex-1 px-4 py-2.5 rounded-xl glass-input text-slate-900 text-xs sm:text-sm focus:outline-none font-semibold"
           />
           <button
@@ -299,7 +373,7 @@ Copy code into your server.js file!`;
             disabled={isThinking}
             className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs flex items-center space-x-1.5 shadow-md cursor-pointer disabled:opacity-50"
           >
-            <span>Ask {selectedAgent.split(' ')[0]}</span>
+            <span>Send</span>
             <Send className="w-3.5 h-3.5" />
           </button>
         </form>

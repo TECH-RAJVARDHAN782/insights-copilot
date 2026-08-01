@@ -7,7 +7,6 @@ import ProjectHub from './components/ProjectHub';
 import AgentHub from './components/AgentHub';
 import DocGenerator from './components/DocGenerator';
 import TalentPlatform from './components/TalentPlatform';
-import MobileSimulator from './components/MobileSimulator';
 import AuthModal from './components/AuthModal';
 import HistoryDrawer from './components/HistoryDrawer';
 import { DEFAULT_PROJECT_DATA, SAMPLE_IDEAS } from './data/mockData';
@@ -15,7 +14,6 @@ import { DEFAULT_PROJECT_DATA, SAMPLE_IDEAS } from './data/mockData';
 export default function App() {
   const [activeTab, setActiveTab] = useState('search');
   const [currentLang, setCurrentLang] = useState('en');
-  const [viewMode, setViewMode] = useState('dual'); // 'web' | 'mobile' | 'dual'
   
   // Search State
   const [activeIdeaId, setActiveIdeaId] = useState(null);
@@ -236,8 +234,6 @@ export default function App() {
         setActiveTab={setActiveTab}
         currentLang={currentLang}
         setCurrentLang={setCurrentLang}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
         userAuth={userAuth}
         onOpenAuth={() => setShowAuthModal(true)}
         onOpenHistory={() => setShowHistoryDrawer(true)}
@@ -246,64 +242,9 @@ export default function App() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-
-        {/* VIEWPORT DISPLAY CONTROLS */}
-
-        {/* 1. ONLY WEB PLATFORM */}
-        {viewMode === 'web' && (
-          <div className="animate-fadeIn">
-            {renderWebTabContent()}
-          </div>
-        )}
-
-        {/* 2. ONLY MOBILE APP SIMULATOR */}
-        {viewMode === 'mobile' && (
-          <div className="animate-fadeIn py-4">
-            <MobileSimulator
-              projectData={projectData}
-              onSearch={handleGenerateCustom}
-              onOpenAuth={() => setShowAuthModal(true)}
-              onOpenHistory={() => setShowHistoryDrawer(true)}
-            />
-          </div>
-        )}
-
-        {/* 3. DUAL VIEW (SIDE BY SIDE WEB APP + MOBILE APP SIMULATOR) */}
-        {viewMode === 'dual' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-fadeIn">
-            {/* Left 8 Cols: Web Dashboard */}
-            <div className="lg:col-span-8 space-y-6">
-              <div className="flex items-center justify-between bg-indigo-50 p-3 rounded-xl border border-indigo-200 text-xs">
-                <span className="font-extrabold text-indigo-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
-                  🖥️ Desktop Web Application Active
-                </span>
-                <span className="text-slate-700 font-bold">Live Sync with Mobile Companion App</span>
-              </div>
-              {renderWebTabContent()}
-            </div>
-
-            {/* Right 4 Cols: Mobile App Simulator */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="flex items-center justify-between bg-purple-50 p-3 rounded-xl border border-purple-200 text-xs">
-                <span className="font-extrabold text-purple-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-purple-600 animate-ping"></span>
-                  📱 Companion Mobile App Simulator
-                </span>
-                <span className="text-slate-700 font-mono font-bold">Student Friendly</span>
-              </div>
-              <div className="sticky top-24">
-                <MobileSimulator
-                  projectData={projectData}
-                  onSearch={handleGenerateCustom}
-                  onOpenAuth={() => setShowAuthModal(true)}
-                  onOpenHistory={() => setShowHistoryDrawer(true)}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
+        <div className="animate-fadeIn">
+          {renderWebTabContent()}
+        </div>
       </main>
 
       {/* Student Auth Modal */}

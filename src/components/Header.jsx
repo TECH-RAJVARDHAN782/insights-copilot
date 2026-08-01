@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Compass, Globe, Zap, Smartphone, Monitor, Layout, UserCheck, Rocket, Bot, Share2, FileCode, FileText, ChevronDown, Plus, History, User } from 'lucide-react';
+import { Sparkles, Compass, Globe, Zap, Layout, UserCheck, Rocket, Bot, Share2, FileCode, FileText, ChevronDown, Plus, History, User } from 'lucide-react';
 import { LANGUAGES } from '../data/mockData';
 import { TRANSLATIONS } from '../data/translations';
 
@@ -8,8 +8,6 @@ export default function Header({
   setActiveTab, 
   currentLang, 
   setCurrentLang, 
-  viewMode,
-  setViewMode,
   userAuth,
   onOpenAuth,
   onOpenHistory,
@@ -55,45 +53,6 @@ export default function Header({
               </div>
               <p className="text-[11px] text-slate-600 hidden sm:block font-medium">{t.tagline}</p>
             </div>
-          </div>
-
-          {/* VIEW MODE TOGGLE (WEB PLATFORM / MOBILE APP / DUAL VIEW) */}
-          <div className="hidden lg:flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-inner">
-            <button
-              onClick={() => setViewMode('web')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                viewMode === 'web'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Monitor className="w-3.5 h-3.5" />
-              <span>Web Platform</span>
-            </button>
-
-            <button
-              onClick={() => setViewMode('mobile')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                viewMode === 'mobile'
-                  ? 'bg-purple-600 text-white shadow-md'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Smartphone className="w-3.5 h-3.5" />
-              <span>Mobile App</span>
-            </button>
-
-            <button
-              onClick={() => setViewMode('dual')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                viewMode === 'dual'
-                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Layout className="w-3.5 h-3.5" />
-              <span>Dual View</span>
-            </button>
           </div>
 
           {/* Right Action Tools: + New Chat, History, Auth, Language */}
