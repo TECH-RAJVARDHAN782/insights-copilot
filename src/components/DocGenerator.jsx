@@ -13,7 +13,8 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
   const [copiedPrompt, setCopiedPrompt] = useState(false);
   const [copiedBlueprint, setCopiedBlueprint] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const [viewMode, setViewMode] = useState('blueprint'); // 'blueprint' | 'slides' | 'onepager'
+  const [viewMode, setViewMode] = useState('blueprint'); // 'blueprint' | 'slides'
+  const [selectedThemeId, setSelectedThemeId] = useState('theme1'); // Default Theme 1
 
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const projectTitle = projectData?.title || "iNSIGHTS AI Research Copilot";
@@ -23,28 +24,103 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
   const frontendTech = projectData?.architecture?.frontend || "React 18 + Tailwind CSS";
   const backendTech = projectData?.architecture?.backend || "Node.js Express + Python FastAPI";
 
-  // Visual & Design Direction Tokens
-  const designTokens = {
-    colorPalette: {
-      primary: "Dark Slate (#0F172A)",
-      accent: "Electric Blue (#38BDF8)",
-      highlight: "Cyber Cyan (#22D3EE)",
-      vibe: "High contrast, clean whitespace, scannable layouts & zero wall-of-text paragraphs"
-    },
-    typography: {
+  // 6 DESIGN THEME PRESETS (VC Pitch Strategist Trained)
+  const themePresets = {
+    theme1: {
+      id: "theme1",
+      name: "Modern SaaS Dark (Linear / Arc Style)",
+      vibe: "Sleek, futuristic, high-tech, developer-centric",
+      primaryHex: "0F172A",
+      accentHex: "0EA5E9",
+      highlightHex: "6366F1",
+      bgColor: "bg-slate-950 text-white border-slate-800",
+      cardColor: "bg-slate-900 border-slate-800 text-white",
+      badgeColor: "bg-sky-500/20 text-sky-300 border-sky-500/40",
+      calloutColor: "bg-indigo-500/20 text-indigo-300 border-indigo-500/40",
       titleFont: "Plus Jakarta Sans",
-      bodyFont: "Inter",
-      pairing: "Plus Jakarta Sans (Titles 28pt) + Inter (Body 14pt)"
+      bodyFont: "Inter"
+    },
+    theme2: {
+      id: "theme2",
+      name: "Y-Combinator Minimalist Pitch Deck",
+      vibe: "High signal-to-noise ratio, ultra-readable, investor-focused",
+      primaryHex: "FFFFFF",
+      accentHex: "FF6600",
+      highlightHex: "111827",
+      bgColor: "bg-white text-slate-900 border-slate-300",
+      cardColor: "bg-slate-50 border-slate-300 text-slate-900",
+      badgeColor: "bg-orange-500/20 text-orange-800 border-orange-400",
+      calloutColor: "bg-slate-900 text-white border-slate-800",
+      titleFont: "SF Pro Display / Helvetica Neue",
+      bodyFont: "Inter"
+    },
+    theme3: {
+      id: "theme3",
+      name: "Canva Modern Creator & Pastel",
+      vibe: "Vibrant, approachable, friendly, consumer-ready",
+      primaryHex: "FDFBF7",
+      accentHex: "84A98C",
+      highlightHex: "FF7B54",
+      bgColor: "bg-[#FDFBF7] text-slate-900 border-emerald-200",
+      cardColor: "bg-emerald-50/60 border-emerald-200 text-slate-900",
+      badgeColor: "bg-emerald-200 text-emerald-900 border-emerald-300",
+      calloutColor: "bg-orange-100 text-orange-900 border-orange-300",
+      titleFont: "Outfit / Poppins",
+      bodyFont: "Open Sans"
+    },
+    theme4: {
+      id: "theme4",
+      name: "Apple Keynote Ultra-Minimal",
+      vibe: "Premium, elegant, massive typography, bold focus",
+      primaryHex: "0A0A0C",
+      accentHex: "FFFFFF",
+      highlightHex: "8E8E93",
+      bgColor: "bg-[#0A0A0C] text-white border-zinc-800",
+      cardColor: "bg-zinc-900 border-zinc-800 text-white",
+      badgeColor: "bg-white/20 text-white border-white/40",
+      calloutColor: "bg-zinc-800 text-white border-zinc-700",
+      titleFont: "Inter / SF Pro Display",
+      bodyFont: "SF Pro Text"
+    },
+    theme5: {
+      id: "theme5",
+      name: "Enterprise Corporate & Fintech",
+      vibe: "Professional, trustworthy, institutional, authoritative",
+      primaryHex: "0A192F",
+      accentHex: "F59E0B",
+      highlightHex: "1E3A8A",
+      bgColor: "bg-[#0A192F] text-white border-blue-900",
+      cardColor: "bg-[#1E3A8A]/40 border-blue-800 text-white",
+      badgeColor: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+      calloutColor: "bg-blue-900/60 text-cyan-300 border-blue-700",
+      titleFont: "Montserrat",
+      bodyFont: "Roboto"
+    },
+    theme6: {
+      id: "theme6",
+      name: "Cyberpunk & DeepTech Neon",
+      vibe: "High-energy, AI-native, bold gradients, dark contrast",
+      primaryHex: "05050A",
+      accentHex: "8B5CF6",
+      highlightHex: "10B981",
+      bgColor: "bg-[#05050A] text-white border-purple-900",
+      cardColor: "bg-purple-950/40 border-purple-800 text-white",
+      badgeColor: "bg-purple-500/20 text-purple-300 border-purple-500/40",
+      calloutColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+      titleFont: "Space Grotesk",
+      bodyFont: "JetBrains Mono"
     }
   };
 
-  // COMPLETE 10-SLIDE PRESENTATION BLUEPRINT MATCHING USER CRITERIA EXACTLY
+  const currentTheme = themePresets[selectedThemeId];
+
+  // COMPLETE 10-SLIDE PRESENTATION BLUEPRINT
   const [slides10, setSlides10] = useState([
     {
       slideNum: 1,
       title: "Title & Hook",
       layoutType: "Title_Slide",
-      visualSpec: "Minimalist dark slate hero canvas with glowing cyber cyan gradient nodes, 3D floating AI core icon, and clean typography.",
+      visualSpec: `Minimalist ${currentTheme.name} hero canvas with custom color accents (${currentTheme.primaryHex}), floating AI core icon, and bold title typography.`,
       bullets: [
         `• ${projectTitle}: ${projectDesc}`,
         "• AI-Engineered Research & Innovation Copilot Platform",
@@ -83,7 +159,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
     },
     {
       slideNum: 4,
-      title: "Key Features & Layer 2 Innovations",
+      title: "Key Features & Innovation Layers",
       layoutType: "Tiled_Cards_With_Icons",
       visualSpec: "4 grid tiles with gradient borders: WhatsApp Dev-Buddy, Patent Scanner, Live Sandbox, and PPT Exporter.",
       bullets: [
@@ -125,7 +201,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
     },
     {
       slideNum: 7,
-      title: "Uniqueness & Competitive Advantage",
+      title: "Uniqueness & Market Gap Analysis",
       layoutType: "Highlighted_Metrics",
       visualSpec: "Visual comparison matrix comparing static generators vs. iNSIGHTS Copilot with radar chart overlays.",
       bullets: [
@@ -155,7 +231,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
       slideNum: 9,
       title: "Impact & Success Metrics",
       layoutType: "Highlighted_Metrics",
-      visualSpec: "3 large metric stat boxes with bold cyan figures and upward trending arrow badges.",
+      visualSpec: "3 large metric stat boxes with bold figures and upward trending arrow badges.",
       bullets: [
         "• 90% Reduction in project setup and boilerplate generation time.",
         "• 96.8% Accuracy in paper citation relevance and feasibility auditing.",
@@ -167,14 +243,14 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
     },
     {
       slideNum: 10,
-      title: "Pitch Conclusion & Q&A",
+      title: "Pitch Conclusion & Call to Action",
       layoutType: "Title_Slide",
-      visualSpec: "Clean dark slate conclusion card with glowing QR code placeholder, call to action, and team contact details.",
+      visualSpec: "Clean conclusion card with glowing QR code placeholder, call to action, and team contact details.",
       bullets: [
         `• ${projectTitle}: Empowering the next generation of student innovators.`,
         "• Live Demo URL: https://insights-copilot-chi.vercel.app",
         "• Open Source GitHub Repo: github.com/TECH-RAJVARDHAN782/insights-copilot",
-        "• Thank you! We are open for Judges' Q&A."
+        "• Thank you! We are open for VC & Judges' Q&A."
       ],
       callout: "TRY THE LIVE DEMO NOW • Q&A SESSION",
       speakerNote: "Conclude with a clear call-to-action and invite judges for questions."
@@ -189,40 +265,40 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
 
       slides10.forEach((s) => {
         const slide = pres.addSlide();
-        slide.background = { color: '0F172A' };
+        slide.background = { color: currentTheme.primaryHex };
 
         // Slide Title
         slide.addText(`SLIDE ${s.slideNum}: ${s.title.toUpperCase()}`, {
-          x: 0.8, y: 0.8, w: '85%', fontSize: 24, bold: true, color: '38BDF8', align: 'left', fontFace: 'Plus Jakarta Sans'
+          x: 0.8, y: 0.8, w: '85%', fontSize: 24, bold: true, color: currentTheme.accentHex, align: 'left', fontFace: currentTheme.titleFont
         });
 
         // Layout Type Badge
         slide.addText(`LAYOUT: ${s.layoutType}`, {
-          x: 0.8, y: 1.5, w: '85%', fontSize: 12, bold: true, color: 'A855F7', align: 'left', fontFace: 'Inter'
+          x: 0.8, y: 1.5, w: '85%', fontSize: 12, bold: true, color: currentTheme.highlightHex, align: 'left', fontFace: currentTheme.bodyFont
         });
 
         // Visual Spec Box
         slide.addText(`Visual Spec: ${s.visualSpec}`, {
-          x: 0.8, y: 2.1, w: '85%', fontSize: 11, italic: true, color: '94A3B8', align: 'left', fontFace: 'Inter'
+          x: 0.8, y: 2.1, w: '85%', fontSize: 11, italic: true, color: '94A3B8', align: 'left', fontFace: currentTheme.bodyFont
         });
 
         // Bullets
         slide.addText(s.bullets.join('\n'), {
-          x: 0.8, y: 2.8, w: '85%', fontSize: 13, color: 'F8FAFC', align: 'left', lineSpacing: 22, fontFace: 'Inter'
+          x: 0.8, y: 2.8, w: '85%', fontSize: 13, color: 'F8FAFC', align: 'left', lineSpacing: 22, fontFace: currentTheme.bodyFont
         });
 
         // Callout Metric
         slide.addText(s.callout, {
-          x: 0.8, y: 5.4, w: '85%', fontSize: 14, bold: true, color: '34D399', align: 'left', fontFace: 'Inter'
+          x: 0.8, y: 5.4, w: '85%', fontSize: 14, bold: true, color: '34D399', align: 'left', fontFace: currentTheme.bodyFont
         });
 
         // Speaker Note
         slide.addText(`Speaker Note: ${s.speakerNote}`, {
-          x: 0.8, y: 6.4, w: '85%', fontSize: 10, italic: true, color: '64748B', align: 'left', fontFace: 'Inter'
+          x: 0.8, y: 6.4, w: '85%', fontSize: 10, italic: true, color: '64748B', align: 'left', fontFace: currentTheme.bodyFont
         });
       });
 
-      const filename = `${slug}-10-Slide-Pitch-Deck.pptx`;
+      const filename = `${slug}-${currentTheme.id}-10-Slide-Deck.pptx`;
       pres.writeFile({ fileName: filename }).then(() => {
         setDownloadingPpt(false);
         confetti({ particleCount: 80, spread: 75 });
@@ -233,16 +309,15 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
   };
 
   const handleCopyCompleteBlueprint = () => {
-    let text = `=== 🎨 1. VISUAL & DESIGN DIRECTION ===\n`;
-    text += `Color Palette: ${designTokens.colorPalette.primary} + ${designTokens.colorPalette.accent} + ${designTokens.colorPalette.highlight}\n`;
-    text += `Typography Pairing: ${designTokens.typography.pairing}\n`;
-    text += `Visual Vibe: ${designTokens.colorPalette.vibe}\n\n`;
+    let text = `=== 🎨 CHOSEN DESIGN THEME: ${currentTheme.name.toUpperCase()} ===\n`;
+    text += `Vibe: ${currentTheme.vibe}\n`;
+    text += `Typography: ${currentTheme.titleFont} + ${currentTheme.bodyFont}\n\n`;
 
-    text += `=== 📊 2. 10-SLIDE PRESENTATION BLUEPRINT ===\n\n`;
+    text += `=== 📊 10-SLIDE PRESENTATION BLUEPRINT ===\n\n`;
     slides10.forEach((s) => {
       text += `SLIDE ${s.slideNum}: ${s.title}\n`;
       text += `Layout Type: ${s.layoutType}\n`;
-      text += `Visual Spec / AI Image Prompt: ${s.visualSpec}\n`;
+      text += `Visual Spec & Theme Colors: ${s.visualSpec}\n`;
       text += `Slide Headings & Key Bullet Points:\n${s.bullets.join('\n')}\n`;
       text += `Highlighted Metric / Callout: ${s.callout}\n`;
       text += `Pitch Speaker Note: ${s.speakerNote}\n\n-----------------------------------\n\n`;
@@ -255,7 +330,7 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
   };
 
   const handleCopySlidesgoPrompt = () => {
-    const promptText = `Create 10-slide presentation deck for project: "${projectTitle}". Domain Palette: Dark Slate + Electric Blue. Typography: Plus Jakarta Sans + Inter. Slides: Title Hook, Core Problem, AI Solution, Key Features, System Architecture, Live Product Sandbox, Uniqueness Gap, Timeline Roadmap, Impact Metrics, Pitch Q&A.`;
+    const promptText = `Create 10-slide presentation deck for project: "${projectTitle}". Theme: ${currentTheme.name}. Vibe: ${currentTheme.vibe}. Typography: ${currentTheme.titleFont} + ${currentTheme.bodyFont}. Slides: Title Hook, Core Problem, AI Solution, Key Features, System Architecture, Live Product Sandbox, Uniqueness Gap, Timeline Roadmap, Impact Metrics, Pitch Q&A.`;
     navigator.clipboard.writeText(promptText);
     setCopiedPrompt(true);
     setTimeout(() => setCopiedPrompt(false), 2000);
@@ -269,56 +344,69 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
       <div className="glass-panel-glow p-6 sm:p-8 rounded-2xl space-y-2 border border-indigo-200 bg-white shadow-md">
         <div className="flex items-center space-x-2 text-indigo-700 text-xs font-bold">
           <Sparkles className="w-4 h-4 text-indigo-600" />
-          <span>Strict Presentation Design & Strategy Guidelines Engine</span>
+          <span>McKinsey & Y-Combinator Trained Pitch Strategist Engine</span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
           PPT Generation
         </h2>
         <p className="text-slate-700 text-sm font-semibold">
-          Auto-generate 10-slide presentation blueprints & PowerPoint decks (.pptx) adhering 100% to strict hackathon pitch criteria.
+          Select from 6 VC design theme presets to auto-generate 10-slide presentation blueprints & PowerPoint decks (.pptx).
         </p>
       </div>
 
-      {/* DESIGN DIRECTION TOKENS BANNER */}
-      <div className="p-6 rounded-3xl bg-slate-950 text-white border border-slate-800 space-y-4 shadow-xl">
-        <div className="flex items-center space-x-2 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">
-          <Palette className="w-4 h-4" />
-          <span>🎨 Visual & Design Direction Specification</span>
+      {/* 🎨 6 DESIGN THEME PRESETS SELECTOR */}
+      <div className="glass-panel p-6 rounded-3xl bg-white border border-slate-200 space-y-4 shadow-xl">
+        <div className="flex items-center space-x-2 text-slate-900 text-sm font-black border-b border-slate-200 pb-3">
+          <Palette className="w-5 h-5 text-indigo-600" />
+          <span>Select Design Theme Preset (6 VC Themes Available)</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          
-          {/* Color Palette Card */}
-          <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5">
-            <span className="text-slate-400 font-extrabold uppercase text-[10px] block">3-Color Domain Palette</span>
-            <div className="flex items-center space-x-2">
-              <span className="w-4 h-4 rounded-full bg-slate-900 border border-slate-700"></span>
-              <span className="w-4 h-4 rounded-full bg-sky-400"></span>
-              <span className="w-4 h-4 rounded-full bg-cyan-400"></span>
-            </div>
-            <p className="text-slate-200 font-mono font-bold pt-1">Dark Slate + Electric Blue + Cyber Cyan</p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {Object.values(themePresets).map((t) => {
+            const isSelected = selectedThemeId === t.id;
+            return (
+              <div
+                key={t.id}
+                onClick={() => setSelectedThemeId(t.id)}
+                className={`p-4 rounded-2xl border transition-all cursor-pointer space-y-2 ${
+                  isSelected
+                    ? 'ring-2 ring-indigo-600 bg-indigo-50/80 border-indigo-300 shadow-md scale-[1.02]'
+                    : 'bg-slate-50 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black text-slate-900">{t.name}</h4>
+                  {isSelected && <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />}
+                </div>
+                <p className="text-[11px] text-slate-600 font-medium leading-snug">{t.vibe}</p>
+                <div className="flex items-center justify-between text-[10px] text-indigo-700 font-mono font-bold pt-1 border-t border-slate-200/60">
+                  <span>Fonts: {t.titleFont.split('/')[0]}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-          {/* Typography Card */}
-          <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5">
-            <span className="text-slate-400 font-extrabold uppercase text-[10px] block">Typography Pairing</span>
-            <div className="flex items-center space-x-1 text-purple-400 font-bold">
-              <Type className="w-4 h-4" />
-              <span>Plus Jakarta Sans + Inter</span>
-            </div>
-            <p className="text-slate-200 font-mono text-[11px]">Titles 28pt Bold • Body 14pt Medium</p>
+      {/* ACTIVE THEME SPECIFICATION BANNER */}
+      <div className={`p-6 rounded-3xl space-y-3 shadow-xl transition-all ${currentTheme.bgColor}`}>
+        <div className="flex justify-between items-center border-b border-white/10 pb-2">
+          <div className="flex items-center space-x-2 text-xs font-mono font-bold uppercase">
+            <Sliders className="w-4 h-4 text-cyan-400" />
+            <span>Active Theme Specification: {currentTheme.name}</span>
           </div>
+          <span className="text-[10px] font-mono font-bold opacity-80">{currentTheme.vibe}</span>
+        </div>
 
-          {/* Visual Vibe Card */}
-          <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5">
-            <span className="text-slate-400 font-extrabold uppercase text-[10px] block">Visual Layout Vibe</span>
-            <div className="flex items-center space-x-1 text-emerald-400 font-bold">
-              <Sliders className="w-4 h-4" />
-              <span>High Contrast & Scannable</span>
-            </div>
-            <p className="text-slate-200 text-[11px] font-medium">Clean whitespace & zero wall-of-text paragraphs</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+          <div className="p-3 rounded-xl bg-black/30 space-y-1">
+            <span className="opacity-70 text-[10px]">Theme Color Tokens:</span>
+            <p>Primary: #{currentTheme.primaryHex} • Accent: #{currentTheme.accentHex} • Highlight: #{currentTheme.highlightHex}</p>
           </div>
-
+          <div className="p-3 rounded-xl bg-black/30 space-y-1">
+            <span className="opacity-70 text-[10px]">Typography Specifications:</span>
+            <p>Headings: {currentTheme.titleFont} • Body: {currentTheme.bodyFont}</p>
+          </div>
         </div>
       </div>
 
@@ -381,32 +469,32 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
             {slides10.map((s, idx) => (
               <div
                 key={s.slideNum}
-                className="p-6 rounded-3xl bg-slate-950 text-white border border-slate-800 space-y-4 shadow-xl animate-fadeIn"
+                className={`p-6 rounded-3xl border space-y-4 shadow-xl animate-fadeIn ${currentTheme.cardColor}`}
               >
                 {/* Slide Header: SLIDE X + Layout Type Badge */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800/40 pb-3">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white font-mono font-black flex items-center justify-center text-sm shadow-md">
                       0{s.slideNum}
                     </div>
-                    <h4 className="text-base font-black text-white">{s.title}</h4>
+                    <h4 className="text-base font-black text-slate-900 dark:text-white">{s.title}</h4>
                   </div>
 
-                  <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs font-mono font-extrabold">
+                  <span className={`px-3 py-1 rounded-full text-xs font-mono font-extrabold border ${currentTheme.badgeColor}`}>
                     Layout Type: {s.layoutType}
                   </span>
                 </div>
 
-                {/* Visual Spec / AI Image Prompt */}
-                <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1 text-xs">
-                  <span className="text-indigo-400 font-extrabold uppercase text-[10px] block">Visual Spec / AI Image Prompt:</span>
-                  <p className="text-slate-300 italic font-medium leading-relaxed">{s.visualSpec}</p>
+                {/* Visual Spec & Theme Colors */}
+                <div className="p-3.5 rounded-xl bg-slate-950/40 border border-slate-800/40 space-y-1 text-xs">
+                  <span className="text-indigo-400 font-extrabold uppercase text-[10px] block">Visual Spec & Theme Colors ({currentTheme.name}):</span>
+                  <p className="italic font-medium leading-relaxed opacity-90">{s.visualSpec}</p>
                 </div>
 
                 {/* Slide Headings & Key Bullet Points */}
                 <div className="space-y-1.5">
                   <span className="text-emerald-400 font-extrabold uppercase text-[10px] block">Slide Headings & Key Bullet Points:</span>
-                  <div className="space-y-1 pl-2 text-xs text-slate-200 font-semibold leading-relaxed">
+                  <div className="space-y-1 pl-2 text-xs font-semibold leading-relaxed">
                     {s.bullets.map((b, i) => (
                       <p key={i}>{b}</p>
                     ))}
@@ -415,12 +503,12 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
 
                 {/* Highlighted Metric / Callout & Speaker Note */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-mono text-xs font-bold">
-                    <span className="text-[10px] text-emerald-400 uppercase block font-sans">Highlighted Metric / Callout:</span>
+                  <div className={`p-3 rounded-xl font-mono text-xs font-bold border ${currentTheme.calloutColor}`}>
+                    <span className="text-[10px] uppercase block font-sans opacity-80">Highlighted Metric / Callout:</span>
                     {s.callout}
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 text-xs italic">
+                  <div className="p-3 rounded-xl bg-slate-950/40 border border-slate-800/40 text-xs italic">
                     <span className="text-[10px] text-cyan-400 font-bold uppercase not-italic block">Pitch Speaker Note:</span>
                     "{s.speakerNote}"
                   </div>
@@ -460,39 +548,39 @@ export default function DocGenerator({ projectData, currentLang = 'en' }) {
             {/* Right: Editable Dark Slide Screen Simulator */}
             <div className="lg:col-span-2 space-y-4">
               
-              <div className="relative bg-slate-950 rounded-3xl p-8 border border-slate-800 min-h-[360px] flex flex-col justify-between shadow-2xl text-white">
-                <div className="flex justify-between items-center text-xs font-mono text-cyan-400 border-b border-slate-800 pb-3">
+              <div className={`relative rounded-3xl p-8 border min-h-[360px] flex flex-col justify-between shadow-2xl transition-all ${currentTheme.cardColor}`}>
+                <div className="flex justify-between items-center text-xs font-mono text-cyan-400 border-b border-slate-800/40 pb-3">
                   <span>SLIDE {slides10[activeSlideIndex].slideNum} OF 10</span>
-                  <span className="text-purple-400 font-bold">LAYOUT: {slides10[activeSlideIndex].layoutType}</span>
+                  <span className="font-bold">LAYOUT: {slides10[activeSlideIndex].layoutType}</span>
                 </div>
 
                 <div className="space-y-4 py-4">
-                  <h3 className="text-2xl font-black text-white">{slides10[activeSlideIndex].title}</h3>
-                  <div className="space-y-1.5 text-xs text-slate-200 font-medium">
+                  <h3 className="text-2xl font-black">{slides10[activeSlideIndex].title}</h3>
+                  <div className="space-y-1.5 text-xs font-medium">
                     {slides10[activeSlideIndex].bullets.map((b, i) => (
                       <p key={i}>{b}</p>
                     ))}
                   </div>
 
-                  <div className="p-3 rounded-xl bg-emerald-500/20 text-emerald-300 font-mono text-xs font-bold border border-emerald-500/40 inline-block">
+                  <div className={`p-3 rounded-xl font-mono text-xs font-bold border inline-block ${currentTheme.calloutColor}`}>
                     {slides10[activeSlideIndex].callout}
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center text-[10px] font-mono text-slate-500 pt-2 border-t border-slate-900">
+                <div className="flex justify-between items-center text-[10px] font-mono opacity-80 pt-2 border-t border-slate-800/40">
                   <span>Speaker Note: {slides10[activeSlideIndex].speakerNote}</span>
                   <div className="flex space-x-2">
                     <button
                       onClick={() => setActiveSlideIndex(prev => Math.max(0, prev - 1))}
                       disabled={activeSlideIndex === 0}
-                      className="p-1 rounded bg-slate-900 hover:bg-slate-800 disabled:opacity-30 cursor-pointer text-white font-bold"
+                      className="p-1 rounded bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-30 cursor-pointer font-bold"
                     >
                       ‹ Prev
                     </button>
                     <button
                       onClick={() => setActiveSlideIndex(prev => Math.min(9, prev + 1))}
                       disabled={activeSlideIndex === 9}
-                      className="p-1 rounded bg-slate-900 hover:bg-slate-800 disabled:opacity-30 cursor-pointer text-white font-bold"
+                      className="p-1 rounded bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-30 cursor-pointer font-bold"
                     >
                       Next ›
                     </button>
