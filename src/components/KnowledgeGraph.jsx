@@ -20,51 +20,53 @@ export default function KnowledgeGraph({ projectData, currentLang = 'en' }) {
   const projectTitle = projectData?.title || "Custom AI Innovation";
   const slug = projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '-');
 
-  // DYNAMICALLY GENERATE RESEARCH NODES BASED ON SEARCHED projectData
+  // DYNAMICALLY GENERATE RESEARCH NODES WITH DEFENSIVE OPTIONAL CHAINING
   const dynamicNodes = useMemo(() => {
-    if (!projectData) {
-      return [
-        { id: 'core-1', label: `${projectTitle} Core Model`, cat: 'Model', val: 98, x: 50, y: 45, desc: 'Central neural inference engine', connections: ['paper-1', 'paper-2', 'ds-1', 'sys-1'] },
-        { id: 'paper-1', label: 'arXiv Deep Learning Paper (2025)', cat: 'Paper', val: 95, x: 25, y: 25, desc: 'Empirical neural architecture benchmark', url: 'https://arxiv.org', connections: ['core-1'] },
-        { id: 'paper-2', label: 'IEEE Neural Pipeline Benchmark', cat: 'Paper', val: 92, x: 75, y: 25, desc: 'Sub-20ms latency execution audit', url: 'https://ieee.org', connections: ['core-1'] },
-        { id: 'ds-1', label: 'Kaggle Labeled Dataset', cat: 'Dataset', val: 91, x: 22, y: 70, desc: '18,000+ curated training samples', url: 'https://kaggle.com', connections: ['core-1'] },
-        { id: 'sys-1', label: 'Node.js Express Microservice', cat: 'System', val: 96, x: 78, y: 70, desc: 'REST API orchestration gateway', connections: ['core-1', 'repo-1'] },
-        { id: 'repo-1', label: `insights-copilot/${slug}`, cat: 'Repository', val: 97, x: 50, y: 82, desc: 'Open-source starter code repository', url: `https://github.com/insights-copilot/${slug}`, connections: ['sys-1'] }
-      ];
-    }
+    const defaultNodes = [
+      { id: 'core-1', label: `${projectTitle} Core Model`, cat: 'Model', val: 98, x: 50, y: 45, desc: 'Central neural inference engine', connections: ['paper-1', 'paper-2', 'ds-1', 'sys-1'] },
+      { id: 'paper-1', label: 'arXiv Deep Learning Paper (2025)', cat: 'Paper', val: 95, x: 25, y: 25, desc: 'Empirical neural architecture benchmark', url: 'https://arxiv.org/abs/2303.08774', connections: ['core-1'] },
+      { id: 'paper-2', label: 'IEEE Neural Pipeline Benchmark', cat: 'Paper', val: 92, x: 75, y: 25, desc: 'Sub-20ms latency execution audit', url: 'https://ieeexplore.ieee.org', connections: ['core-1'] },
+      { id: 'ds-1', label: 'Kaggle Labeled Dataset', cat: 'Dataset', val: 91, x: 22, y: 70, desc: '18,000+ curated training samples', url: 'https://www.kaggle.com/datasets/ahmedshahriar/student-performance-dataset', connections: ['core-1'] },
+      { id: 'sys-1', label: 'Node.js Express Microservice', cat: 'System', val: 96, x: 78, y: 70, desc: 'REST API orchestration gateway', connections: ['core-1', 'repo-1'] },
+      { id: 'repo-1', label: `insights-copilot/${slug}`, cat: 'Repository', val: 97, x: 50, y: 82, desc: 'Open-source starter code repository', url: `https://github.com/TECH-RAJVARDHAN782/insights-copilot`, connections: ['sys-1'] }
+    ];
+
+    if (!projectData) return defaultNodes;
 
     const baseNodes = [
       {
         id: 'core-main',
-        label: `${projectData.title} Core Model`,
+        label: `${projectData.title || projectTitle} Core Model`,
         cat: 'Model',
         val: 99,
         x: 50,
         y: 45,
-        desc: `Central AI inference & problem validation model for ${projectData.title}.`,
-        connections: ['paper-cite-0', 'paper-cite-1', 'dataset-node', 'sys-fe', 'sys-be']
+        desc: `Central AI inference & problem validation model for ${projectData.title || projectTitle}.`,
+        connections: ['paper-cite-0', 'paper-cite-1', 'sys-fe', 'sys-be']
       }
     ];
 
-    // Add Citation Nodes from DeepSearch
-    projectData.deepSearch.citations.forEach((cite, idx) => {
-      baseNodes.push({
-        id: `paper-cite-${idx}`,
-        label: cite.title,
-        cat: cite.type === 'Dataset' ? 'Dataset' : 'Paper',
-        val: Math.floor(Math.random() * 5) + 93,
-        x: idx === 0 ? 22 : idx === 1 ? 78 : 32,
-        y: idx === 0 ? 25 : idx === 1 ? 25 : 75,
-        desc: `Venue: ${cite.venue} (${cite.authors}). Snippet: ${cite.snippet}`,
-        url: cite.url,
-        connections: ['core-main']
+    // Add Citation Nodes safely
+    if (projectData?.deepSearch?.citations && Array.isArray(projectData.deepSearch.citations)) {
+      projectData.deepSearch.citations.forEach((cite, idx) => {
+        baseNodes.push({
+          id: `paper-cite-${idx}`,
+          label: cite.title || `Research Citation ${idx + 1}`,
+          cat: cite.type === 'Dataset' ? 'Dataset' : 'Paper',
+          val: Math.floor(Math.random() * 5) + 93,
+          x: idx === 0 ? 22 : idx === 1 ? 78 : 32,
+          y: idx === 0 ? 25 : idx === 1 ? 25 : 75,
+          desc: `Venue: ${cite.venue || 'Academic Index'} (${cite.authors || 'Researchers'}). Snippet: ${cite.snippet || ''}`,
+          url: cite.url || 'https://arxiv.org/abs/2303.08774',
+          connections: ['core-main']
+        });
       });
-    });
+    }
 
-    // Add Frontend & Backend Architecture Nodes
+    // Add Frontend & Backend Architecture Nodes safely
     baseNodes.push({
       id: 'sys-fe',
-      label: projectData.architecture.frontend,
+      label: projectData?.architecture?.frontend || "React 18 + Tailwind CSS",
       cat: 'System',
       val: 95,
       x: 72,
@@ -75,7 +77,7 @@ export default function KnowledgeGraph({ projectData, currentLang = 'en' }) {
 
     baseNodes.push({
       id: 'sys-be',
-      label: projectData.architecture.backend,
+      label: projectData?.architecture?.backend || "Node.js Express + Python FastAPI",
       cat: 'System',
       val: 96,
       x: 50,
@@ -84,7 +86,7 @@ export default function KnowledgeGraph({ projectData, currentLang = 'en' }) {
       connections: ['core-main', 'sys-fe', 'repo-node']
     });
 
-    // Add Repository Node
+    // Add Repository Node safely
     baseNodes.push({
       id: 'repo-node',
       label: `insights-copilot/${slug}`,
@@ -93,7 +95,7 @@ export default function KnowledgeGraph({ projectData, currentLang = 'en' }) {
       x: 18,
       y: 52,
       desc: `Readymade student code starter template repository.`,
-      url: `https://github.com/insights-copilot/${slug}`,
+      url: `https://github.com/TECH-RAJVARDHAN782/insights-copilot`,
       connections: ['sys-be']
     });
 
@@ -284,7 +286,7 @@ export default function KnowledgeGraph({ projectData, currentLang = 'en' }) {
 
           {/* Interactive Graph Nodes */}
           <div 
-            className="w-full h-full relative transition-transform duration-300 z-10"
+            className="w-full h-full relative transition-transform duration-300 z-10 min-h-[380px]"
             style={{ transform: `scale(${zoomLevel})` }}
           >
             {filteredNodes.map(node => {
