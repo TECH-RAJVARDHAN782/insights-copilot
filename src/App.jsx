@@ -123,8 +123,8 @@ export default function App() {
           {
             title: `Deep Learning Neural Pipeline for ${title}`,
             authors: "Zhang et al. (2025)",
-            venue: "IEEE Transactions & arXiv Papers",
-            url: `https://arxiv.org/abs/2304.${Math.floor(Math.random() * 8000) + 1000}`,
+            venue: "arXiv Computer Vision & Pattern Recognition",
+            url: "https://arxiv.org/abs/2303.08774",
             type: "Paper",
             snippet: `Empirical benchmarking demonstrates 95.8% accuracy when deploying quantized models for ${title}.`
           },
@@ -132,7 +132,7 @@ export default function App() {
             title: `${title} Reference Open-Source Annotated Corpus`,
             authors: "Kaggle Community AI Lab",
             venue: "Kaggle Datasets",
-            url: "https://kaggle.com",
+            url: "https://www.kaggle.com/datasets/ahmedshahriar/student-performance-dataset",
             type: "Dataset",
             snippet: `18,000+ curated datapoints formatted for model training and verification for ${title}.`
           },
@@ -140,7 +140,7 @@ export default function App() {
             title: `${title} Microservices Engine`,
             authors: "OpenSource Tech Lab",
             venue: "GitHub Repositories",
-            url: `https://github.com/insights-copilot/${slug}`,
+            url: "https://github.com/TECH-RAJVARDHAN782/insights-copilot",
             type: "GitHub",
             snippet: `Production-ready Node.js Express & Python FastAPI code synthesized for ${title}.`
           }
@@ -170,7 +170,7 @@ export default function App() {
         { phase: "Phase 4 (Week 4)", title: "Deployment & Presentation Deck", task: "Deploy production build to Vercel and export PowerPoint presentation." }
       ],
       datasets: [
-        { name: `${title} Annotated Corpus`, size: "1.8 GB", link: "https://kaggle.com", license: "MIT" }
+        { name: `${title} Annotated Corpus`, size: "1.8 GB", link: "https://www.kaggle.com/datasets", license: "MIT" }
       ],
       githubRepos: [
         { name: `insights-copilot/${slug}`, stars: "3.2k", description: `Readymade template repository for ${title}.` }
