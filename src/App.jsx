@@ -7,6 +7,7 @@ import ProjectHub from './components/ProjectHub';
 import AgentHub from './components/AgentHub';
 import DocGenerator from './components/DocGenerator';
 import TalentPlatform from './components/TalentPlatform';
+import LiveSandbox from './components/LiveSandbox';
 import AuthModal from './components/AuthModal';
 import HistoryDrawer from './components/HistoryDrawer';
 import { DEFAULT_PROJECT_DATA, SAMPLE_IDEAS } from './data/mockData';
@@ -165,7 +166,7 @@ export default function App() {
       },
       roadmap: [
         { phase: "Phase 1 (Week 1)", title: "Literature Search & Synthesis", task: `Extract paper citations for ${title}.` },
-        { phase: "Phase 2 (Week 2)", title: "Backend & Express API", task: "Setup models, database collections, and AI inference endpoints." },
+        { phase: "Phase 2 (Week 2)", title: "Backend & Express API", task: "Setup Express models, database collections, and AI inference endpoints." },
         { phase: "Phase 3 (Week 3)", title: "Agent Integration & Dashboard", task: "Connect AI agents and build interactive React dashboard." },
         { phase: "Phase 4 (Week 4)", title: "Deployment & Presentation Deck", task: "Deploy production build to Vercel and export PowerPoint presentation." }
       ],
@@ -205,6 +206,8 @@ export default function App() {
             currentLang={currentLang}
           />
         );
+      case 'sandbox':
+        return <LiveSandbox projectData={projectData} currentLang={currentLang} />;
       case 'graph':
         return (
           <KnowledgeGraph

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Compass, Globe, Zap, Layout, UserCheck, Rocket, Bot, Share2, FileCode, FileText, ChevronDown, Plus, History, User } from 'lucide-react';
+import { Sparkles, Compass, Globe, Zap, Layout, UserCheck, Rocket, Bot, Share2, FileCode, FileText, ChevronDown, Plus, History, User, Play } from 'lucide-react';
 import { LANGUAGES } from '../data/mockData';
 import { TRANSLATIONS } from '../data/translations';
 
@@ -20,6 +20,7 @@ export default function Header({
   const primaryTabs = [
     { id: 'search', label: t.tabs.search, icon: Compass },
     { id: 'readymade', label: t.tabs.readymade, icon: Rocket },
+    { id: 'sandbox', label: t.tabs.sandbox || 'Live Sandbox', icon: Play },
     { id: 'graph', label: t.tabs.graph, icon: Share2 },
     { id: 'hub', label: t.tabs.hub, icon: FileCode },
   ];
