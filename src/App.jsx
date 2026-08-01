@@ -77,6 +77,15 @@ export default function App() {
     }, 1100);
   };
 
+  // Interconnect Topic Dynamically across all tabs
+  const handleUpdateTopic = (newTopic) => {
+    if (!newTopic || newTopic.trim() === '') return;
+    const formattedTitle = extractTitleFromPrompt(newTopic);
+    const updatedData = createDynamicProjectData(formattedTitle, newTopic);
+    setProjectData(updatedData);
+    saveToHistory(updatedData);
+  };
+
   const handleNewConversation = () => {
     setProjectData(null);
     setActiveIdeaId(null);
@@ -207,7 +216,7 @@ export default function App() {
           />
         );
       case 'sandbox':
-        return <LiveSandbox projectData={projectData} currentLang={currentLang} />;
+        return <LiveSandbox projectData={projectData} onUpdateTopic={handleUpdateTopic} currentLang={currentLang} />;
       case 'graph':
         return (
           <KnowledgeGraph
@@ -216,7 +225,7 @@ export default function App() {
           />
         );
       case 'hub':
-        return <ProjectHub projectData={projectData} currentLang={currentLang} />;
+        return <ProjectHub projectData={projectData} onUpdateTopic={handleUpdateTopic} currentLang={currentLang} />;
       case 'agents':
         return <AgentHub projectData={projectData} currentLang={currentLang} />;
       case 'docs':
