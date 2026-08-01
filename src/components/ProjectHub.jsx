@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Cpu, Server, Database, Code, GitFork, ArrowRight, CheckCircle2, Circle, Download, 
   ExternalLink, Layers, Sparkles, Terminal, Copy, Check, Activity, FileCode, CheckSquare, 
-  Folder, ChevronDown, ListOrdered, Play, RefreshCw, BarChart2, Zap, Clock
+  Folder, ChevronDown, ListOrdered, Play, RefreshCw, AlertCircle, ShieldCheck
 } from 'lucide-react';
 import { TRANSLATIONS } from '../data/translations';
 import confetti from 'canvas-confetti';
@@ -12,16 +12,13 @@ export default function ProjectHub({ projectData, currentLang = 'en' }) {
   const [copiedLayerCode, setCopiedLayerCode] = useState(null);
   const [archChecked, setArchChecked] = useState(true);
   const [activeLayer, setActiveLayer] = useState('frontend');
-  const [isSimulatingBuild, setIsSimulatingBuild] = useState(false);
-  const [downloadingZip, setDownloadingZip] = useState(false);
 
-  // Dynamic Interactive Phased Progress Tracker State
-  const [milestones, setMilestones] = useState([
-    { id: 1, phase: "Phase 1 (Week 1)", title: "Literature Search & Citations", desc: "arXiv papers & Kaggle datasets synthesized", done: true },
-    { id: 2, phase: "Phase 2 (Week 2)", title: "Architecture & Express REST API", desc: "Architecture stack diagram & endpoints defined", done: true },
-    { id: 3, phase: "Phase 3 (Week 3)", title: "Project Generator & Code Export", desc: "Stack flow, step-by-step procedure & code compiled", done: true },
-    { id: 4, phase: "Phase 4 (Week 4)", title: "Vercel Deployment & Presentation Deck", desc: "Production build deployed & PowerPoint generated", done: false }
-  ]);
+  // Real-Time Progress Tracker State (Initialized dynamically from searched project)
+  const [completedMilestones, setCompletedMilestones] = useState([0, 1, 2]); // Default 3 of 4 done
+
+  // Real-Time Code Validation Audit State
+  const [isRunningAudit, setIsRunningAudit] = useState(false);
+  const [auditLogs, setAuditLogs] = useState([]);
 
   const t = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const projectTitle = projectData?.title || "Custom Student Project";
@@ -33,49 +30,57 @@ export default function ProjectHub({ projectData, currentLang = 'en' }) {
   const aiTech = projectData?.architecture?.aiModels?.[0] || "Gemini 1.5 Pro AI Engine";
   const deployTech = "Vercel Edge Network / Docker Container";
 
-  // Compute Real-Time Completion Percentage
-  const completedCount = useMemo(() => milestones.filter(m => m.done).length, [milestones]);
-  const progressPercent = Math.round((completedCount / milestones.length) * 100);
+  // Dynamic Sprint Milestones for Progress Tracker
+  const milestoneList = projectData?.roadmap || [
+    { phase: "Phase 1 (Week 1)", title: "Literature Search & Synthesis", task: `Extract paper citations for ${projectTitle}.` },
+    { phase: "Phase 2 (Week 2)", title: "System Architecture & API Router", task: "Setup Express models, API routes, and AI inference endpoints." },
+    { phase: "Phase 3 (Week 3)", title: "Frontend Client UI & Component Wiring", task: "Connect React 18 UI components with live state management." },
+    { phase: "Phase 4 (Week 4)", title: "Production Deployment & PPT Deck", task: "Deploy production build to Vercel and export PowerPoint presentation." }
+  ];
 
-  const toggleMilestone = (id) => {
-    setMilestones(prev => prev.map(m => m.id === id ? { ...m, done: !m.done } : m));
-    confetti({ particleCount: 25, spread: 35 });
+  const progressPercentage = Math.round((completedMilestones.length / milestoneList.length) * 100);
+
+  const toggleMilestone = (index) => {
+    let updated;
+    if (completedMilestones.includes(index)) {
+      updated = completedMilestones.filter(i => i !== index);
+    } else {
+      updated = [...completedMilestones, index];
+    }
+    setCompletedMilestones(updated);
+
+    if (updated.length === milestoneList.length) {
+      confetti({ particleCount: 80, spread: 70 });
+    }
   };
 
-  const handleSimulateBuild = () => {
-    setIsSimulatingBuild(true);
-    const layers = ['frontend', 'backend', 'database', 'ai', 'deployment'];
-    let idx = 0;
+  // Run Real-Time Validation Audit Simulator
+  const handleRunValidationAudit = () => {
+    setIsRunningAudit(true);
+    setAuditLogs([]);
 
-    const interval = setInterval(() => {
-      if (idx < layers.length) {
-        setActiveLayer(layers[idx]);
-        idx++;
-      } else {
-        clearInterval(interval);
-        setIsSimulatingBuild(false);
-        confetti({ particleCount: 60, spread: 60 });
-      }
-    }, 600);
+    const timeNow = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    const steps = [
+      `[${timeNow()}] 🚀 Initiating real-time validation audit for "${projectTitle}"...`,
+      `[${timeNow()}] ⚛️ Compiling React 18 UI (${frontendTech})... SUCCESS (0 lints)`,
+      `[${timeNow()}] ⚡ Verifying Express & FastAPI router endpoints... PASSED (14ms latency)`,
+      `[${timeNow()}] 🧠 Testing Gemini AI Engine payload synthesis... PASSED (0% plagiarism)`,
+      `[${timeNow()}] 📦 Containerizing Docker build & Vercel Edge configuration... READY FOR DEPLOYMENT`
+    ];
+
+    steps.forEach((logMessage, index) => {
+      setTimeout(() => {
+        setAuditLogs(prev => [...prev, logMessage]);
+        if (index === steps.length - 1) {
+          setIsRunningAudit(false);
+          confetti({ particleCount: 50, spread: 60 });
+        }
+      }, (index + 1) * 600);
+    });
   };
 
-  const handleDownloadZip = () => {
-    setDownloadingZip(true);
-    setTimeout(() => {
-      const packageContent = `// Real-Time Generated Code Package for "${projectTitle}"\n\n1. FRONTEND: ${frontendTech}\n2. BACKEND: ${backendTech}\n3. ARCHITECTURE: Express REST + Python FastAPI\n\nStatus: 100% Ready for Student Deployment.`;
-      const element = document.createElement("a");
-      const file = new Blob([packageContent], { type: 'text/plain' });
-      element.href = URL.createObjectURL(file);
-      element.download = `${slug}_generator_package.txt`;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-      setDownloadingZip(false);
-      confetti({ particleCount: 40, spread: 50 });
-    }, 800);
-  };
-
-  // Dynamic Step-by-Step Procedure & Code per Architecture Layer
+  // Step-by-Step Procedure & Code per Architecture Layer
   const layerArchitectures = {
     frontend: {
       name: "Frontend Layer",
@@ -207,6 +212,7 @@ class InferencePayload(BaseModel):
 
 @app.post("/api/v1/ai-infer")
 def run_model_inference(payload: InferencePayload):
+    # Process prompt via AI Model Pipeline
     return {
         "project": "${projectTitle}",
         "input_query": payload.query,
@@ -221,8 +227,8 @@ def run_model_inference(payload: InferencePayload):
       tech: deployTech,
       badge: "Vercel Edge & Docker Compose",
       steps: [
-        "1. Construct multi-stage \`Dockerfile\` and \`docker-compose.yml\` for microservice containerization.",
-        "2. Configure Vercel Edge configuration file (\`vercel.json\`) with serverless function routing.",
+        "1. Construct multi-stage `Dockerfile` and `docker-compose.yml` for microservice containerization.",
+        "2. Configure Vercel Edge configuration file (`vercel.json`) with serverless function routing.",
         "3. Setup GitHub Actions CI/CD workflow pipeline for automated test execution on push.",
         "4. Deploy production build with SSL HTTPS encryption and CDN edge routing."
       ],
@@ -309,84 +315,109 @@ models/`;
           Project Generator
         </h2>
         <p className="text-slate-700 text-sm font-semibold">
-          Automatically generate full architecture diagrams, step-by-step procedures, real-time progress tracking, and code boilerplates for "{projectTitle}".
+          Automatically generate full architecture diagrams, real-time progress trackers, step-by-step procedures, and code boilerplates for "{projectTitle}".
         </p>
       </div>
 
-      {/* REAL-TIME DYNAMIC PROGRESS TRACKER CARD */}
-      <div className="glass-panel p-6 sm:p-8 rounded-2xl space-y-6 bg-white border border-slate-200 shadow-md">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+      {/* DYNAMIC REAL-TIME PROGRESS TRACKER PANEL */}
+      <div className="glass-panel p-6 sm:p-8 rounded-2xl space-y-5 bg-white border border-indigo-200 shadow-lg">
+        
+        {/* Progress Header & Live Bar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <div className="flex items-center space-x-2 text-indigo-700 font-extrabold text-sm mb-0.5">
-              <BarChart2 className="w-5 h-5 text-indigo-600" />
-              <span>Real-Time Project Generation Progress Tracker</span>
+            <div className="flex items-center space-x-2">
+              <Activity className="w-5 h-5 text-indigo-600 animate-pulse" />
+              <h3 className="text-lg font-black text-slate-900">Real-Time Milestone Progress Tracker</h3>
             </div>
-            <p className="text-xs text-slate-600 font-semibold">
-              Track real-time sprint execution milestones for "{projectTitle}". Click any milestone to update progress.
+            <p className="text-xs text-slate-600 font-semibold mt-0.5">
+              Click any milestone to dynamically toggle its real-time completion status for "{projectTitle}".
             </p>
           </div>
 
           <div className="flex items-center space-x-3 shrink-0">
-            <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold border border-emerald-300">
-              {progressPercent}% Complete
-            </span>
+            <div className="text-right">
+              <span className="text-xl font-black text-indigo-600 font-mono">{progressPercentage}%</span>
+              <span className="text-[10px] text-slate-600 block font-bold">
+                {completedMilestones.length} of {milestoneList.length} Milestones Complete
+              </span>
+            </div>
+            <div className="w-24 bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-300 shadow-inner">
+              <div
+                className="bg-gradient-to-r from-indigo-600 to-emerald-500 h-full transition-all duration-500"
+                style={{ width: `${progressPercentage}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Milestone Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {milestoneList.map((m, idx) => {
+            const isDone = completedMilestones.includes(idx);
+            return (
+              <div
+                key={idx}
+                onClick={() => toggleMilestone(idx)}
+                className={`p-4 rounded-xl border transition-all cursor-pointer flex items-start space-x-3 ${
+                  isDone
+                    ? 'bg-emerald-50/80 border-emerald-300 text-slate-900 shadow-sm'
+                    : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-indigo-300'
+                }`}
+              >
+                <div className="mt-0.5 shrink-0">
+                  {isDone ? (
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  ) : (
+                    <Circle className="w-5 h-5 text-slate-400" />
+                  )}
+                </div>
+
+                <div className="space-y-0.5 flex-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black uppercase text-indigo-700 font-mono">{m.phase}</span>
+                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
+                      isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                    }`}>
+                      {isDone ? 'COMPLETED' : 'IN PROGRESS'}
+                    </span>
+                  </div>
+                  <h4 className={`text-xs font-black ${isDone ? 'text-slate-900 line-through opacity-80' : 'text-slate-900'}`}>{m.title}</h4>
+                  <p className="text-[11px] text-slate-700 font-medium leading-relaxed">{m.task}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Real-Time Code Validation Audit Simulator Button & Terminal */}
+        <div className="pt-2 border-t border-slate-200 space-y-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center space-x-2 text-xs font-extrabold text-slate-900">
+              <Terminal className="w-4 h-4 text-emerald-600" />
+              <span>Real-Time Code Validation Audit Simulator</span>
+            </div>
+
             <button
-              onClick={handleSimulateBuild}
-              disabled={isSimulatingBuild}
-              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:brightness-110 text-white text-xs font-extrabold flex items-center space-x-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+              onClick={handleRunValidationAudit}
+              disabled={isRunningAudit}
+              className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs flex items-center space-x-2 shadow-md cursor-pointer disabled:opacity-50"
             >
-              {isSimulatingBuild ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-white" />}
-              <span>{isSimulatingBuild ? "Simulating Build..." : "Simulate Build Run"}</span>
+              {isRunningAudit ? <RefreshCw className="w-3.5 h-3.5 animate-spin text-cyan-400" /> : <Play className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />}
+              <span>{isRunningAudit ? "Running Audit..." : "Run Real-Time Code Audit"}</span>
             </button>
           </div>
-        </div>
 
-        {/* Real-Time Progress Bar */}
-        <div className="space-y-2">
-          <div className="flex justify-between items-center text-xs font-bold text-slate-800">
-            <span>Overall Sprint Execution Progress</span>
-            <span className="font-mono text-indigo-700 font-black">{completedCount} of {milestones.length} Milestones Completed</span>
-          </div>
-          <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-200 p-0.5">
-            <div
-              className="bg-gradient-to-r from-indigo-600 via-purple-600 to-emerald-500 h-full rounded-full transition-all duration-500 shadow-sm"
-              style={{ width: `${progressPercent}%` }}
-            ></div>
-          </div>
-        </div>
-
-        {/* Phased Milestones Checklist Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-          {milestones.map((m) => (
-            <div
-              key={m.id}
-              onClick={() => toggleMilestone(m.id)}
-              className={`p-4 rounded-xl border transition-all cursor-pointer flex items-start space-x-3 ${
-                m.done
-                  ? 'bg-emerald-50 border-emerald-300 text-slate-900 shadow-sm'
-                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:border-slate-300'
-              }`}
-            >
-              <div className="pt-0.5 shrink-0">
-                {m.done ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                ) : (
-                  <Circle className="w-5 h-5 text-slate-400" />
-                )}
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center space-x-2">
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white border border-slate-200 text-indigo-700 font-mono">
-                    {m.phase}
-                  </span>
+          {/* Audit Terminal Log Output Box */}
+          {auditLogs.length > 0 && (
+            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-emerald-300 space-y-1.5 animate-fadeIn max-h-48 overflow-y-auto">
+              {auditLogs.map((log, i) => (
+                <div key={i} className="leading-relaxed flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span>{log}</span>
                 </div>
-                <h4 className={`text-xs sm:text-sm font-extrabold ${m.done ? 'text-slate-900 line-through opacity-85' : 'text-slate-900'}`}>
-                  {m.title}
-                </h4>
-                <p className="text-[11px] text-slate-600 font-medium">{m.desc}</p>
-              </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
 
       </div>
@@ -395,36 +426,24 @@ models/`;
       <div className="bg-slate-950 p-6 sm:p-10 rounded-3xl border border-slate-800 text-white space-y-8 shadow-2xl">
         
         {/* Project Generator Title & Automatically Generate Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <h3 className="text-2xl font-bold text-white tracking-tight">Project Generator</h3>
-            <p className="text-sm text-slate-300 font-medium">Automatically generate</p>
+        <div className="space-y-3">
+          <h3 className="text-2xl font-bold text-white tracking-tight">Project Generator</h3>
+          <p className="text-sm text-slate-300 font-medium">Automatically generate</p>
 
-            {/* Architecture Diagram Checklist Option */}
-            <div className="flex items-center space-x-2 pt-1">
-              <button
-                onClick={() => setArchChecked(!archChecked)}
-                className="flex items-center space-x-2 text-xs sm:text-sm font-bold text-emerald-400 cursor-pointer"
-              >
-                <div className={`w-4 h-4 rounded flex items-center justify-center border transition ${
-                  archChecked ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'border-slate-600'
-                }`}>
-                  {archChecked && <Check className="w-3 h-3 stroke-[3]" />}
-                </div>
-                <span className="text-white">Architecture Diagram</span>
-              </button>
-            </div>
+          {/* Architecture Diagram Checklist Option */}
+          <div className="flex items-center space-x-2 pt-1">
+            <button
+              onClick={() => setArchChecked(!archChecked)}
+              className="flex items-center space-x-2 text-xs sm:text-sm font-bold text-emerald-400 cursor-pointer"
+            >
+              <div className={`w-4 h-4 rounded flex items-center justify-center border transition ${
+                archChecked ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'border-slate-600'
+              }`}>
+                {archChecked && <Check className="w-3 h-3 stroke-[3]" />}
+              </div>
+              <span className="text-white">Architecture Diagram</span>
+            </button>
           </div>
-
-          {/* Related Action: Download Package Zip */}
-          <button
-            onClick={handleDownloadZip}
-            disabled={downloadingZip}
-            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs flex items-center space-x-2 shadow-lg cursor-pointer disabled:opacity-50"
-          >
-            {downloadingZip ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-            <span>{downloadingZip ? "Preparing Download..." : "Download Generator Package (.ZIP)"}</span>
-          </button>
         </div>
 
         {/* Dynamic Vertical Flow Stack (Frontend -> Backend -> Database -> AI -> Deployment) */}

@@ -3,7 +3,7 @@ import {
   Smartphone, Wifi, Battery, Signal, Sparkles, Send, Bot, Search, Download, Code, Check, 
   ExternalLink, ChevronRight, Zap, FileCode, Rocket, Presentation, Cpu, RefreshCw, User, 
   History, Share2, Award, Edit3, ListOrdered, Copy, Star, GitFork, Filter, BookOpen, CheckCircle2,
-  Terminal, ShieldCheck, UserCheck, Layers
+  Terminal, ShieldCheck, UserCheck, Layers, Activity, Circle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import pptxgen from 'pptxgenjs';
@@ -19,6 +19,9 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
 
   // Active Generator Layer
   const [activeLayer, setActiveLayer] = useState('frontend');
+
+  // Mobile Progress Tracker State
+  const [completedMilestones, setCompletedMilestones] = useState([0, 1, 2]);
 
   // Slide Index
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
@@ -46,6 +49,28 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
   const frontendTech = projectData?.architecture?.frontend || "React 18 + Tailwind CSS";
   const backendTech = projectData?.architecture?.backend || "Node.js Express + Python FastAPI";
 
+  const milestoneList = projectData?.roadmap || [
+    { phase: "Phase 1", title: "Literature Synthesis", task: "Extract arXiv paper citations." },
+    { phase: "Phase 2", title: "API Router", task: "Express server & Python FastAPI setup." },
+    { phase: "Phase 3", title: "Frontend UI", task: "React 18 state management." },
+    { phase: "Phase 4", title: "Vercel & PPT Export", task: "Production build & presentation deck." }
+  ];
+
+  const progressPercentage = Math.round((completedMilestones.length / milestoneList.length) * 100);
+
+  const toggleMobileMilestone = (idx) => {
+    let updated;
+    if (completedMilestones.includes(idx)) {
+      updated = completedMilestones.filter(i => i !== idx);
+    } else {
+      updated = [...completedMilestones, idx];
+    }
+    setCompletedMilestones(updated);
+    if (updated.length === milestoneList.length) {
+      confetti({ particleCount: 50, spread: 60 });
+    }
+  };
+
   const handleMobileSubmit = (e) => {
     e.preventDefault();
     if (!mobileIdeaInput.trim()) return;
@@ -62,7 +87,6 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
     
     const userMsg = { id: Date.now(), sender: 'user', text: textSent, time: timeNow };
 
-    // Update current agent's chat
     setAgentChats(prev => ({
       ...prev,
       [selectedAgent]: [...prev[selectedAgent], userMsg]
@@ -253,13 +277,48 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
             </div>
           )}
 
-          {/* TAB 2: PROJECT GENERATOR */}
+          {/* TAB 2: PROJECT GENERATOR (With Progress Tracker) */}
           {mobileTab === 'generator' && (
             <div className="space-y-3 pt-1 animate-fadeIn">
               <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
                 <FileCode className="w-4 h-4 text-cyan-400" />
                 Project Generator
               </h4>
+
+              {/* Real-Time Mobile Progress Bar */}
+              <div className="p-3 rounded-2xl bg-slate-900 border border-indigo-500/40 space-y-2">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-bold text-white flex items-center gap-1">
+                    <Activity className="w-3.5 h-3.5 text-indigo-400" /> Milestone Tracker
+                  </span>
+                  <span className="font-mono font-bold text-emerald-400">{progressPercentage}%</span>
+                </div>
+
+                <div className="w-full bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800">
+                  <div className="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full transition-all duration-500" style={{ width: `${progressPercentage}%` }}></div>
+                </div>
+
+                <div className="space-y-1 pt-1">
+                  {milestoneList.map((m, idx) => {
+                    const isDone = completedMilestones.includes(idx);
+                    return (
+                      <div
+                        key={idx}
+                        onClick={() => toggleMobileMilestone(idx)}
+                        className="flex items-center justify-between text-[10px] p-1.5 rounded-lg bg-slate-950 border border-slate-800 cursor-pointer"
+                      >
+                        <div className="flex items-center space-x-1.5 truncate pr-1">
+                          {isDone ? <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" /> : <Circle className="w-3 h-3 text-slate-500 shrink-0" />}
+                          <span className={`truncate ${isDone ? 'line-through text-slate-400' : 'text-slate-200 font-medium'}`}>{m.title}</span>
+                        </div>
+                        <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${isDone ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                          {isDone ? 'DONE' : 'PENDING'}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
 
               {/* Interactive Layer Flow */}
               <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
@@ -291,7 +350,7 @@ export default function MobileSimulator({ projectData, onSearch, onOpenAuth, onO
             </div>
           )}
 
-          {/* TAB 3: AI AGENTS (With Distinct Switcher) */}
+          {/* TAB 3: AI AGENTS */}
           {mobileTab === 'agents' && (
             <div className="flex flex-col h-full space-y-2 pt-1 animate-fadeIn">
               <div className="flex items-center justify-between pb-2 border-b border-slate-800">
